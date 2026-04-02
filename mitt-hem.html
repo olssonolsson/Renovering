@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mitt hem – Renoveringsapp</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh;}
+  .topbar{background:#fff;border-bottom:0.5px solid #e0ddd6;padding:0 1.25rem;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:10;}
+  .app-title{font-size:16px;font-weight:500;color:#1a1a1a;padding:0 1rem 0 0;margin-right:1rem;border-right:0.5px solid #e0ddd6;line-height:52px;}
+  .tabs{display:flex;gap:0;}
+  .tab{padding:0 16px;font-size:14px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;height:52px;white-space:nowrap;}
+  .tab.active{color:#1a1a1a;border-bottom:2px solid #1a1a1a;font-weight:500;}
+  .tab:hover{color:#444;}
+  .main{max-width:860px;margin:0 auto;padding:1.5rem 1rem;}
+  .section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .section-hdr h2{font-size:18px;font-weight:500;}
+  .btn{padding:7px 14px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#444;font-size:13px;cursor:pointer;}
+  .btn:hover{background:#f5f4f0;}
+  .btn-primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+  .btn-primary:hover{background:#333;}
+  .btn-danger{color:#c0392b;border-color:#e0ddd6;}
+  .btn-dashed{width:100%;padding:10px;border:0.5px dashed #ccc;border-radius:10px;background:none;color:#888;font-size:13px;cursor:pointer;margin-top:8px;}
+  .btn-dashed:hover{background:#f5f4f0;}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+  .stat-card{background:#fff;border-radius:8px;padding:1rem;border:0.5px solid #e8e6e0;}
+  .stat-label{font-size:12px;color:#888;margin-bottom:4px;}
+  .stat-value{font-size:24px;font-weight:500;}
+  .rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:1rem;}
+  .room-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;padding:1rem;cursor:pointer;}
+  .room-card:hover{border-color:#bbb;}
+  .room-icon{width:36px;height:36px;border-radius:8px;background:#f5f4f0;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+  .room-name{font-size:14px;font-weight:500;}
+  .room-meta{font-size:12px;color:#888;margin-top:2px;}
+  .back-btn{background:none;border:none;color:#888;font-size:13px;cursor:pointer;margin-bottom:1rem;padding:0;}
+  .back-btn:hover{color:#1a1a1a;}
+  .before-section{margin-bottom:1.25rem;}
+  .before-title{font-size:13px;font-weight:500;color:#888;margin-bottom:8px;}
+  .photo-grid{display:flex;gap:6px;flex-wrap:wrap;}
+  .photo-thumb{width:72px;height:72px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;cursor:pointer;}
+  .photo-add-box{width:72px;height:72px;border-radius:8px;border:0.5px dashed #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:#f9f8f5;flex-shrink:0;}
+  .photo-add-box:hover{background:#f0ede8;}
+  .photo-add-box .plus{font-size:22px;color:#aaa;line-height:1;}
+  .photo-add-box .lbl{font-size:10px;color:#aaa;text-align:center;line-height:1.2;}
+  .divider{height:0.5px;background:#e8e6e0;margin:1rem 0;}
+  .entries-list{display:flex;flex-direction:column;gap:8px;}
+  .entry-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;padding:1rem 1.25rem;}
+  .entry-top{display:flex;gap:10px;align-items:flex-start;}
+  .entry-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:2px;border:0.5px solid #ddd;}
+  .entry-body{flex:1;min-width:0;}
+  .entry-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .entry-name{font-size:14px;font-weight:500;}
+  .entry-date{font-size:12px;color:#aaa;white-space:nowrap;}
+  .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+  .tag{font-size:11px;padding:2px 7px;border-radius:20px;background:#f5f4f0;color:#666;border:0.5px solid #e0ddd6;}
+  .entry-note{font-size:13px;color:#666;margin-top:4px;line-height:1.5;}
+  .after-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .after-thumb{width:60px;height:60px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;cursor:pointer;}
+  .after-add{width:60px;height:60px;border-radius:8px;border:0.5px dashed #bbb;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9f8f5;flex-shrink:0;font-size:20px;color:#aaa;}
+  .after-add:hover{background:#f0ede8;}
+  .todo-list{display:flex;flex-direction:column;gap:6px;}
+  .todo-item{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;overflow:hidden;}
+  .todo-header{display:flex;align-items:center;gap:8px;padding:10px 12px;}
+  .drag-handle{color:#bbb;font-size:14px;cursor:grab;flex-shrink:0;user-select:none;}
+  .todo-check{width:16px;height:16px;border-radius:4px;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;}
+  .todo-check.done{background:#e8f5e9;border-color:#81c784;}
+  .todo-title{flex:1;font-size:14px;font-weight:500;}
+  .todo-title.done{text-decoration:line-through;color:#aaa;}
+  .prio{font-size:10px;padding:2px 7px;border-radius:20px;flex-shrink:0;}
+  .prio-hög{background:#fff0ee;color:#c0392b;}
+  .prio-medel{background:#fff8ee;color:#b07d2a;}
+  .prio-låg{background:#eef7ee;color:#2e7d32;}
+  .expand-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:12px;padding:2px 6px;}
+  .todo-body{border-top:0.5px solid #f0ede8;padding:10px 12px;}
+  .sub-label{font-size:12px;font-weight:500;color:#888;margin:8px 0 4px;}
+  .subtask-row,.shop-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
+  .sub-check{width:14px;height:14px;border-radius:3px;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .sub-check.done{background:#e8f5e9;border-color:#81c784;}
+  .circle-check{width:14px;height:14px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .circle-check.done{background:#e8f5e9;border-color:#81c784;}
+  .sub-text{font-size:13px;flex:1;}
+  .sub-text.done{text-decoration:line-through;color:#aaa;}
+  .x-btn{background:none;border:none;color:#bbb;cursor:pointer;font-size:16px;padding:0 2px;line-height:1;}
+  .x-btn:hover{color:#e74c3c;}
+  .inline-add{display:flex;gap:6px;margin-top:6px;}
+  .inline-add input{flex:1;font-size:13px;padding:6px 10px;border:0.5px solid #ddd;border-radius:7px;background:#fff;outline:none;}
+  .inline-add input:focus{border-color:#aaa;}
+  .inline-add button{flex-shrink:0;}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+  .modal-bg.open{display:flex;}
+  .modal{background:#fff;border-radius:14px;padding:1.5rem;width:100%;max-width:440px;border:0.5px solid #e0ddd6;}
+  .modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem;}
+  .form-row{margin-bottom:1rem;}
+  .form-row label{display:block;font-size:13px;color:#666;margin-bottom:4px;}
+  .form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:0.5px solid #ddd;border-radius:7px;font-size:14px;font-family:inherit;outline:none;background:#fff;}
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:#aaa;}
+  .form-row textarea{height:68px;resize:none;}
+  .color-row{display:flex;gap:8px;align-items:center;}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;}
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;align-items:center;justify-content:center;}
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:96vw;max-height:90vh;border-radius:10px;}
+  .empty-state{text-align:center;padding:2.5rem 1rem;color:#aaa;font-size:14px;}
+  .icon-picker{display:flex;gap:8px;flex-wrap:wrap;}
+  .icon-opt{cursor:pointer;font-size:22px;padding:5px;border-radius:6px;border:1.5px solid transparent;}
+  .icon-opt.sel{border-color:#1a1a1a;}
+  .search-bar{width:100%;padding:8px 12px;border:0.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:1rem;outline:none;background:#fff;}
+  .search-bar:focus{border-color:#aaa;}
+  .colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+  .color-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;overflow:hidden;}
+  .color-swatch{height:54px;border-bottom:0.5px solid #e8e6e0;}
+  .color-info{padding:8px 10px;}
+  .loading{text-align:center;padding:3rem;color:#aaa;font-size:14px;}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:#81c784;margin-left:auto;margin-right:4px;flex-shrink:0;}
+  .sync-dot.syncing{background:#ffb74d;}
+  @media(max-width:600px){
+    .stats-row{grid-template-columns:repeat(3,1fr);}
+    .topbar{overflow-x:auto;}
+    .app-title{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="app-title">Kalle och Sophies renovering - Oktobergatan 10 v0.1</span>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('todo')">Att göra-lista</button>
+    <button class="tab" onclick="switchTab('rum')">Rum</button>
+    <button class="tab" onclick="switchTab('allt')">Allt</button>
+    <button class="tab" onclick="switchTab('färger')">Färger</button>
+  </div>
+  <div class="sync-dot" id="sync-dot" title="Synkad med molnet"></div>
+</div>
+
+<div class="main">
+
+  <!-- ATT GÖRA -->
+  <div id="tab-todo">
+    <div class="section-hdr">
+      <h2>Att göra-lista</h2>
+      <button class="btn" onclick="openModal('todo-modal')">+ Ny uppgift</button>
+    </div>
+    <div class="todo-list" id="todo-list"><div class="loading">Laddar...</div></div>
+  </div>
+
+  <!-- RUM -->
+  <div id="tab-rum" style="display:none;">
+    <div id="rooms-view">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Rum</div><div class="stat-value" id="s-rooms">–</div></div>
+        <div class="stat-card"><div class="stat-label">Åtgärder</div><div class="stat-value" id="s-entries">–</div></div>
+        <div class="stat-card"><div class="stat-label">Färger</div><div class="stat-value" id="s-colors">–</div></div>
+      </div>
+      <div class="rooms-grid" id="rooms-grid"><div class="loading">Laddar...</div></div>
+      <button class="btn-dashed" onclick="openModal('room-modal')">+ Lägg till rum</button>
+    </div>
+    <div id="room-detail" style="display:none;">
+      <button class="back-btn" onclick="showRooms()">← Alla rum</button>
+      <div class="section-hdr">
+        <h2 id="detail-title"></h2>
+        <button class="btn" onclick="openModal('entry-modal')">+ Åtgärd</button>
+      </div>
+      <div class="before-section">
+        <div class="before-title">Före-bilder</div>
+        <div class="photo-grid" id="before-grid"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="entries-list" id="entries-list"></div>
+    </div>
+  </div>
+
+  <!-- ALLT -->
+  <div id="tab-allt" style="display:none;">
+    <input class="search-bar" type="text" placeholder="Sök åtgärder, färgkoder, anteckningar..." id="search-input" oninput="renderAll()">
+    <div class="entries-list" id="all-list"></div>
+  </div>
+
+  <!-- FÄRGER -->
+  <div id="tab-färger" style="display:none;">
+    <div class="colors-grid" id="colors-grid"></div>
+  </div>
+
+</div>
+
+<!-- MODALER -->
+<div class="modal-bg" id="room-modal">
+  <div class="modal">
+    <h2>Nytt rum</h2>
+    <div class="form-row"><label>Namn</label><input type="text" id="room-name-in" placeholder="t.ex. Vardagsrum"></div>
+    <div class="form-row"><label>Ikon</label>
+      <div class="icon-picker" id="icon-picker">
+        <span class="icon-opt sel">🛋️</span><span class="icon-opt">🛏️</span><span class="icon-opt">🚿</span>
+        <span class="icon-opt">🍳</span><span class="icon-opt">📚</span><span class="icon-opt">🏡</span>
+        <span class="icon-opt">🚗</span><span class="icon-opt">🌿</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModals()">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveRoom()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="entry-modal">
+  <div class="modal">
+    <h2>Ny åtgärd</h2>
+    <div class="form-row"><label>Rubrik</label><input type="text" id="en-name" placeholder="t.ex. Målad vägg"></div>
+    <div class="form-row"><label>Kategori</label>
+      <select id="en-cat">
+        <option>Målning</option><option>Golv</option><option>Tapetsering</option>
+        <option>Belysning</option><option>Möbler</option><option>El & VVS</option><option>Övrigt</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Färgkod / produkt</label>
+      <div class="color-row">
+        <input type="color" id="en-color" value="#ffffff" style="width:36px;height:36px;padding:2px;flex-shrink:0;border:0.5px solid #ddd;border-radius:6px;cursor:pointer;">
+        <input type="text" id="en-ccode" placeholder="NCS S 0500-N / Beckers Vit" style="flex:1;">
+      </div>
+    </div>
+    <div class="form-row"><label>Anteckningar</label><textarea id="en-note" placeholder="Leverantör, kostnad, tips..."></textarea></div>
+    <div class="form-row"><label>Datum</label><input type="date" id="en-date"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModals()">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveEntry()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="todo-modal">
+  <div class="modal">
+    <h2>Ny uppgift</h2>
+    <div class="form-row"><label>Titel</label><input type="text" id="td-title" placeholder="t.ex. Måla om köket"></div>
+    <div class="form-row"><label>Prioritet</label>
+      <select id="td-prio"><option value="hög">Hög</option><option value="medel" selected>Medel</option><option value="låg">Låg</option></select>
+    </div>
+    <div class="form-row"><label>Notering</label><textarea id="td-note" placeholder="Detaljer, idéer..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModals()">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveTodo()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBcOie0KQdfTDtLkUfhPfKBI0grPGqRjfg",
+  authDomain: "renovering-8b74f.firebaseapp.com",
+  projectId: "renovering-8b74f",
+  storageBucket: "renovering-8b74f.firebasestorage.app",
+  messagingSenderId: "803734789539",
+  appId: "1:803734789539:web:dbbf3b7c08bc41dcde4e16"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+
+// State
+let rooms = [];
+let entries = [];
+let todos = [];
+let curRoom = null;
+let selIcon = '🛋️';
+let dragSrc = null;
+let syncing = false;
+
+function setSyncing(val) {
+  syncing = val;
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot' + (val ? ' syncing' : '');
+  dot.title = val ? 'Sparar...' : 'Synkad med molnet';
+}
+
+// Icon picker
+document.querySelectorAll('.icon-opt').forEach(el => {
+  el.onclick = () => {
+    selIcon = el.textContent;
+    document.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('sel'));
+    el.classList.add('sel');
+  };
+});
+
+// Tabs
+const TABS = ['todo','rum','allt','färger'];
+window.switchTab = function(t) {
+  TABS.forEach((id,i) => {
+    document.getElementById('tab-'+id).style.display = id===t ? 'block' : 'none';
+    document.querySelectorAll('.tab')[i].className = 'tab' + (id===t ? ' active' : '');
+  });
+  if(t==='allt') renderAll();
+  if(t==='rum') showRooms();
+  if(t==='todo') renderTodos();
+  if(t==='färger') renderColors();
+};
+
+window.openModal = function(id) { document.getElementById(id).classList.add('open'); };
+window.closeModals = function() { document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open')); };
+document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if(e.target===m) closeModals(); }));
+
+function showLightbox(src) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+window.showLightbox = showLightbox;
+
+// ── FIRESTORE LISTENERS ──────────────────────────────────────────────────────
+
+onSnapshot(query(collection(db,'rooms'), orderBy('createdAt')), snap => {
+  rooms = snap.docs.map(d => ({id:d.id,...d.data()}));
+  const activeTab = document.querySelector('.tab.active')?.textContent.trim();
+  if(activeTab === 'Rum') {
+    if(curRoom) {
+      curRoom = rooms.find(r=>r.id===curRoom.id) || null;
+      if(curRoom) { renderBeforeGallery(); }
+      else showRooms();
+    } else showRooms();
+  }
+  updateStats();
+});
+
+onSnapshot(query(collection(db,'entries'), orderBy('date','desc')), snap => {
+  entries = snap.docs.map(d => ({id:d.id,...d.data()}));
+  const activeTab = document.querySelector('.tab.active')?.textContent.trim();
+  if(activeTab === 'Rum' && curRoom) renderEntries();
+  if(activeTab === 'Allt') renderAll();
+  updateStats();
+});
+
+onSnapshot(query(collection(db,'todos'), orderBy('order')), snap => {
+  todos = snap.docs.map(d => ({id:d.id,...d.data()}));
+  const activeTab = document.querySelector('.tab.active')?.textContent.trim();
+  if(activeTab === 'Att göra-lista') renderTodos();
+});
+
+// ── STATS ────────────────────────────────────────────────────────────────────
+
+function updateStats() {
+  document.getElementById('s-rooms').textContent = rooms.length;
+  document.getElementById('s-entries').textContent = entries.length;
+  const cols = new Set(entries.filter(e=>e.colorCode).map(e=>e.colorCode));
+  document.getElementById('s-colors').textContent = cols.size;
+}
+
+// ── ROOMS ────────────────────────────────────────────────────────────────────
+
+window.showRooms = function() {
+  document.getElementById('rooms-view').style.display = '';
+  document.getElementById('room-detail').style.display = 'none';
+  curRoom = null;
+  renderRooms();
+};
+
+function renderRooms() {
+  const g = document.getElementById('rooms-grid');
+  if(!rooms.length) { g.innerHTML = '<div class="empty-state" style="grid-column:1/-1">Inga rum tillagda ännu</div>'; return; }
+  g.innerHTML = rooms.map((r,i) => {
+    const c = entries.filter(e=>e.roomId===r.id).length;
+    const b = (r.before||[]).length;
+    return `<div class="room-card" onclick="showRoom('${r.id}')">
+      <div class="room-icon">${r.icon}</div>
+      <div class="room-name">${r.name}</div>
+      <div class="room-meta">${c} åtgärd${c!==1?'er':''}${b?' · '+b+' förebild'+(b!==1?'er':''):''}</div>
+    </div>`;
+  }).join('');
+}
+
+window.showRoom = function(id) {
+  curRoom = rooms.find(r=>r.id===id);
+  if(!curRoom) return;
+  document.getElementById('rooms-view').style.display = 'none';
+  document.getElementById('room-detail').style.display = '';
+  document.getElementById('detail-title').textContent = curRoom.icon + ' ' + curRoom.name;
+  renderBeforeGallery();
+  renderEntries();
+};
+
+window.saveRoom = async function() {
+  const name = document.getElementById('room-name-in').value.trim();
+  if(!name) return;
+  setSyncing(true);
+  const id = 'room_' + Date.now();
+  await setDoc(doc(db,'rooms',id), {name, icon:selIcon, before:[], createdAt: Date.now()});
+  document.getElementById('room-name-in').value = '';
+  setSyncing(false);
+  closeModals();
+};
+
+// ── BEFORE PHOTOS ─────────────────────────────────────────────────────────────
+
+function renderBeforeGallery() {
+  const grid = document.getElementById('before-grid');
+  const photos = curRoom.before || [];
+  const thumbs = photos.map(p => `<img class="photo-thumb" src="${p}" onclick="showLightbox('${p}')">`).join('');
+  const addBtn = `<label class="photo-add-box" title="Lägg till före-bild">
+    <span class="plus">+</span><span class="lbl">Före-bild</span>
+    <input type="file" accept="image/*" style="display:none;" onchange="addBeforePhoto(this)">
+  </label>`;
+  grid.innerHTML = thumbs + addBtn;
+}
+
+window.addBeforePhoto = function(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    setSyncing(true);
+    try {
+      const storageRef = ref(storage, `before/${curRoom.id}/${Date.now()}`);
+      await uploadString(storageRef, e.target.result, 'data_url');
+      const url = await getDownloadURL(storageRef);
+      const before = [...(curRoom.before||[]), url];
+      await updateDoc(doc(db,'rooms',curRoom.id), {before});
+    } catch(err) {
+      // Firebase Storage may need enabling — fallback to base64 inline
+      const before = [...(curRoom.before||[]), e.target.result];
+      await updateDoc(doc(db,'rooms',curRoom.id), {before});
+    }
+    setSyncing(false);
+  };
+  reader.readAsDataURL(file);
+};
+
+// ── ENTRIES ──────────────────────────────────────────────────────────────────
+
+function entryCardHTML(e, showRoomTag) {
+  const room = rooms.find(r=>r.id===e.roomId);
+  const photos = (e.photos||[]).map(p=>`<img class="after-thumb" src="${p}" onclick="showLightbox('${p}')">`).join('');
+  const addBtn = `<label class="after-add" title="Lägg till bild">+
+    <input type="file" accept="image/*" style="display:none;" onchange="addEntryPhoto(this,'${e.id}')">
+  </label>`;
+  return `<div class="entry-card">
+    <div class="entry-top">
+      <div class="entry-dot" style="background:${e.color||'#eee'}"></div>
+      <div class="entry-body">
+        <div class="entry-row">
+          <span class="entry-name">${e.name}</span>
+          <span class="entry-date">${e.date||''}</span>
+        </div>
+        <div class="tags">
+          ${showRoomTag&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}
+          <span class="tag">${e.category}</span>
+          ${e.colorCode?`<span class="tag" style="font-family:monospace;">${e.colorCode}</span>`:''}
+        </div>
+        ${e.note?`<div class="entry-note">${e.note}</div>`:''}
+        <div class="after-photos">${photos}${addBtn}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEntries() {
+  const list = document.getElementById('entries-list');
+  const es = entries.filter(e=>e.roomId===curRoom.id);
+  list.innerHTML = es.length ? es.map(e=>entryCardHTML(e,false)).join('') : '<div class="empty-state">Inga åtgärder ännu</div>';
+}
+
+function renderAll() {
+  const q = (document.getElementById('search-input').value||'').toLowerCase();
+  const list = document.getElementById('all-list');
+  let es = entries.slice();
+  if(q) es = es.filter(e=>(e.name+e.colorCode+e.note+e.category).toLowerCase().includes(q));
+  list.innerHTML = es.length ? es.map(e=>entryCardHTML(e,true)).join('') : '<div class="empty-state">Inga åtgärder' + (q?' matchar':'') + '</div>';
+}
+
+function renderColors() {
+  const g = document.getElementById('colors-grid');
+  const ces = entries.filter(e=>e.colorCode);
+  if(!ces.length) { g.innerHTML = '<div class="empty-state">Inga färgkoder sparade ännu</div>'; return; }
+  const seen = {};
+  ces.forEach(e => { if(!seen[e.colorCode]) seen[e.colorCode]=e; });
+  g.innerHTML = Object.entries(seen).map(([code,e])=>{
+    const room = rooms.find(r=>r.id===e.roomId);
+    return `<div class="color-card">
+      <div class="color-swatch" style="background:${e.color||'#eee'}"></div>
+      <div class="color-info">
+        <div style="font-size:11px;font-weight:500;font-family:monospace;">${code}</div>
+        <div style="font-size:11px;color:#666;">${e.name}</div>
+        ${room?`<div style="font-size:11px;color:#aaa;">${room.icon} ${room.name}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.saveEntry = async function() {
+  const name = document.getElementById('en-name').value.trim();
+  if(!name||!curRoom) return;
+  setSyncing(true);
+  const id = 'entry_' + Date.now();
+  await setDoc(doc(db,'entries',id), {
+    roomId: curRoom.id, name,
+    category: document.getElementById('en-cat').value,
+    color: document.getElementById('en-color').value,
+    colorCode: document.getElementById('en-ccode').value.trim(),
+    note: document.getElementById('en-note').value.trim(),
+    date: document.getElementById('en-date').value,
+    photos: [], createdAt: Date.now()
+  });
+  document.getElementById('en-name').value='';
+  document.getElementById('en-ccode').value='';
+  document.getElementById('en-note').value='';
+  setSyncing(false);
+  closeModals();
+};
+
+window.addEntryPhoto = function(input, entryId) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    setSyncing(true);
+    const entry = entries.find(x=>x.id===entryId);
+    if(entry) {
+      try {
+        const storageRef = ref(storage, `entries/${entryId}/${Date.now()}`);
+        await uploadString(storageRef, e.target.result, 'data_url');
+        const url = await getDownloadURL(storageRef);
+        await updateDoc(doc(db,'entries',entryId), {photos:[...(entry.photos||[]),url]});
+      } catch(err) {
+        await updateDoc(doc(db,'entries',entryId), {photos:[...(entry.photos||[]),e.target.result]});
+      }
+    }
+    setSyncing(false);
+  };
+  reader.readAsDataURL(file);
+};
+
+// ── TODOS ─────────────────────────────────────────────────────────────────────
+
+function checkSvg() { return '<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#388e3c" stroke-width="1.8" fill="none"/></svg>'; }
+
+function todoHTML(t, i) {
+  const subs = (t.subtasks||[]).map((s,si)=>`
+    <div class="subtask-row">
+      <div class="sub-check${s.done?' done':''}" onclick="toggleSub('${t.id}',${si})">${s.done?checkSvg():''}</div>
+      <span class="sub-text${s.done?' done':''}">${s.label}</span>
+      <button class="x-btn" onclick="delSub('${t.id}',${si})">×</button>
+    </div>`).join('');
+  const shops = (t.shopping||[]).map((s,si)=>`
+    <div class="shop-row">
+      <div class="circle-check${s.done?' done':''}" onclick="toggleShop('${t.id}',${si})">${s.done?checkSvg():''}</div>
+      <span class="sub-text${s.done?' done':''}">${s.label}</span>
+      <button class="x-btn" onclick="delShopItem('${t.id}',${si})">×</button>
+    </div>`).join('');
+  return `<div class="todo-item" draggable="true" data-id="${t.id}" data-idx="${i}">
+    <div class="todo-header">
+      <span class="drag-handle">⠿</span>
+      <div class="todo-check${t.done?' done':''}" onclick="toggleTodo('${t.id}')">${t.done?checkSvg():''}</div>
+      <span class="todo-title${t.done?' done':''}">${t.title}</span>
+      <span class="prio prio-${t.prio}">${t.prio}</span>
+      <button class="expand-btn" onclick="toggleOpen('${t.id}')">${t.open?'▲':'▼'}</button>
+    </div>
+    ${t.open?`<div class="todo-body">
+      ${t.note?`<div class="entry-note" style="margin-bottom:8px;">${t.note}</div>`:''}
+      <div class="sub-label">Deluppgifter</div>
+      ${subs}
+      <div class="inline-add">
+        <input type="text" id="sub-in-${i}" placeholder="Ny deluppgift...">
+        <button class="btn" onclick="addSub('${t.id}',${i})">+</button>
+      </div>
+      <div class="sub-label" style="margin-top:12px;">Inköpslista</div>
+      ${shops}
+      <div class="inline-add">
+        <input type="text" id="shop-in-${i}" placeholder="Lägg till vara...">
+        <button class="btn" onclick="addShopItem('${t.id}',${i})">+</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="btn btn-danger" onclick="delTodo('${t.id}')">Ta bort uppgift</button>
+      </div>
+    </div>`:''}
+  </div>`;
+}
+
+function renderTodos() {
+  const list = document.getElementById('todo-list');
+  if(!todos.length) { list.innerHTML = '<div class="empty-state">Inga uppgifter ännu</div>'; return; }
+  list.innerHTML = todos.map((t,i)=>todoHTML(t,i)).join('');
+  setupDrag();
+}
+
+function setupDrag() {
+  document.querySelectorAll('.todo-item').forEach(el => {
+    el.addEventListener('dragstart', () => { dragSrc=parseInt(el.dataset.idx); el.classList.add('dragging'); });
+    el.addEventListener('dragend', () => { el.classList.remove('dragging'); document.querySelectorAll('.todo-item').forEach(x=>x.classList.remove('drag-over')); });
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+    el.addEventListener('drop', async e => {
+      e.preventDefault();
+      const tgt = parseInt(el.dataset.idx);
+      if(dragSrc===null||dragSrc===tgt) return;
+      const arr = [...todos];
+      const [moved] = arr.splice(dragSrc,1);
+      arr.splice(tgt,0,moved);
+      setSyncing(true);
+      await Promise.all(arr.map((t,i) => updateDoc(doc(db,'todos',t.id), {order:i})));
+      setSyncing(false);
+    });
+  });
+}
+
+window.toggleTodo = async function(id) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {done:!t.done});
+  setSyncing(false);
+};
+window.toggleOpen = async function(id) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  await updateDoc(doc(db,'todos',id), {open:!t.open});
+};
+window.delTodo = async function(id) {
+  if(!confirm('Ta bort uppgiften?')) return;
+  setSyncing(true);
+  await deleteDoc(doc(db,'todos',id));
+  setSyncing(false);
+};
+window.addSub = async function(id, i) {
+  const inp = document.getElementById('sub-in-'+i);
+  const v = inp.value.trim(); if(!v) return;
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {subtasks:[...(t.subtasks||[]),{label:v,done:false}]});
+  inp.value='';
+  setSyncing(false);
+};
+window.toggleSub = async function(id, si) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  const subs = [...(t.subtasks||[])];
+  subs[si] = {...subs[si], done:!subs[si].done};
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {subtasks:subs});
+  setSyncing(false);
+};
+window.delSub = async function(id, si) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  const subs = [...(t.subtasks||[])];
+  subs.splice(si,1);
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {subtasks:subs});
+  setSyncing(false);
+};
+window.addShopItem = async function(id, i) {
+  const inp = document.getElementById('shop-in-'+i);
+  const v = inp.value.trim(); if(!v) return;
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {shopping:[...(t.shopping||[]),{label:v,done:false}]});
+  inp.value='';
+  setSyncing(false);
+};
+window.toggleShop = async function(id, si) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  const shops = [...(t.shopping||[])];
+  shops[si] = {...shops[si], done:!shops[si].done};
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {shopping:shops});
+  setSyncing(false);
+};
+window.delShopItem = async function(id, si) {
+  const t = todos.find(x=>x.id===id); if(!t) return;
+  const shops = [...(t.shopping||[])];
+  shops.splice(si,1);
+  setSyncing(true);
+  await updateDoc(doc(db,'todos',id), {shopping:shops});
+  setSyncing(false);
+};
+window.saveTodo = async function() {
+  const title = document.getElementById('td-title').value.trim();
+  if(!title) return;
+  setSyncing(true);
+  const id = 'todo_' + Date.now();
+  await setDoc(doc(db,'todos',id), {
+    title, prio: document.getElementById('td-prio').value,
+    note: document.getElementById('td-note').value.trim(),
+    done:false, open:false, subtasks:[], shopping:[],
+    order: todos.length, createdAt: Date.now()
+  });
+  document.getElementById('td-title').value='';
+  document.getElementById('td-note').value='';
+  setSyncing(false);
+  closeModals();
+};
+
+document.getElementById('en-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
