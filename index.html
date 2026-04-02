@@ -3,141 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mitt hem – Renoveringsapp</title>
+<title>Mitt hem</title>
 <style>
+:root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#e8e6e0;--border2:#ccc;--text:#1a1a1a;--text2:#666;--text3:#aaa;--accent:#1a1a1a;--accent-txt:#fff;--danger:#c0392b;--danger-bg:#fff8f7;--danger-bd:#e8d0ce;--ok-bg:#e8f5e9;--ok-bd:#81c784;--ok-txt:#2e7d32;--tag-bg:#f0ede8;--topbar:#fff;}
+.dark{--bg:#111;--surface:#1c1c1e;--surface2:#2c2c2e;--border:#3a3a3c;--border2:#555;--text:#f0f0f0;--text2:#aaa;--text3:#666;--accent:#f0f0f0;--accent-txt:#111;--danger:#ff6b6b;--danger-bg:#2c1a1a;--danger-bd:#5a2a2a;--ok-bg:#1a2e1a;--ok-bd:#388e3c;--ok-txt:#81c784;--tag-bg:#2c2c2e;--topbar:#1c1c1e;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh;}
-.topbar{background:#fff;border-bottom:0.5px solid #e0ddd6;padding:0 1.25rem;display:flex;align-items:center;position:sticky;top:0;z-index:10;}
-.app-title{font-size:16px;font-weight:500;padding:0 1rem 0 0;margin-right:1rem;border-right:0.5px solid #e0ddd6;line-height:52px;white-space:nowrap;}
-.tabs{display:flex;gap:0;overflow-x:auto;}
-.tab{padding:0 16px;font-size:14px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;height:52px;white-space:nowrap;}
-.tab.active{color:#1a1a1a;border-bottom:2px solid #1a1a1a;font-weight:500;}
-.tab:hover{color:#444;}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:#81c784;margin-left:auto;flex-shrink:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;}
+/* TOPBAR */
+.topbar{background:var(--topbar);border-bottom:.5px solid var(--border);padding:0 1rem;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:0;}
+.app-title{font-size:15px;font-weight:500;padding:0 1rem 0 0;margin-right:1rem;border-right:.5px solid var(--border);line-height:52px;white-space:nowrap;color:var(--text);}
+.tabs{display:flex;overflow-x:auto;flex:1;}
+.tab{padding:0 14px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;height:52px;white-space:nowrap;font-family:inherit;}
+.tab.active{color:var(--text);border-bottom:2px solid var(--text);font-weight:500;}
+.tab:hover:not(.active){color:var(--text2);}
+.topbar-right{display:flex;align-items:center;gap:10px;margin-left:10px;flex-shrink:0;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#81c784;transition:background .3s;}
 .sync-dot.syncing{background:#ffb74d;}
+.dark-btn{background:none;border:.5px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--text2);white-space:nowrap;font-family:inherit;}
+.dark-btn:hover{background:var(--surface2);}
+/* LAYOUT */
 .main{max-width:860px;margin:0 auto;padding:1.5rem 1rem;}
-.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
-.section-hdr h2{font-size:18px;font-weight:500;}
-.btn{padding:7px 14px;border:0.5px solid #ccc;border-radius:8px;background:#fff;color:#444;font-size:13px;cursor:pointer;font-family:inherit;}
-.btn:hover{background:#f5f4f0;}
-.btn-primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
-.btn-primary:hover{background:#333;}
-.btn-danger{color:#c0392b;border-color:#e8d0ce;background:#fff8f7;}
-.btn-danger:hover{background:#fdf0ee;}
-.btn-dashed{width:100%;padding:10px;border:0.5px dashed #ccc;border-radius:10px;background:none;color:#888;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;}
-.btn-dashed:hover{background:#f5f4f0;}
-.icon-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:14px;padding:3px 5px;border-radius:5px;}
-.icon-btn:hover{background:#f5f4f0;color:#666;}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px;}
+.sec-hdr h2{font-size:18px;font-weight:500;color:var(--text);}
+/* BUTTONS */
+.btn{padding:7px 14px;border:.5px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s;}
+.btn:hover{background:var(--surface2);}
+.btn-p{background:var(--accent);color:var(--accent-txt);border-color:var(--accent);}
+.btn-p:hover{opacity:.85;}
+.btn-d{color:var(--danger);border-color:var(--danger-bd);background:var(--danger-bg);}
+.btn-dashed{width:100%;padding:10px;border:.5px dashed var(--border2);border-radius:10px;background:none;color:var(--text3);font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;}
+.btn-dashed:hover{background:var(--surface2);}
+.icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px 5px;border-radius:5px;}
+.icon-btn:hover{background:var(--surface2);color:var(--text2);}
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
-.stat-card{background:#fff;border-radius:8px;padding:1rem;border:0.5px solid #e8e6e0;}
-.stat-label{font-size:12px;color:#888;margin-bottom:4px;}
-.stat-value{font-size:24px;font-weight:500;}
-.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:1rem;}
-.room-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;padding:1rem;cursor:pointer;position:relative;}
-.room-card:hover{border-color:#bbb;}
+.stat-card{background:var(--surface);border-radius:8px;padding:1rem;border:.5px solid var(--border);}
+.stat-label{font-size:12px;color:var(--text3);margin-bottom:4px;}
+.stat-value{font-size:24px;font-weight:500;color:var(--text);}
+/* ROOMS */
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:1rem;}
+.room-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;position:relative;transition:border-color .15s;}
+.room-card:hover{border-color:var(--border2);}
 .room-card-actions{position:absolute;top:8px;right:8px;display:none;gap:2px;}
 .room-card:hover .room-card-actions{display:flex;}
-.room-icon{width:36px;height:36px;border-radius:8px;background:#f5f4f0;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
-.room-name{font-size:14px;font-weight:500;}
-.room-meta{font-size:12px;color:#888;margin-top:2px;}
-.back-btn{background:none;border:none;color:#888;font-size:13px;cursor:pointer;margin-bottom:1rem;padding:0;}
-.back-btn:hover{color:#1a1a1a;}
-.before-section{margin-bottom:1.25rem;}
-.before-title{font-size:13px;font-weight:500;color:#888;margin-bottom:8px;}
+.room-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+.room-name{font-size:14px;font-weight:500;color:var(--text);}
+.room-meta{font-size:12px;color:var(--text3);margin-top:2px;}
+.back-btn{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;margin-bottom:1rem;padding:0;}
+.back-btn:hover{color:var(--text);}
+/* PHOTOS */
 .photo-grid{display:flex;gap:6px;flex-wrap:wrap;}
-.photo-wrap{position:relative;flex-shrink:0;}
-.photo-thumb{width:72px;height:72px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;cursor:pointer;display:block;}
-.photo-del{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;padding:0;}
-.photo-wrap:hover .photo-del{display:flex;}
-.photo-add-box{width:72px;height:72px;border-radius:8px;border:0.5px dashed #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:#f9f8f5;flex-shrink:0;}
-.photo-add-box:hover{background:#f0ede8;}
-.photo-add-box .plus{font-size:22px;color:#aaa;line-height:1;}
-.photo-add-box .lbl{font-size:10px;color:#aaa;text-align:center;line-height:1.2;}
-.divider{height:0.5px;background:#e8e6e0;margin:1rem 0;}
+.pw{position:relative;flex-shrink:0;}
+.photo-thumb,.after-thumb{width:68px;height:68px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);cursor:pointer;display:block;}
+.pw .pd,.cpw .pd{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;padding:0;}
+.pw:hover .pd,.cpw:hover .pd{display:flex;}
+.cpw{position:relative;flex-shrink:0;}
+.photo-add-box{width:68px;height:68px;border-radius:8px;border:.5px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:var(--surface2);flex-shrink:0;}
+.photo-add-box:hover{border-color:var(--text3);}
+.photo-add-box .plus{font-size:20px;color:var(--text3);line-height:1;}
+.photo-add-box .lbl{font-size:10px;color:var(--text3);text-align:center;line-height:1.2;}
+.divider{height:.5px;background:var(--border);margin:1rem 0;}
+/* ENTRIES */
 .entries-list{display:flex;flex-direction:column;gap:8px;}
-.entry-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;padding:1rem 1.25rem;}
-.entry-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
-.entry-header-left{display:flex;gap:10px;align-items:flex-start;flex:1;min-width:0;}
-.entry-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:2px;border:0.5px solid #ddd;cursor:pointer;}
-.entry-name{font-size:14px;font-weight:500;}
-.entry-date{font-size:12px;color:#aaa;white-space:nowrap;}
-.entry-actions{display:flex;gap:2px;flex-shrink:0;}
+.entry-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;}
+.entry-name{font-size:14px;font-weight:500;color:var(--text);}
+.entry-date{font-size:12px;color:var(--text3);white-space:nowrap;}
 .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
-.tag{font-size:11px;padding:2px 7px;border-radius:20px;background:#f5f4f0;color:#666;border:0.5px solid #e0ddd6;}
-.entry-note{font-size:13px;color:#666;margin-top:4px;line-height:1.5;}
-.paint-info{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;}
-.paint-row{font-size:12px;color:#666;display:flex;gap:4px;}
-.paint-row .lbl{color:#aaa;flex-shrink:0;}
-.after-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.after-thumb{width:60px;height:60px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;cursor:pointer;}
-.after-add{width:60px;height:60px;border-radius:8px;border:0.5px dashed #bbb;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#f9f8f5;flex-shrink:0;font-size:20px;color:#aaa;}
-.after-add:hover{background:#f0ede8;}
-.color-photo-wrap{position:relative;flex-shrink:0;}
-.color-photo-del{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;padding:0;}
-.color-photo-wrap:hover .color-photo-del{display:flex;}
+.tag{font-size:11px;padding:2px 7px;border-radius:20px;background:var(--tag-bg);color:var(--text2);border:.5px solid var(--border);}
+.entry-note{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.5;}
+.paint-info{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;}
+.paint-row{font-size:12px;color:var(--text2);display:flex;gap:4px;}
+.paint-row .lbl{color:var(--text3);flex-shrink:0;}
+.ph-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.ph-mini{font-size:11px;color:var(--text3);margin-bottom:3px;}
+.add-ph-btn{height:32px;border-radius:7px;border:.5px dashed var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface2);padding:0 10px;font-size:12px;color:var(--text3);gap:4px;white-space:nowrap;}
+.add-ph-btn:hover{border-color:var(--text3);}
+/* TODOS */
+.todo-section-lbl{font-size:11px;font-weight:500;color:var(--text3);margin:1.5rem 0 .5rem;letter-spacing:.06em;text-transform:uppercase;}
 .todo-list{display:flex;flex-direction:column;gap:6px;}
-.todo-item{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;overflow:hidden;}
+.todo-item{background:var(--surface);border:.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.todo-item.done-dim{opacity:.6;}
 .todo-header{display:flex;align-items:center;gap:8px;padding:10px 12px;}
-.drag-handle{color:#bbb;font-size:14px;cursor:grab;flex-shrink:0;user-select:none;}
-.todo-check{width:16px;height:16px;border-radius:4px;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fff;}
-.todo-check.done{background:#e8f5e9;border-color:#81c784;}
-.todo-title{flex:1;font-size:14px;font-weight:500;}
-.todo-title.done{text-decoration:line-through;color:#aaa;}
+.drag-handle{color:var(--text3);font-size:14px;cursor:grab;flex-shrink:0;user-select:none;}
+.chk-box{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--surface);}
+.chk-box.on{background:var(--ok-bg);border-color:var(--ok-bd);}
+.chk-circ{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.chk-circ.on{background:var(--ok-bg);border-color:var(--ok-bd);}
+.chk-sq{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.chk-sq.on{background:var(--ok-bg);border-color:var(--ok-bd);}
+.todo-title{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.todo-title.crossed{text-decoration:line-through;color:var(--text3);}
 .prio{font-size:10px;padding:2px 7px;border-radius:20px;flex-shrink:0;}
 .prio-hög{background:#fff0ee;color:#c0392b;}
+.dark .prio-hög{background:#3a1a1a;color:#ff8a80;}
 .prio-medel{background:#fff8ee;color:#b07d2a;}
+.dark .prio-medel{background:#2e2000;color:#ffcc80;}
 .prio-låg{background:#eef7ee;color:#2e7d32;}
-.expand-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:12px;padding:2px 6px;}
-.todo-body{border-top:0.5px solid #f0ede8;padding:10px 12px;}
-.sub-label{font-size:12px;font-weight:500;color:#888;margin:8px 0 4px;}
-.subtask-row,.shop-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
-.sub-check{width:14px;height:14px;border-radius:3px;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.sub-check.done{background:#e8f5e9;border-color:#81c784;}
-.circle-check{width:14px;height:14px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.circle-check.done{background:#e8f5e9;border-color:#81c784;}
-.sub-text{font-size:13px;flex:1;}
-.sub-text.done{text-decoration:line-through;color:#aaa;}
-.x-btn{background:none;border:none;color:#bbb;cursor:pointer;font-size:16px;padding:0 2px;line-height:1;}
-.x-btn:hover{color:#e74c3c;}
+.dark .prio-låg{background:#1a2e1a;color:#a5d6a7;}
+.exp-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:2px 6px;}
+.todo-body{border-top:.5px solid var(--border);padding:10px 12px;}
+.sub-lbl{font-size:12px;font-weight:500;color:var(--text3);margin:8px 0 4px;}
+.sub-row,.shop-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
+.sub-txt{font-size:13px;flex:1;color:var(--text);}
+.sub-txt.crossed{text-decoration:line-through;color:var(--text3);}
+.shop-link{font-size:11px;color:#378ADD;text-decoration:none;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+.shop-link:hover{text-decoration:underline;}
+.x-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 2px;line-height:1;}
+.x-btn:hover{color:var(--danger);}
 .inline-add{display:flex;gap:6px;margin-top:6px;}
-.inline-add input{flex:1;font-size:13px;padding:6px 10px;border:0.5px solid #ddd;border-radius:7px;background:#fff;outline:none;font-family:inherit;}
-.inline-add input:focus{border-color:#aaa;}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
+.inline-add input{flex:1;font-size:13px;padding:6px 10px;border:.5px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);outline:none;font-family:inherit;}
+.shop-add-row{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.shop-add-row input{font-size:13px;padding:5px 8px;border:.5px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);outline:none;font-family:inherit;min-width:80px;}
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
 .modal-bg.open{display:flex;}
-.modal{background:#fff;border-radius:14px;padding:1.5rem;width:100%;max-width:480px;border:0.5px solid #e0ddd6;margin:auto;}
-.modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem;}
+.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:480px;border:.5px solid var(--border);margin:auto;}
+.modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem;color:var(--text);}
 .form-row{margin-bottom:1rem;}
-.form-row label{display:block;font-size:13px;color:#666;margin-bottom:4px;}
-.form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:0.5px solid #ddd;border-radius:7px;font-size:14px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;}
-.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:#aaa;}
-.form-row textarea{height:68px;resize:none;}
-.form-section-title{font-size:13px;font-weight:500;color:#888;margin:1rem 0 0.5rem;padding-top:0.75rem;border-top:0.5px solid #f0ede8;}
-.color-photo-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.color-photo-preview img{width:60px;height:60px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;}
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;align-items:center;justify-content:center;}
-.lightbox.open{display:flex;}
-.lightbox img{max-width:96vw;max-height:90vh;border-radius:10px;}
-.lightbox-close{position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:22px;cursor:pointer;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;}
-.empty-state{text-align:center;padding:2.5rem 1rem;color:#aaa;font-size:14px;}
-.icon-picker{display:flex;gap:8px;flex-wrap:wrap;}
-.icon-opt{cursor:pointer;font-size:22px;padding:5px;border-radius:6px;border:1.5px solid transparent;}
-.icon-opt.sel{border-color:#1a1a1a;}
-.search-bar{width:100%;padding:8px 12px;border:0.5px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:1rem;outline:none;background:#fff;font-family:inherit;}
-.search-bar:focus{border-color:#aaa;}
+.form-row label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:8px 10px;border:.5px solid var(--border2);border-radius:7px;font-size:14px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);}
+.form-row textarea{height:64px;resize:none;}
+.form-sec{font-size:13px;font-weight:500;color:var(--text3);margin:1rem 0 .5rem;padding-top:.75rem;border-top:.5px solid var(--border);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;flex-wrap:wrap;}
+/* COLORS */
 .colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
-.color-card{background:#fff;border:0.5px solid #e8e6e0;border-radius:10px;overflow:hidden;}
-.color-swatch{height:54px;border-bottom:0.5px solid #e8e6e0;position:relative;}
+.color-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;}
+.color-card:hover{border-color:var(--border2);}
+.color-swatch{height:54px;border-bottom:.5px solid var(--border);position:relative;background:var(--surface2);}
 .color-swatch img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .color-info{padding:8px 10px;}
-.loading{text-align:center;padding:3rem;color:#aaa;font-size:14px;}
-.confirm-modal{background:#fff;border-radius:14px;padding:1.5rem;width:100%;max-width:340px;border:0.5px solid #e0ddd6;margin:auto;}
-.confirm-modal h2{font-size:16px;font-weight:500;margin-bottom:0.75rem;}
-.confirm-modal p{font-size:14px;color:#666;margin-bottom:1.25rem;}
-@media(max-width:600px){
-  .app-title{display:none;}
-  .paint-info{grid-template-columns:1fr;}
-}
+.search-bar{width:100%;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;font-size:14px;margin-bottom:1rem;outline:none;background:var(--surface);color:var(--text);font-family:inherit;}
+.loading{text-align:center;padding:3rem;color:var(--text3);font-size:14px;}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:14px;}
+.icon-picker{display:flex;gap:8px;flex-wrap:wrap;}
+.icon-opt{cursor:pointer;font-size:22px;padding:5px;border-radius:6px;border:1.5px solid transparent;}
+.icon-opt.sel{border-color:var(--accent);}
+.cp-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lb-img{max-width:92vw;max-height:84vh;border-radius:10px;object-fit:contain;display:block;}
+.lb-close{position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:22px;cursor:pointer;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;}
+.lb-arrow{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:none;color:#fff;font-size:26px;cursor:pointer;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;}
+.lb-arrow:hover{background:rgba(255,255,255,.25);}
+#lb-left{left:.75rem;} #lb-right{right:.75rem;}
+.lb-counter{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.55);font-size:13px;pointer-events:none;}
+.lb-dots{position:fixed;bottom:2.75rem;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;}
+.lb-dot.on{background:#fff;}
+@media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}}
 </style>
 </head>
 <body>
@@ -150,17 +164,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <button class="tab" onclick="switchTab('allt')">Allt</button>
     <button class="tab" onclick="switchTab('färger')">Färger</button>
   </div>
-  <div class="sync-dot" id="sync-dot" style="margin-left:12px;" title="Synkad"></div>
+  <div class="topbar-right">
+    <button class="dark-btn" id="dark-btn" onclick="toggleDark()">🌙 <span class="lbl">Mörkt</span></button>
+    <div class="sync-dot" id="sync-dot" title="Synkad"></div>
+  </div>
 </div>
 
 <div class="main">
 
   <div id="tab-todo">
-    <div class="section-hdr">
-      <h2>Att göra-lista</h2>
-      <button class="btn" onclick="openModal('todo-modal')">+ Ny uppgift</button>
-    </div>
-    <div class="todo-list" id="todo-list"><div class="loading">Laddar...</div></div>
+    <div class="sec-hdr"><h2>Att göra-lista</h2><button class="btn" onclick="openModal('todo-modal')">+ Ny uppgift</button></div>
+    <div id="todo-container"><div class="loading">Laddar...</div></div>
   </div>
 
   <div id="tab-rum" style="display:none;">
@@ -175,15 +189,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     </div>
     <div id="room-detail" style="display:none;">
       <button class="back-btn" onclick="showRooms()">← Alla rum</button>
-      <div class="section-hdr">
+      <div class="sec-hdr">
         <h2 id="detail-title"></h2>
         <div style="display:flex;gap:8px;">
-          <button class="btn" onclick="editCurrentRoom()">Redigera rum</button>
-          <button class="btn" onclick="openModal('entry-modal')">+ Åtgärd</button>
+          <button class="btn" onclick="editCurrentRoom()">✏️ Rum</button>
+          <button class="btn" onclick="openEntryModalNew()">+ Åtgärd</button>
         </div>
       </div>
-      <div class="before-section">
-        <div class="before-title">Före-bilder</div>
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:13px;font-weight:500;color:var(--text3);margin-bottom:8px;">Före-bilder</div>
         <div class="photo-grid" id="before-grid"></div>
       </div>
       <div class="divider"></div>
@@ -202,8 +216,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 </div>
 
-<!-- MODALER -->
-
+<!-- ROOM MODAL -->
 <div class="modal-bg" id="room-modal">
   <div class="modal">
     <h2 id="room-modal-title">Nytt rum</h2>
@@ -216,60 +229,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-danger" id="room-delete-btn" onclick="deleteCurrentRoom()" style="margin-right:auto;display:none;">Ta bort rum</button>
+      <button class="btn btn-d" id="room-del-btn" onclick="deleteCurrentRoom()" style="margin-right:auto;display:none;">Ta bort rum</button>
       <button class="btn" onclick="closeModals()">Avbryt</button>
-      <button class="btn btn-primary" onclick="saveRoom()">Spara</button>
+      <button class="btn btn-p" onclick="saveRoom()">Spara</button>
     </div>
   </div>
 </div>
 
+<!-- ENTRY MODAL -->
 <div class="modal-bg" id="entry-modal">
   <div class="modal">
     <h2 id="entry-modal-title">Ny åtgärd</h2>
     <div class="form-row"><label>Rubrik</label><input type="text" id="en-name" placeholder="t.ex. Målad vägg"></div>
     <div class="form-row"><label>Kategori</label>
-      <select id="en-cat">
-        <option>Målning</option><option>Golv</option><option>Tapetsering</option>
-        <option>Belysning</option><option>Möbler</option><option>El & VVS</option><option>Övrigt</option>
-      </select>
+      <select id="en-cat"><option>Målning</option><option>Golv</option><option>Tapetsering</option><option>Belysning</option><option>Möbler</option><option>El & VVS</option><option>Övrigt</option></select>
     </div>
     <div class="form-row"><label>Datum</label><input type="date" id="en-date"></div>
     <div class="form-row"><label>Anteckningar</label><textarea id="en-note" placeholder="Leverantör, kostnad, tips..."></textarea></div>
-
-    <div class="form-section-title">Färginformation</div>
+    <div class="form-sec">Färginformation</div>
     <div class="form-row"><label>Färgkod / färgnamn</label><input type="text" id="en-colorname" placeholder="t.ex. NCS S 0500-N eller Kritvit"></div>
     <div class="form-row"><label>Glans</label>
-      <select id="en-gloss">
-        <option value="">– Välj glans –</option>
-        <option>Matt (5–7%)</option><option>Helmatt (0–3%)</option><option>Sidensmatt (10–15%)</option>
-        <option>Halvmatt (20–30%)</option><option>Halvblank (40–60%)</option><option>Blank (70–85%)</option><option>Helblank (90–100%)</option>
-      </select>
+      <select id="en-gloss"><option value="">– Välj glans –</option><option>Helmatt (0–3%)</option><option>Matt (5–7%)</option><option>Sidensmatt (10–15%)</option><option>Halvmatt (20–30%)</option><option>Halvblank (40–60%)</option><option>Blank (70–85%)</option><option>Helblank (90–100%)</option></select>
     </div>
     <div class="form-row"><label>Tillverkare / produktnamn</label><input type="text" id="en-brand" placeholder="t.ex. Beckers Ideale eller Jotun Lady"></div>
-    <div class="form-row"><label>Övrigt (kulör-nr, spädning, antal lager...)</label><textarea id="en-paintextra" placeholder="t.ex. Kulör 1234, 2 lager, 10% vatten" style="height:56px;"></textarea></div>
+    <div class="form-row"><label>Övrigt (kulör-nr, spädning, lager...)</label><textarea id="en-paintextra" placeholder="Kulör 1234, 2 lager, 10% vatten" style="height:52px;"></textarea></div>
     <div class="form-row">
       <label>Bild på färgprov / burk</label>
-      <div class="color-photo-preview" id="en-colorphotos"></div>
+      <div class="cp-preview" id="en-cp"></div>
       <div style="display:flex;gap:8px;margin-top:8px;">
-        <label class="btn" style="cursor:pointer;">
-          Välj bild
-          <input type="file" accept="image/*" style="display:none;" onchange="addColorPhoto(this)">
-        </label>
-        <label class="btn" style="cursor:pointer;">
-          Ta foto
-          <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addColorPhoto(this)">
-        </label>
+        <label class="btn" style="cursor:pointer;">Välj bild<input type="file" accept="image/*" style="display:none;" onchange="addCP(this)"></label>
+        <label class="btn" style="cursor:pointer;">📷 Foto<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addCP(this)"></label>
       </div>
     </div>
-
     <div class="modal-actions">
-      <button class="btn btn-danger" id="entry-delete-btn" onclick="deleteCurrentEntry()" style="margin-right:auto;display:none;">Ta bort</button>
+      <button class="btn btn-d" id="entry-del-btn" onclick="deleteCurrentEntry()" style="margin-right:auto;display:none;">Ta bort</button>
       <button class="btn" onclick="closeModals()">Avbryt</button>
-      <button class="btn btn-primary" onclick="saveEntry()">Spara</button>
+      <button class="btn btn-p" onclick="saveEntry()">Spara</button>
     </div>
   </div>
 </div>
 
+<!-- TODO MODAL -->
 <div class="modal-bg" id="todo-modal">
   <div class="modal">
     <h2>Ny uppgift</h2>
@@ -280,621 +280,198 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="form-row"><label>Notering</label><textarea id="td-note" placeholder="Detaljer, idéer..."></textarea></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModals()">Avbryt</button>
-      <button class="btn btn-primary" onclick="saveTodo()">Spara</button>
+      <button class="btn btn-p" onclick="saveTodo()">Spara</button>
     </div>
   </div>
 </div>
 
+<!-- CONFIRM MODAL -->
 <div class="modal-bg" id="confirm-modal">
-  <div class="confirm-modal">
-    <h2 id="confirm-title">Bekräfta</h2>
-    <p id="confirm-msg"></p>
+  <div class="modal" style="max-width:340px;">
+    <h2 id="c-title">Bekräfta</h2>
+    <p id="c-msg" style="font-size:14px;color:var(--text2);margin-bottom:1.25rem;"></p>
     <div class="modal-actions">
       <button class="btn" onclick="closeModals()">Avbryt</button>
-      <button class="btn btn-danger" id="confirm-ok-btn">Ta bort</button>
+      <button class="btn btn-d" id="c-ok">Ta bort</button>
     </div>
   </div>
 </div>
 
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
-  <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">×</button>
-  <img id="lb-img" src="" alt="">
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="lbClose()">×</button>
+  <button class="lb-arrow" id="lb-left" onclick="lbNav(-1)">‹</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <button class="lb-arrow" id="lb-right" onclick="lbNav(1)">›</button>
+  <div class="lb-dots" id="lb-dots"></div>
+  <div class="lb-counter" id="lb-counter"></div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,collection,doc,setDoc,updateDoc,deleteDoc,onSnapshot,query,orderBy}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getStorage,ref,uploadString,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBcOie0KQdfTDtLkUfhPfKBI0grPGqRjfg",
-  authDomain: "renovering-8b74f.firebaseapp.com",
-  projectId: "renovering-8b74f",
-  storageBucket: "renovering-8b74f.firebasestorage.app",
-  messagingSenderId: "803734789539",
-  appId: "1:803734789539:web:dbbf3b7c08bc41dcde4e16"
-};
+const cfg={apiKey:"AIzaSyBcOie0KQdfTDtLkUfhPfKBI0grPGqRjfg",authDomain:"renovering-8b74f.firebaseapp.com",projectId:"renovering-8b74f",storageBucket:"renovering-8b74f.firebasestorage.app",messagingSenderId:"803734789539",appId:"1:803734789539:web:dbbf3b7c08bc41dcde4e16"};
+const db=getFirestore(initializeApp(cfg));
+const storage=getStorage();
 
-const fbApp = initializeApp(firebaseConfig);
-const db = getFirestore(fbApp);
-const storage = getStorage(fbApp);
+let rooms=[],entries=[],todos=[];
+let curRoom=null,selIcon='🛋️',dragSrc=null;
+let editingRoomId=null,editingEntryId=null,pendingCPs=[];
 
-let rooms = [], entries = [], todos = [];
-let curRoom = null;
-let selIcon = '🛋️';
-let dragSrc = null;
-let editingRoomId = null;
-let editingEntryId = null;
-let pendingColorPhotos = []; // base64 or URLs staged in entry modal
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+let dark=localStorage.getItem('dark')==='1';
+function applyDark(){document.body.classList.toggle('dark',dark);document.getElementById('dark-btn').innerHTML=dark?'☀️ <span class="lbl">Ljust</span>':'🌙 <span class="lbl">Mörkt</span>';}
+window.toggleDark=()=>{dark=!dark;localStorage.setItem('dark',dark?'1':'0');applyDark();};
+applyDark();
 
-function setSyncing(v) {
-  const d = document.getElementById('sync-dot');
-  d.className = 'sync-dot' + (v ? ' syncing' : '');
-  d.title = v ? 'Sparar...' : 'Synkad med molnet';
+// ── SYNC ──────────────────────────────────────────────────────────────────────
+function syncing(v){const d=document.getElementById('sync-dot');d.className='sync-dot'+(v?' syncing':'');d.title=v?'Sparar...':'Synkad med molnet';}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────────────────────
+let lbPhs=[],lbI=0;
+window.openLB=(photos,idx)=>{lbPhs=[...photos];lbI=idx;drawLB();document.getElementById('lightbox').classList.add('open');};
+window.lbClose=()=>document.getElementById('lightbox').classList.remove('open');
+window.lbNav=d=>{lbI=(lbI+d+lbPhs.length)%lbPhs.length;drawLB();};
+function drawLB(){
+  document.getElementById('lb-img').src=lbPhs[lbI];
+  const many=lbPhs.length>1;
+  document.getElementById('lb-left').style.display=many?'flex':'none';
+  document.getElementById('lb-right').style.display=many?'flex':'none';
+  document.getElementById('lb-counter').textContent=many?`${lbI+1} / ${lbPhs.length}`:'';
+  document.getElementById('lb-dots').innerHTML=many?lbPhs.map((_,i)=>`<div class="lb-dot${i===lbI?' on':''}" onclick="lbNav(${i-lbI})"></div>`).join(''):'';
 }
-
-// ── ICON PICKER ───────────────────────────────────────────────────────────────
-document.querySelectorAll('.icon-opt').forEach(el => {
-  el.onclick = () => {
-    selIcon = el.textContent;
-    document.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('sel'));
-    el.classList.add('sel');
-  };
-});
-
-function setIconPicker(icon) {
-  selIcon = icon;
-  document.querySelectorAll('.icon-opt').forEach(el => {
-    el.classList.toggle('sel', el.textContent === icon);
-  });
-}
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')lbClose();});
+document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='ArrowLeft')lbNav(-1);if(e.key==='ArrowRight')lbNav(1);if(e.key==='Escape')lbClose();});
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-const TABS = ['todo','rum','allt','färger'];
-window.switchTab = t => {
-  TABS.forEach((id,i) => {
-    document.getElementById('tab-'+id).style.display = id===t ? 'block' : 'none';
-    document.querySelectorAll('.tab')[i].className = 'tab' + (id===t ? ' active' : '');
-  });
-  if(t==='allt') renderAll();
-  if(t==='rum') showRooms();
-  if(t==='todo') renderTodos();
-  if(t==='färger') renderColors();
-};
+const TABS=['todo','rum','allt','färger'];
+window.switchTab=t=>{TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});if(t==='allt')renderAll();if(t==='rum')showRooms();if(t==='todo')renderTodos();if(t==='färger')renderColors();};
+window.openModal=id=>document.getElementById(id).classList.add('open');
+window.closeModals=()=>document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('open'));
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals();}));
+function atab(){return document.querySelector('.tab.active')?.textContent.trim();}
 
-window.openModal = id => document.getElementById(id).classList.add('open');
-window.closeModals = () => document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open'));
-document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if(e.target===m) closeModals(); }));
-
-window.showLightbox = src => {
-  document.getElementById('lb-img').src = src;
-  document.getElementById('lightbox').classList.add('open');
-};
+// ── ICONS ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.icon-opt').forEach(el=>{el.onclick=()=>{selIcon=el.textContent;document.querySelectorAll('.icon-opt').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');};});
+function setIcon(ic){selIcon=ic;document.querySelectorAll('.icon-opt').forEach(el=>el.classList.toggle('sel',el.textContent===ic));}
 
 // ── FIRESTORE LISTENERS ───────────────────────────────────────────────────────
-onSnapshot(query(collection(db,'rooms'), orderBy('createdAt')), snap => {
-  rooms = snap.docs.map(d => ({id:d.id,...d.data()}));
-  const t = activeTab();
-  if(t==='Rum') { if(curRoom) { curRoom=rooms.find(r=>r.id===curRoom.id)||null; curRoom?renderBeforeGallery():showRooms(); } else showRooms(); }
-  updateStats();
-});
-onSnapshot(query(collection(db,'entries'), orderBy('date','desc')), snap => {
-  entries = snap.docs.map(d => ({id:d.id,...d.data()}));
-  const t = activeTab();
-  if(t==='Rum' && curRoom) renderEntries();
-  if(t==='Allt') renderAll();
-  updateStats();
-});
-onSnapshot(query(collection(db,'todos'), orderBy('order')), snap => {
-  todos = snap.docs.map(d => ({id:d.id,...d.data()}));
-  if(activeTab()==='Att göra-lista') renderTodos();
-});
+onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{rooms=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Rum'){if(curRoom){curRoom=rooms.find(r=>r.id===curRoom.id)||null;curRoom?renderBG():showRooms();}else showRooms();}updateStats();});
+onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{entries=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Rum'&&curRoom)renderEntries();if(atab()==='Allt')renderAll();updateStats();});
+onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{todos=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Att göra-lista')renderTodos();});
 
-function activeTab() { return document.querySelector('.tab.active')?.textContent.trim(); }
+function updateStats(){document.getElementById('s-rooms').textContent=rooms.length;document.getElementById('s-entries').textContent=entries.length;document.getElementById('s-colors').textContent=new Set(entries.filter(e=>e.colorname).map(e=>e.colorname)).size;}
 
-function updateStats() {
-  document.getElementById('s-rooms').textContent = rooms.length;
-  document.getElementById('s-entries').textContent = entries.length;
-  const cols = new Set(entries.filter(e=>e.colorname).map(e=>e.colorname));
-  document.getElementById('s-colors').textContent = cols.size;
-}
+// ── CHECK SVG ─────────────────────────────────────────────────────────────────
+const chk=()=>`<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="var(--ok-txt)" stroke-width="1.8" fill="none"/></svg>`;
 
 // ── ROOMS ─────────────────────────────────────────────────────────────────────
-window.showRooms = () => {
-  document.getElementById('rooms-view').style.display = '';
-  document.getElementById('room-detail').style.display = 'none';
-  curRoom = null;
-  renderRooms();
-};
+window.showRooms=()=>{document.getElementById('rooms-view').style.display='';document.getElementById('room-detail').style.display='none';curRoom=null;renderRooms();};
+function renderRooms(){const g=document.getElementById('rooms-grid');if(!rooms.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1">Inga rum tillagda ännu</div>';return;}g.innerHTML=rooms.map(r=>{const c=entries.filter(e=>e.roomId===r.id).length,b=(r.before||[]).length;return`<div class="room-card" onclick="showRoom('${r.id}')"><div class="room-card-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="editRoom('${r.id}')">✏️</button></div><div class="room-icon">${r.icon}</div><div class="room-name">${r.name}</div><div class="room-meta">${c} åtgärd${c!==1?'er':''}${b?' · '+b+' förebild'+(b!==1?'er':''):''}</div></div>`;}).join('');}
+window.showRoom=id=>{curRoom=rooms.find(r=>r.id===id);if(!curRoom)return;document.getElementById('rooms-view').style.display='none';document.getElementById('room-detail').style.display='';document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;renderBG();renderEntries();};
+window.editRoom=id=>{const r=rooms.find(x=>x.id===id);if(!r)return;editingRoomId=id;document.getElementById('room-modal-title').textContent='Redigera rum';document.getElementById('room-name-in').value=r.name;document.getElementById('room-del-btn').style.display='block';setIcon(r.icon);openModal('room-modal');};
+window.editCurrentRoom=()=>editRoom(curRoom.id);
+window.saveRoom=async()=>{const name=document.getElementById('room-name-in').value.trim();if(!name)return;syncing(true);if(editingRoomId){await updateDoc(doc(db,'rooms',editingRoomId),{name,icon:selIcon});if(curRoom?.id===editingRoomId){curRoom={...curRoom,name,icon:selIcon};document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;}}else{await setDoc(doc(db,'rooms','room_'+Date.now()),{name,icon:selIcon,before:[],createdAt:Date.now()});}document.getElementById('room-name-in').value='';document.getElementById('room-del-btn').style.display='none';editingRoomId=null;document.getElementById('room-modal-title').textContent='Nytt rum';syncing(false);closeModals();};
+window.deleteCurrentRoom=()=>{const r=rooms.find(x=>x.id===editingRoomId);if(!r)return;confirm2(`Ta bort "${r.name}"?`,'Rummet och alla åtgärder tas bort permanent.',async()=>{syncing(true);closeModals();await Promise.all(entries.filter(e=>e.roomId===r.id).map(e=>deleteDoc(doc(db,'entries',e.id))));await deleteDoc(doc(db,'rooms',r.id));syncing(false);showRooms();});};
 
-function renderRooms() {
-  const g = document.getElementById('rooms-grid');
-  if(!rooms.length) { g.innerHTML = '<div class="empty-state" style="grid-column:1/-1">Inga rum tillagda ännu</div>'; return; }
-  g.innerHTML = rooms.map(r => {
-    const c = entries.filter(e=>e.roomId===r.id).length;
-    const b = (r.before||[]).length;
-    return `<div class="room-card" onclick="showRoom('${r.id}')">
-      <div class="room-card-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn" title="Redigera" onclick="editRoom('${r.id}')">✏️</button>
-      </div>
-      <div class="room-icon">${r.icon}</div>
-      <div class="room-name">${r.name}</div>
-      <div class="room-meta">${c} åtgärd${c!==1?'er':''}${b?' · '+b+' förebild'+(b!==1?'er':''):''}</div>
-    </div>`;
-  }).join('');
-}
-
-window.showRoom = id => {
-  curRoom = rooms.find(r=>r.id===id);
-  if(!curRoom) return;
-  document.getElementById('rooms-view').style.display = 'none';
-  document.getElementById('room-detail').style.display = '';
-  document.getElementById('detail-title').textContent = curRoom.icon + ' ' + curRoom.name;
-  renderBeforeGallery();
-  renderEntries();
-};
-
-window.editRoom = id => {
-  const r = rooms.find(x=>x.id===id);
-  if(!r) return;
-  editingRoomId = id;
-  document.getElementById('room-modal-title').textContent = 'Redigera rum';
-  document.getElementById('room-name-in').value = r.name;
-  document.getElementById('room-delete-btn').style.display = 'block';
-  setIconPicker(r.icon);
-  openModal('room-modal');
-};
-
-window.editCurrentRoom = () => editRoom(curRoom.id);
-
-window.saveRoom = async () => {
-  const name = document.getElementById('room-name-in').value.trim();
-  if(!name) return;
-  setSyncing(true);
-  if(editingRoomId) {
-    await updateDoc(doc(db,'rooms',editingRoomId), {name, icon:selIcon});
-    if(curRoom?.id === editingRoomId) {
-      curRoom = {...curRoom, name, icon:selIcon};
-      document.getElementById('detail-title').textContent = curRoom.icon + ' ' + curRoom.name;
-    }
-  } else {
-    const id = 'room_'+Date.now();
-    await setDoc(doc(db,'rooms',id), {name, icon:selIcon, before:[], createdAt:Date.now()});
-  }
-  document.getElementById('room-name-in').value = '';
-  document.getElementById('room-delete-btn').style.display = 'none';
-  editingRoomId = null;
-  document.getElementById('room-modal-title').textContent = 'Nytt rum';
-  setSyncing(false);
-  closeModals();
-};
-
-window.deleteCurrentRoom = () => {
-  const r = rooms.find(x=>x.id===editingRoomId); if(!r) return;
-  showConfirm(`Ta bort "${r.name}"?`, 'Rummet och alla dess åtgärder tas bort permanent.', async () => {
-    setSyncing(true);
-    closeModals();
-    const roomEntries = entries.filter(e=>e.roomId===r.id);
-    await Promise.all(roomEntries.map(e => deleteDoc(doc(db,'entries',e.id))));
-    await deleteDoc(doc(db,'rooms',r.id));
-    setSyncing(false);
-    showRooms();
-  });
-};
-
-// ── BEFORE PHOTOS ─────────────────────────────────────────────────────────────
-function renderBeforeGallery() {
-  const grid = document.getElementById('before-grid');
-  const photos = curRoom.before || [];
-  const thumbs = photos.map((p,pi) => `
-    <div class="photo-wrap">
-      <img class="photo-thumb" src="${p}" onclick="showLightbox('${p}')">
-      <button class="photo-del" onclick="deleteBeforePhoto(${pi})">×</button>
-    </div>`).join('');
-  const addBtn = `<label class="photo-add-box" title="Lägg till före-bild">
-    <span class="plus">+</span><span class="lbl">Före-bild</span>
-    <input type="file" accept="image/*" style="display:none;" onchange="addBeforePhoto(this)">
-  </label>`;
-  grid.innerHTML = thumbs + addBtn;
-}
-
-window.addBeforePhoto = input => {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async e => {
-    setSyncing(true);
-    let url = e.target.result;
-    try {
-      const r = ref(storage, `before/${curRoom.id}/${Date.now()}`);
-      await uploadString(r, e.target.result, 'data_url');
-      url = await getDownloadURL(r);
-    } catch(_) {}
-    const before = [...(curRoom.before||[]), url];
-    await updateDoc(doc(db,'rooms',curRoom.id), {before});
-    setSyncing(false);
-  };
-  reader.readAsDataURL(file);
-};
-
-window.deleteBeforePhoto = async pi => {
-  const before = [...(curRoom.before||[])];
-  before.splice(pi,1);
-  setSyncing(true);
-  await updateDoc(doc(db,'rooms',curRoom.id), {before});
-  setSyncing(false);
-};
+// ── BEFORE GALLERY ────────────────────────────────────────────────────────────
+function renderBG(){const phs=curRoom.before||[];document.getElementById('before-grid').innerHTML=phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLB(${JSON.stringify(phs)},${pi})"><button class="pd" onclick="delBP(${pi})">×</button></div>`).join('')+`<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;}
+window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
+window.delBP=async pi=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);};
 
 // ── ENTRIES ───────────────────────────────────────────────────────────────────
-function entryCardHTML(e, showRoomTag) {
-  const room = rooms.find(r=>r.id===e.roomId);
-  const afterPhotos = (e.photos||[]).map((p,pi) =>
-    `<div class="color-photo-wrap">
-      <img class="after-thumb" src="${p}" onclick="showLightbox('${p}')">
-      <button class="color-photo-del" onclick="deleteEntryPhoto('${e.id}',${pi})">×</button>
-    </div>`).join('');
-  const addPhotoBtn = `<div style="display:flex;gap:6px;flex-wrap:wrap;">
-    <label class="after-add" title="Välj bild" style="cursor:pointer;font-size:13px;color:#aaa;width:auto;padding:0 10px;gap:4px;display:flex;align-items:center;">
-      + Bild<input type="file" accept="image/*" style="display:none;" onchange="addEntryPhoto(this,'${e.id}')">
-    </label>
-    <label class="after-add" title="Ta foto" style="cursor:pointer;font-size:13px;color:#aaa;width:auto;padding:0 10px;gap:4px;display:flex;align-items:center;">
-      📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addEntryPhoto(this,'${e.id}')">
-    </label>
-  </div>`;
-
-  const paintRows = [
-    e.colorname ? `<div class="paint-row"><span class="lbl">Färg:</span>${e.colorname}</div>` : '',
-    e.gloss ? `<div class="paint-row"><span class="lbl">Glans:</span>${e.gloss}</div>` : '',
-    e.brand ? `<div class="paint-row"><span class="lbl">Produkt:</span>${e.brand}</div>` : '',
-    e.paintextra ? `<div class="paint-row"><span class="lbl">Övrigt:</span>${e.paintextra}</div>` : '',
-  ].filter(Boolean).join('');
-
-  const colorPhotos = (e.colorphotos||[]).map((p,pi) =>
-    `<div class="color-photo-wrap">
-      <img class="after-thumb" src="${p}" onclick="showLightbox('${p}')">
-      <button class="color-photo-del" onclick="deleteColorPhoto('${e.id}',${pi})">×</button>
-    </div>`).join('');
-
-  return `<div class="entry-card">
-    <div class="entry-header">
-      <div class="entry-header-left">
-        <div class="entry-body">
-          <div class="entry-row">
-            <span class="entry-name">${e.name}</span>
-            <span class="entry-date">${e.date||''}</span>
-          </div>
-          <div class="tags">
-            ${showRoomTag&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}
-            <span class="tag">${e.category}</span>
-            ${e.colorname?`<span class="tag">${e.colorname}</span>`:''}
-          </div>
-          ${e.note?`<div class="entry-note">${e.note}</div>`:''}
-          ${paintRows?`<div class="paint-info">${paintRows}</div>`:''}
-          ${colorPhotos?`<div style="margin-top:8px;"><div style="font-size:11px;color:#aaa;margin-bottom:4px;">Färgbilder</div><div class="after-photos">${colorPhotos}</div></div>`:''}
-          <div style="margin-top:8px;"><div style="font-size:11px;color:#aaa;margin-bottom:4px;">Bilder</div>
-          <div class="after-photos">${afterPhotos}${addPhotoBtn}</div></div>
-        </div>
-      </div>
-      <div class="entry-actions">
-        <button class="icon-btn" title="Redigera" onclick="editEntry('${e.id}')">✏️</button>
-        <button class="icon-btn" title="Ta bort" onclick="confirmDeleteEntry('${e.id}')">🗑️</button>
-      </div>
-    </div>
-  </div>`;
+function entryHTML(e,showRoom){
+  const room=rooms.find(r=>r.id===e.roomId);
+  const allPhs=[...(e.colorphotos||[]),...(e.photos||[])];
+  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(allPhs)},${pi})"><button class="pd" onclick="delCP('${e.id}',${pi})">×</button></div>`).join('');
+  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(allPhs)},${(e.colorphotos||[]).length+pi})"><button class="pd" onclick="delAP('${e.id}',${pi})">×</button></div>`).join('');
+  const addH=`<label class="add-ph-btn" style="cursor:pointer;">+ Bild<input type="file" accept="image/*" style="display:none;" onchange="addAP(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addAP(this,'${e.id}')"></label>`;
+  const pr=[e.colorname?`<div class="paint-row"><span class="lbl">Färg:</span>${e.colorname}</div>`:'',e.gloss?`<div class="paint-row"><span class="lbl">Glans:</span>${e.gloss}</div>`:'',e.brand?`<div class="paint-row"><span class="lbl">Produkt:</span>${e.brand}</div>`:'',e.paintextra?`<div class="paint-row"><span class="lbl">Övrigt:</span>${e.paintextra}</div>`:''].filter(Boolean).join('');
+  return`<div class="entry-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><span class="entry-name">${e.name}</span><span class="entry-date">${e.date||''}</span></div><div class="tags">${showRoom&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}<span class="tag">${e.category}</span>${e.colorname?`<span class="tag">${e.colorname}</span>`:''}</div>${e.note?`<div class="entry-note">${e.note}</div>`:''}${pr?`<div class="paint-info">${pr}</div>`:''}${cpH?`<div style="margin-top:8px;"><div class="ph-mini">Färgbilder</div><div class="ph-row">${cpH}</div></div>`:''}
+<div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${afH}${addH}</div></div></div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
 }
+function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';}
+function renderAll(){const q=(document.getElementById('search-input').value||'').toLowerCase();const l=document.getElementById('all-list');let es=entries.slice();if(q)es=es.filter(e=>(e.name+e.colorname+e.note+e.category+e.brand).toLowerCase().includes(q));l.innerHTML=es.length?es.map(e=>entryHTML(e,true)).join(''):'<div class="empty-state">Inga åtgärder'+(q?' matchar':'')+'</div>';}
+function renderColors(){const g=document.getElementById('colors-grid');const ces=entries.filter(e=>e.colorname);if(!ces.length){g.innerHTML='<div class="empty-state">Inga färger sparade</div>';return;}const seen={};ces.forEach(e=>{if(!seen[e.colorname])seen[e.colorname]=e;});g.innerHTML=Object.entries(seen).map(([n,e])=>{const room=rooms.find(r=>r.id===e.roomId);const cp=e.colorphotos||[];return`<div class="color-card" onclick="editEntry('${e.id}')"><div class="color-swatch">${cp.length?`<img src="${cp[0]}">`:''}
+</div><div class="color-info"><div style="font-size:12px;font-weight:500;color:var(--text);">${n}</div>${e.gloss?`<div style="font-size:11px;color:var(--text2);">${e.gloss}</div>`:''} ${e.brand?`<div style="font-size:11px;color:var(--text2);">${e.brand}</div>`:''} ${room?`<div style="font-size:11px;color:var(--text3);">${room.icon} ${room.name}</div>`:''}</div></div>`;}).join('');}
 
-function renderEntries() {
-  const list = document.getElementById('entries-list');
-  const es = entries.filter(e=>e.roomId===curRoom.id);
-  list.innerHTML = es.length ? es.map(e=>entryCardHTML(e,false)).join('') : '<div class="empty-state">Inga åtgärder ännu</div>';
-}
-
-function renderAll() {
-  const q = (document.getElementById('search-input').value||'').toLowerCase();
-  const list = document.getElementById('all-list');
-  let es = entries.slice();
-  if(q) es = es.filter(e=>(e.name+e.colorname+e.note+e.category+e.brand).toLowerCase().includes(q));
-  list.innerHTML = es.length ? es.map(e=>entryCardHTML(e,true)).join('') : '<div class="empty-state">Inga åtgärder'+(q?' matchar':'')+'</div>';
-}
-
-function renderColors() {
-  const g = document.getElementById('colors-grid');
-  const ces = entries.filter(e=>e.colorname);
-  if(!ces.length) { g.innerHTML = '<div class="empty-state">Inga färgkoder sparade ännu</div>'; return; }
-  const seen = {};
-  ces.forEach(e => { if(!seen[e.colorname]) seen[e.colorname]=e; });
-  g.innerHTML = Object.entries(seen).map(([name,e]) => {
-    const room = rooms.find(r=>r.id===e.roomId);
-    const cp = (e.colorphotos||[]);
-    const swatchContent = cp.length ? `<img src="${cp[0]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">` : '';
-    return `<div class="color-card" onclick="editEntry('${e.id}')">
-      <div class="color-swatch">${swatchContent}</div>
-      <div class="color-info">
-        <div style="font-size:12px;font-weight:500;">${name}</div>
-        ${e.gloss?`<div style="font-size:11px;color:#888;">${e.gloss}</div>`:''}
-        ${e.brand?`<div style="font-size:11px;color:#888;">${e.brand}</div>`:''}
-        ${room?`<div style="font-size:11px;color:#aaa;">${room.icon} ${room.name}</div>`:''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// Open entry modal for new entry
-window.openEntryModalNew = () => {
-  editingEntryId = null;
-  pendingColorPhotos = [];
-  document.getElementById('entry-modal-title').textContent = 'Ny åtgärd';
-  document.getElementById('en-name').value = '';
-  document.getElementById('en-cat').value = 'Målning';
-  document.getElementById('en-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('en-note').value = '';
-  document.getElementById('en-colorname').value = '';
-  document.getElementById('en-gloss').value = '';
-  document.getElementById('en-brand').value = '';
-  document.getElementById('en-paintextra').value = '';
-  document.getElementById('en-colorphotos').innerHTML = '';
-  document.getElementById('entry-delete-btn').style.display = 'none';
-  openModal('entry-modal');
-};
-
-// Override the + Åtgärd button
-document.querySelector('[onclick="openModal(\'entry-modal\')"]')?.setAttribute('onclick', 'openEntryModalNew()');
-
-window.editEntry = id => {
-  const e = entries.find(x=>x.id===id); if(!e) return;
-  editingEntryId = id;
-  pendingColorPhotos = [...(e.colorphotos||[])];
-  document.getElementById('entry-modal-title').textContent = 'Redigera åtgärd';
-  document.getElementById('en-name').value = e.name||'';
-  document.getElementById('en-cat').value = e.category||'Målning';
-  document.getElementById('en-date').value = e.date||'';
-  document.getElementById('en-note').value = e.note||'';
-  document.getElementById('en-colorname').value = e.colorname||'';
-  document.getElementById('en-gloss').value = e.gloss||'';
-  document.getElementById('en-brand').value = e.brand||'';
-  document.getElementById('en-paintextra').value = e.paintextra||'';
-  document.getElementById('entry-delete-btn').style.display = 'block';
-  renderPendingColorPhotos();
-  openModal('entry-modal');
-};
-
-window.confirmDeleteEntry = id => {
-  const e = entries.find(x=>x.id===id); if(!e) return;
-  showConfirm(`Ta bort "${e.name}"?`, 'Åtgärden tas bort permanent.', async () => {
-    setSyncing(true);
-    closeModals();
-    await deleteDoc(doc(db,'entries',id));
-    setSyncing(false);
-  });
-};
-
-window.deleteCurrentEntry = () => {
-  if(!editingEntryId) return;
-  const e = entries.find(x=>x.id===editingEntryId); if(!e) return;
-  showConfirm(`Ta bort "${e.name}"?`, 'Åtgärden tas bort permanent.', async () => {
-    setSyncing(true);
-    closeModals();
-    await deleteDoc(doc(db,'entries',editingEntryId));
-    setSyncing(false);
-  });
-};
-
-window.saveEntry = async () => {
-  const name = document.getElementById('en-name').value.trim();
-  if(!name) return;
-  setSyncing(true);
-
-  // Upload any new color photos
-  const finalColorPhotos = [];
-  for(const p of pendingColorPhotos) {
-    if(p.startsWith('data:')) {
-      try {
-        const r = ref(storage, `colorphotos/${Date.now()}_${Math.random().toString(36).slice(2)}`);
-        await uploadString(r, p, 'data_url');
-        finalColorPhotos.push(await getDownloadURL(r));
-      } catch(_) { finalColorPhotos.push(p); }
-    } else {
-      finalColorPhotos.push(p);
-    }
-  }
-
-  const data = {
-    name,
-    category: document.getElementById('en-cat').value,
-    date: document.getElementById('en-date').value,
-    note: document.getElementById('en-note').value.trim(),
-    colorname: document.getElementById('en-colorname').value.trim(),
-    gloss: document.getElementById('en-gloss').value,
-    brand: document.getElementById('en-brand').value.trim(),
-    paintextra: document.getElementById('en-paintextra').value.trim(),
-    colorphotos: finalColorPhotos,
-  };
-
-  if(editingEntryId) {
-    await updateDoc(doc(db,'entries',editingEntryId), data);
-  } else {
-    const room = curRoom || rooms[0]; if(!room) { setSyncing(false); return; }
-    const id = 'entry_'+Date.now();
-    await setDoc(doc(db,'entries',id), {...data, roomId:room.id, photos:[], createdAt:Date.now()});
-  }
-  editingEntryId = null;
-  pendingColorPhotos = [];
-  setSyncing(false);
-  closeModals();
-};
-
-// Color photos in modal
-window.addColorPhoto = input => {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    pendingColorPhotos.push(e.target.result);
-    renderPendingColorPhotos();
-  };
-  reader.readAsDataURL(file);
-};
-
-function renderPendingColorPhotos() {
-  const c = document.getElementById('en-colorphotos');
-  c.innerHTML = pendingColorPhotos.map((p,i) =>
-    `<div style="position:relative;flex-shrink:0;">
-      <img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:0.5px solid #e0ddd6;">
-      <button onclick="removePendingColorPhoto(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button>
-    </div>`).join('');
-}
-
-window.removePendingColorPhoto = i => {
-  pendingColorPhotos.splice(i,1);
-  renderPendingColorPhotos();
-};
-
-window.addEntryPhoto = (input, entryId) => {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async e => {
-    setSyncing(true);
-    const entry = entries.find(x=>x.id===entryId); if(!entry) { setSyncing(false); return; }
-    let url = e.target.result;
-    try {
-      const r = ref(storage, `entries/${entryId}/${Date.now()}`);
-      await uploadString(r, e.target.result, 'data_url');
-      url = await getDownloadURL(r);
-    } catch(_) {}
-    await updateDoc(doc(db,'entries',entryId), {photos:[...(entry.photos||[]),url]});
-    setSyncing(false);
-  };
-  reader.readAsDataURL(file);
-};
-
-window.deleteEntryPhoto = async (entryId, pi) => {
-  const entry = entries.find(x=>x.id===entryId); if(!entry) return;
-  const photos = [...(entry.photos||[])];
-  photos.splice(pi,1);
-  setSyncing(true);
-  await updateDoc(doc(db,'entries',entryId), {photos});
-  setSyncing(false);
-};
-
-window.deleteColorPhoto = async (entryId, pi) => {
-  const entry = entries.find(x=>x.id===entryId); if(!entry) return;
-  const colorphotos = [...(entry.colorphotos||[])];
-  colorphotos.splice(pi,1);
-  setSyncing(true);
-  await updateDoc(doc(db,'entries',entryId), {colorphotos});
-  setSyncing(false);
-};
+window.openEntryModalNew=()=>{editingEntryId=null;pendingCPs=[];document.getElementById('entry-modal-title').textContent='Ny åtgärd';['en-name','en-colorname','en-brand','en-paintextra'].forEach(id=>document.getElementById(id).value='');document.getElementById('en-cat').value='Målning';document.getElementById('en-date').value=new Date().toISOString().split('T')[0];document.getElementById('en-note').value='';document.getElementById('en-gloss').value='';document.getElementById('en-cp').innerHTML='';document.getElementById('entry-del-btn').style.display='none';openModal('entry-modal');};
+window.editEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;editingEntryId=id;pendingCPs=[...(e.colorphotos||[])];document.getElementById('entry-modal-title').textContent='Redigera åtgärd';document.getElementById('en-name').value=e.name||'';document.getElementById('en-cat').value=e.category||'Målning';document.getElementById('en-date').value=e.date||'';document.getElementById('en-note').value=e.note||'';document.getElementById('en-colorname').value=e.colorname||'';document.getElementById('en-gloss').value=e.gloss||'';document.getElementById('en-brand').value=e.brand||'';document.getElementById('en-paintextra').value=e.paintextra||'';document.getElementById('entry-del-btn').style.display='block';renderCPs();openModal('entry-modal');};
+window.confirmDelEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;confirm2(`Ta bort "${e.name}"?`,'Åtgärden tas bort permanent.',async()=>{syncing(true);closeModals();await deleteDoc(doc(db,'entries',id));syncing(false);});};
+window.deleteCurrentEntry=()=>{if(editingEntryId)confirmDelEntry(editingEntryId);};
+window.saveEntry=async()=>{const name=document.getElementById('en-name').value.trim();if(!name)return;syncing(true);const fCPs=[];for(const p of pendingCPs){if(p.startsWith('data:')){try{const r=ref(storage,`cp/${Date.now()}_${Math.random().toString(36).slice(2)}`);await uploadString(r,p,'data_url');fCPs.push(await getDownloadURL(r));}catch(_){fCPs.push(p);}}else{fCPs.push(p);}}const data={name,category:document.getElementById('en-cat').value,date:document.getElementById('en-date').value,note:document.getElementById('en-note').value.trim(),colorname:document.getElementById('en-colorname').value.trim(),gloss:document.getElementById('en-gloss').value,brand:document.getElementById('en-brand').value.trim(),paintextra:document.getElementById('en-paintextra').value.trim(),colorphotos:fCPs};if(editingEntryId){await updateDoc(doc(db,'entries',editingEntryId),data);}else{const room=curRoom||rooms[0];if(!room){syncing(false);return;}await setDoc(doc(db,'entries','entry_'+Date.now()),{...data,roomId:room.id,photos:[],createdAt:Date.now()});}editingEntryId=null;pendingCPs=[];syncing(false);closeModals();};
+window.addCP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingCPs.push(e.target.result);renderCPs();};r.readAsDataURL(f);};
+function renderCPs(){document.getElementById('en-cp').innerHTML=pendingCPs.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removeCP(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');}
+window.removeCP=i=>{pendingCPs.splice(i,1);renderCPs();};
+window.addAP=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`entries/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{photos:[...(entry.photos||[]),u]});syncing(false);};r.readAsDataURL(f);};
+window.delAP=async(eid,pi)=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.photos||[])];p.splice(pi,1);syncing(true);await updateDoc(doc(db,'entries',eid),{photos:p});syncing(false);};
+window.delCP=async(eid,pi)=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorphotos||[])];p.splice(pi,1);syncing(true);await updateDoc(doc(db,'entries',eid),{colorphotos:p});syncing(false);};
 
 // ── TODOS ─────────────────────────────────────────────────────────────────────
-function chk() { return '<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#388e3c" stroke-width="1.8" fill="none"/></svg>'; }
-
-function todoHTML(t,i) {
-  const subs = (t.subtasks||[]).map((s,si)=>`
-    <div class="subtask-row">
-      <div class="sub-check${s.done?' done':''}" onclick="toggleSub('${t.id}',${si})">${s.done?chk():''}</div>
-      <span class="sub-text${s.done?' done':''}">${s.label}</span>
-      <button class="x-btn" onclick="delSub('${t.id}',${si})">×</button>
-    </div>`).join('');
-  const shops = (t.shopping||[]).map((s,si)=>`
-    <div class="shop-row">
-      <div class="circle-check${s.done?' done':''}" onclick="toggleShop('${t.id}',${si})">${s.done?chk():''}</div>
-      <span class="sub-text${s.done?' done':''}">${s.label}</span>
-      <button class="x-btn" onclick="delShopItem('${t.id}',${si})">×</button>
-    </div>`).join('');
-  return `<div class="todo-item" draggable="true" data-id="${t.id}" data-idx="${i}">
+function todoHTML(t,i){
+  const subs=(t.subtasks||[]).map((s,si)=>`<div class="sub-row"><div class="chk-sq${s.done?' on':''}" onclick="togSub('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}">${s.label}</span><button class="x-btn" onclick="delSub('${t.id}',${si})">×</button></div>`).join('');
+  const shops=(t.shopping||[]).map((s,si)=>`<div class="shop-row"><div class="chk-circ${s.done?' on':''}" onclick="togShop('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}" style="flex:1;">${s.label}</span>${s.url?`<a class="shop-link" href="${s.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗</a>`:''}<button class="x-btn" onclick="delShop('${t.id}',${si})">×</button></div>`).join('');
+  return`<div class="todo-item${t.done?' done-dim':''}" draggable="true" data-id="${t.id}" data-idx="${i}">
     <div class="todo-header">
       <span class="drag-handle">⠿</span>
-      <div class="todo-check${t.done?' done':''}" onclick="toggleTodo('${t.id}')">${t.done?chk():''}</div>
-      <span class="todo-title${t.done?' done':''}">${t.title}</span>
+      <div class="chk-box${t.done?' on':''}" onclick="togTodo('${t.id}')">${t.done?chk():''}</div>
+      <span class="todo-title${t.done?' crossed':''}">${t.title}</span>
       <span class="prio prio-${t.prio}">${t.prio}</span>
-      <button class="icon-btn" onclick="confirmDeleteTodo('${t.id}')" title="Ta bort">🗑️</button>
-      <button class="expand-btn" onclick="toggleOpen('${t.id}')">${t.open?'▲':'▼'}</button>
+      <button class="icon-btn" onclick="confirmDelTodo('${t.id}')">🗑️</button>
+      <button class="exp-btn" onclick="togOpen('${t.id}')">${t.open?'▲':'▼'}</button>
     </div>
     ${t.open?`<div class="todo-body">
       ${t.note?`<div class="entry-note" style="margin-bottom:8px;">${t.note}</div>`:''}
-      <div class="sub-label">Deluppgifter</div>${subs}
-      <div class="inline-add">
-        <input type="text" id="sub-in-${i}" placeholder="Ny deluppgift...">
-        <button class="btn" onclick="addSub('${t.id}',${i})">+</button>
-      </div>
-      <div class="sub-label" style="margin-top:12px;">Inköpslista</div>${shops}
-      <div class="inline-add">
-        <input type="text" id="shop-in-${i}" placeholder="Lägg till vara...">
-        <button class="btn" onclick="addShopItem('${t.id}',${i})">+</button>
+      <div class="sub-lbl">Deluppgifter</div>${subs}
+      <div class="inline-add"><input type="text" id="si-${i}" placeholder="Ny deluppgift..."><button class="btn" onclick="addSub('${t.id}',${i})">+</button></div>
+      <div class="sub-lbl" style="margin-top:12px;">Inköpslista</div>${shops}
+      <div class="shop-add-row">
+        <input type="text" id="sh-${i}" placeholder="Vara..." style="flex:1;">
+        <input type="text" id="su-${i}" placeholder="Länk (valfritt)..." style="flex:2;">
+        <button class="btn" onclick="addShop('${t.id}',${i})">+</button>
       </div>
     </div>`:''}
   </div>`;
 }
 
-function renderTodos() {
-  const list = document.getElementById('todo-list');
-  if(!todos.length) { list.innerHTML = '<div class="empty-state">Inga uppgifter ännu</div>'; return; }
-  list.innerHTML = todos.map((t,i)=>todoHTML(t,i)).join('');
+function renderTodos(){
+  const c=document.getElementById('todo-container');
+  const active=todos.filter(t=>!t.done),done=todos.filter(t=>t.done);
+  if(!active.length&&!done.length){c.innerHTML='<div class="empty-state">Inga uppgifter ännu</div>';return;}
+  let h='';
+  if(active.length)h+=`<div class="todo-list">${active.map((t,i)=>todoHTML(t,i)).join('')}</div>`;
+  if(done.length)h+=`<div class="todo-section-lbl"${active.length?' style="margin-top:1.5rem;"':''}>✓ Klart (${done.length})</div><div class="todo-list">${done.map((t,i)=>todoHTML(t,active.length+i)).join('')}</div>`;
+  c.innerHTML=h;
   setupDrag();
 }
 
-function setupDrag() {
-  document.querySelectorAll('.todo-item').forEach(el => {
-    el.addEventListener('dragstart', () => { dragSrc=parseInt(el.dataset.idx); el.classList.add('dragging'); el.style.opacity='0.4'; });
-    el.addEventListener('dragend', () => { el.style.opacity='1'; document.querySelectorAll('.todo-item').forEach(x=>x.style.borderTop=''); });
-    el.addEventListener('dragover', e => { e.preventDefault(); el.style.borderTop='2px solid #378ADD'; });
-    el.addEventListener('dragleave', () => el.style.borderTop='');
-    el.addEventListener('drop', async e => {
-      e.preventDefault(); el.style.borderTop='';
-      const tgt = parseInt(el.dataset.idx);
-      if(dragSrc===null||dragSrc===tgt) return;
-      const arr = [...todos];
-      const [moved] = arr.splice(dragSrc,1);
-      arr.splice(tgt,0,moved);
-      setSyncing(true);
-      await Promise.all(arr.map((t,i) => updateDoc(doc(db,'todos',t.id),{order:i})));
-      setSyncing(false);
-    });
+function setupDrag(){
+  document.querySelectorAll('.todo-item').forEach(el=>{
+    el.addEventListener('dragstart',()=>{dragSrc=parseInt(el.dataset.idx);el.style.opacity='.4';});
+    el.addEventListener('dragend',()=>{el.style.opacity='1';document.querySelectorAll('.todo-item').forEach(x=>x.style.borderTop='');});
+    el.addEventListener('dragover',e=>{e.preventDefault();el.style.borderTop='2px solid #378ADD';});
+    el.addEventListener('dragleave',()=>el.style.borderTop='');
+    el.addEventListener('drop',async e=>{e.preventDefault();el.style.borderTop='';const tgt=parseInt(el.dataset.idx);if(dragSrc===null||dragSrc===tgt)return;const arr=[...todos];const[m]=arr.splice(dragSrc,1);arr.splice(tgt,0,m);syncing(true);await Promise.all(arr.map((t,i)=>updateDoc(doc(db,'todos',t.id),{order:i})));syncing(false);});
   });
 }
 
-window.toggleTodo = async id => { const t=todos.find(x=>x.id===id); if(!t) return; setSyncing(true); await updateDoc(doc(db,'todos',id),{done:!t.done}); setSyncing(false); };
-window.toggleOpen = async id => { const t=todos.find(x=>x.id===id); if(!t) return; await updateDoc(doc(db,'todos',id),{open:!t.open}); };
-window.confirmDeleteTodo = id => {
-  const t = todos.find(x=>x.id===id); if(!t) return;
-  showConfirm(`Ta bort "${t.title}"?`, 'Uppgiften tas bort permanent.', async () => {
-    setSyncing(true); closeModals();
-    await deleteDoc(doc(db,'todos',id));
-    setSyncing(false);
-  });
-};
-window.addSub = async (id,i) => { const inp=document.getElementById('sub-in-'+i); const v=inp.value.trim(); if(!v) return; const t=todos.find(x=>x.id===id); if(!t) return; setSyncing(true); await updateDoc(doc(db,'todos',id),{subtasks:[...(t.subtasks||[]),{label:v,done:false}]}); inp.value=''; setSyncing(false); };
-window.toggleSub = async (id,si) => { const t=todos.find(x=>x.id===id); if(!t) return; const s=[...(t.subtasks||[])]; s[si]={...s[si],done:!s[si].done}; setSyncing(true); await updateDoc(doc(db,'todos',id),{subtasks:s}); setSyncing(false); };
-window.delSub = async (id,si) => { const t=todos.find(x=>x.id===id); if(!t) return; const s=[...(t.subtasks||[])]; s.splice(si,1); setSyncing(true); await updateDoc(doc(db,'todos',id),{subtasks:s}); setSyncing(false); };
-window.addShopItem = async (id,i) => { const inp=document.getElementById('shop-in-'+i); const v=inp.value.trim(); if(!v) return; const t=todos.find(x=>x.id===id); if(!t) return; setSyncing(true); await updateDoc(doc(db,'todos',id),{shopping:[...(t.shopping||[]),{label:v,done:false}]}); inp.value=''; setSyncing(false); };
-window.toggleShop = async (id,si) => { const t=todos.find(x=>x.id===id); if(!t) return; const s=[...(t.shopping||[])]; s[si]={...s[si],done:!s[si].done}; setSyncing(true); await updateDoc(doc(db,'todos',id),{shopping:s}); setSyncing(false); };
-window.delShopItem = async (id,si) => { const t=todos.find(x=>x.id===id); if(!t) return; const s=[...(t.shopping||[])]; s.splice(si,1); setSyncing(true); await updateDoc(doc(db,'todos',id),{shopping:s}); setSyncing(false); };
+window.togTodo=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{done:!t.done});syncing(false);};
+window.togOpen=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;await updateDoc(doc(db,'todos',id),{open:!t.open});};
+window.confirmDelTodo=id=>{const t=todos.find(x=>x.id===id);if(!t)return;confirm2(`Ta bort "${t.title}"?`,'Uppgiften tas bort permanent.',async()=>{syncing(true);closeModals();await deleteDoc(doc(db,'todos',id));syncing(false);});};
+window.addSub=async(id,i)=>{const inp=document.getElementById('si-'+i);const v=inp.value.trim();if(!v)return;const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{subtasks:[...(t.subtasks||[]),{label:v,done:false}]});inp.value='';syncing(false);};
+window.togSub=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.subtasks||[])];s[si]={...s[si],done:!s[si].done};syncing(true);await updateDoc(doc(db,'todos',id),{subtasks:s});syncing(false);};
+window.delSub=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.subtasks||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{subtasks:s});syncing(false);};
+window.addShop=async(id,i)=>{const label=document.getElementById('sh-'+i)?.value.trim();const url=document.getElementById('su-'+i)?.value.trim();if(!label)return;const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{shopping:[...(t.shopping||[]),{label,done:false,url:url||''}]});document.getElementById('sh-'+i).value='';document.getElementById('su-'+i).value='';syncing(false);};
+window.togShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s[si]={...s[si],done:!s[si].done};syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
+window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
+window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
 
-window.saveTodo = async () => {
-  const title = document.getElementById('td-title').value.trim(); if(!title) return;
-  setSyncing(true);
-  const id = 'todo_'+Date.now();
-  await setDoc(doc(db,'todos',id),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});
-  document.getElementById('td-title').value=''; document.getElementById('td-note').value='';
-  setSyncing(false); closeModals();
-};
+// ── CONFIRM ───────────────────────────────────────────────────────────────────
+function confirm2(title,msg,onOk){document.getElementById('c-title').textContent=title;document.getElementById('c-msg').textContent=msg;document.getElementById('c-ok').onclick=onOk;openModal('confirm-modal');}
 
-// ── CONFIRM HELPER ────────────────────────────────────────────────────────────
-function showConfirm(title, msg, onOk) {
-  document.getElementById('confirm-title').textContent = title;
-  document.getElementById('confirm-msg').textContent = msg;
-  const btn = document.getElementById('confirm-ok-btn');
-  btn.onclick = onOk;
-  openModal('confirm-modal');
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-document.getElementById('en-date').value = new Date().toISOString().split('T')[0];
-
-// Fix entry modal open button in room detail
-setTimeout(() => {
-  document.querySelectorAll('[onclick="openModal(\'entry-modal\')"]').forEach(b => {
-    b.setAttribute('onclick','openEntryModalNew()');
-  });
-}, 0);
+document.getElementById('en-date').value=new Date().toISOString().split('T')[0];
 </script>
 </body>
 </html>
