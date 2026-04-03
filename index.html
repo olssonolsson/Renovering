@@ -389,6 +389,7 @@ let rooms=[],entries=[],todos=[];
 let curRoom=null,selIcon='🛋️',dragSrc=null;
 let editingRoomId=null,editingEntryId=null,pendingCPs=[];
 let colorRoomFilter='alla';
+let logo=null;
 
 // ── DARK MODE ─────────────────────────────────────────────────────────────────
 let dark=localStorage.getItem('dark')==='1';
@@ -508,6 +509,20 @@ onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{
   if(atab()==='Hem')renderHome();
   if(atab()==='Att göra')renderTodos();
 });
+
+// Load logo from Firebase Storage
+async function loadLogo(){
+  try{
+    const logoPath=ref(storage,'file_0000000080547243b99619cf0a34b007.png');
+    const url=await getDownloadURL(logoPath);
+    logo=url;
+    if(atab()==='Hem')renderHome();
+  }catch(e){
+    console.log('Logo not found or error loading logo');
+  }
+}
+
+loadLogo();
 
 function updateStats(){
   document.getElementById('s-rooms').textContent=rooms.length;
