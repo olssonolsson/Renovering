@@ -12,9 +12,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .topbar{background:var(--topbar);border-bottom:.5px solid var(--border);padding:0 1rem;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:0;}
 .app-title{font-size:15px;font-weight:500;padding:0 1rem 0 0;margin-right:1rem;border-right:.5px solid var(--border);line-height:52px;white-space:nowrap;color:var(--text);}
 .tabs{display:flex;overflow-x:auto;flex:1;}
-.tab{padding:0 14px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;height:52px;white-space:nowrap;font-family:inherit;}
+.tab{padding:0 14px;font-size:14px;cursor:pointer;border:none;background:none;color:var(--text3);border-bottom:2px solid transparent;height:52px;white-space:nowrap;font-family:inherit;transition:color .2s;}
 .tab.active{color:var(--text);border-bottom:2px solid var(--text);font-weight:500;}
 .tab:hover:not(.active){color:var(--text2);}
+/* HOME PAGE STYLES */
+.home-container{display:flex;flex-direction:column;gap:2rem;}
+.logo-section{display:flex;justify-content:center;margin-bottom:1rem;}
+.logo-section img{max-width:200px;height:auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.home-card{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:1.5rem;}
+.home-card h3{font-size:16px;font-weight:600;margin-bottom:1rem;color:var(--text);}
+.recent-actions{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;}
+.action-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border);font-size:13px;gap:10px;}
+.action-item .time{color:var(--text3);font-size:12px;flex-shrink:0;white-space:nowrap;}
+.action-item .desc{color:var(--text2);flex:1;}
+.gallery-section{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.before-after-pair{display:flex;flex-direction:column;gap:8px;border:.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface2);}
+.ba-label{font-size:11px;font-weight:500;color:var(--text3);padding:8px 10px;background:var(--bg);border-bottom:.5px solid var(--border);text-transform:uppercase;letter-spacing:.05em;}
+.ba-images{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.ba-img{width:100%;aspect-ratio:1;object-fit:cover;cursor:pointer;transition:transform .2s;}
+.ba-img:hover{transform:scale(1.02);}
+.priority-list{display:flex;flex-direction:column;gap:10px;}
+.priority-item{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent);border:.5px solid var(--border);}
+.priority-badge{display:flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:6px;font-weight:600;font-size:12px;flex-shrink:0;}
+.priority-1 .priority-badge{background:#ffebee;color:#c0392b;}
+.priority-2 .priority-badge{background:#fff3e0;color:#d97706;}
+.priority-3 .priority-badge{background:#f0f4ff;color:#2563eb;}
+.priority-text{flex:1;}
+.priority-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.priority-details{font-size:12px;color:var(--text3);line-height:1.4;}
+.empty-state-home{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1rem;color:var(--text3);text-align:center;}
+.empty-state-home svg{width:48px;height:48px;opacity:.5;margin-bottom:1rem;}
 .topbar-right{display:flex;align-items:center;gap:10px;margin-left:10px;flex-shrink:0;}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#81c784;transition:background .3s;}
 .sync-dot.syncing{background:#ffb74d;}
@@ -161,7 +188,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="topbar">
   <span class="app-title">Oktobergatan 10</span>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('todo')">Att göra-lista</button>
+    <button class="tab active" onclick="switchTab('hem')">Hem</button>
+    <button class="tab" onclick="switchTab('todo')">Att göra</button>
     <button class="tab" onclick="switchTab('rum')">Rum</button>
     <button class="tab" onclick="switchTab('allt')">Allt</button>
     <button class="tab" onclick="switchTab('färger')">Färger</button>
@@ -174,7 +202,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 <div class="main">
 
-  <div id="tab-todo">
+  <div id="tab-hem">
+    <div class="home-container">
+      <!-- LOGO -->
+      <div class="logo-section" id="logo-container"></div>
+
+      <!-- SENASTE ÅTGÄRDER -->
+      <div class="home-card">
+        <h3>📋 Senaste åtgärder</h3>
+        <div class="recent-actions" id="recent-actions-list"></div>
+      </div>
+
+      <!-- INSPIRATIONSGALLERI -->
+      <div class="home-card">
+        <h3>🎨 Före & Efter – Inspirationsgalleri</h3>
+        <div class="gallery-section" id="gallery-container"></div>
+      </div>
+
+      <!-- HÖGSTA PRIORITET -->
+      <div class="home-card">
+        <h3>⚡ Högsta prioritet</h3>
+        <div class="priority-list" id="priority-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-todo" style="display:none;">
     <div class="sec-hdr"><h2>Att göra-lista</h2><button class="btn" onclick="openModal('todo-modal')">+ Ny uppgift</button></div>
     <div id="todo-container"><div class="loading">Laddar...</div></div>
   </div>
@@ -201,6 +254,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div style="margin-bottom:1.25rem;">
         <div style="font-size:13px;font-weight:500;color:var(--text3);margin-bottom:8px;">Före-bilder</div>
         <div class="photo-grid" id="before-grid"></div>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:13px;font-weight:500;color:var(--text3);margin-bottom:8px;">Efter-bilder</div>
+        <div class="photo-grid" id="after-grid"></div>
       </div>
       <div class="divider"></div>
       <div class="entries-list" id="entries-list"></div>
@@ -411,9 +468,10 @@ function entryItems(e){
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-const TABS=['todo','rum','allt','färger'];
+const TABS=['hem','todo','rum','allt','färger'];
 window.switchTab=t=>{
   TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});
+  if(t==='hem')renderHome();
   if(t==='allt')renderAll();
   if(t==='rum')showRooms();
   if(t==='todo')renderTodos();
@@ -431,12 +489,14 @@ function setIcon(ic){selIcon=ic;document.querySelectorAll('.icon-opt').forEach(e
 // ── FIRESTORE LISTENERS ───────────────────────────────────────────────────────
 onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{
   rooms=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(atab()==='Hem')renderHome();
   if(atab()==='Rum'){if(curRoom){curRoom=rooms.find(r=>r.id===curRoom.id)||null;curRoom?renderBG():showRooms();}else showRooms();}
   if(atab()==='Färger')renderColors();
   updateStats();
 });
 onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{
   entries=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(atab()==='Hem')renderHome();
   if(atab()==='Rum'&&curRoom)renderEntries();
   if(atab()==='Allt')renderAll();
   if(atab()==='Färger')renderColors();
@@ -444,7 +504,8 @@ onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{
 });
 onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{
   todos=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(atab()==='Att göra-lista')renderTodos();
+  if(atab()==='Hem')renderHome();
+  if(atab()==='Att göra')renderTodos();
 });
 
 function updateStats(){
@@ -468,15 +529,26 @@ window.editCurrentRoom=()=>editRoom(curRoom.id);
 window.saveRoom=async()=>{const name=document.getElementById('room-name-in').value.trim();if(!name)return;syncing(true);if(editingRoomId){await updateDoc(doc(db,'rooms',editingRoomId),{name,icon:selIcon});if(curRoom?.id===editingRoomId){curRoom={...curRoom,name,icon:selIcon};document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;}}else{await setDoc(doc(db,'rooms','room_'+Date.now()),{name,icon:selIcon,before:[],createdAt:Date.now()});}document.getElementById('room-name-in').value='';document.getElementById('room-del-btn').style.display='none';editingRoomId=null;document.getElementById('room-modal-title').textContent='Nytt rum';syncing(false);closeModals();};
 window.deleteCurrentRoom=()=>{const r=rooms.find(x=>x.id===editingRoomId);if(!r)return;confirm2(`Ta bort "${r.name}"?`,'Rummet och alla åtgärder tas bort permanent.',async()=>{syncing(true);closeModals();await Promise.all(entries.filter(e=>e.roomId===r.id).map(e=>deleteDoc(doc(db,'entries',e.id))));await deleteDoc(doc(db,'rooms',r.id));syncing(false);showRooms();});};
 
-// ── BEFORE GALLERY ────────────────────────────────────────────────────────────
+// ── BEFORE & AFTER GALLERY ────────────────────────────────────────────────────────────
 function renderBG(){
+  // Render before photos
   const phs=curRoom.before||[];
   const items=beforeItems(curRoom);
   lbBeforeItems=items;
   document.getElementById('before-grid').innerHTML=
     phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLBBefore(${pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelBP(${pi})">×</button></div>`).join('')+
     `<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;
+  
+  // Render after photos from entries in this room
+  const afterPhotos=entries
+    .filter(e=>e.roomId===curRoom.id)
+    .flatMap((e,ei)=>(e.photos||[]).map((p,pi)=>({photo:p,entryId:e.id,entryName:e.name,photoIdx:pi,entryIdx:ei})));
+  
+  document.getElementById('after-grid').innerHTML=
+    afterPhotos.map((item,i)=>`<div class="pw"><img class="photo-thumb" src="${item.photo}" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${item.entryId}')),${(entries.find(x=>x.id===item.entryId).colorphotos||[]).length+item.photoIdx})" style="cursor:pointer;" title="${item.entryName}"><button class="pd" onclick="confirmDelAP('${item.entryId}',${item.photoIdx})">×</button></div>`).join('')+
+    (afterPhotos.length===0?`<div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem;grid-column:1/-1;">Lägg till åtgärder med bilder för att se efter-bilder här</div>`:'');
 }
+
 window.openLBBefore=idx=>openLB(lbBeforeItems,idx);
 window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
 window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
@@ -498,7 +570,7 @@ function entryHTML(e,showRoom){
 <div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${afH}${addH}</div></div></div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
 }
 
-function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';}
+function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';renderBG();}
 function renderAll(){const q=(document.getElementById('search-input').value||'').toLowerCase();const l=document.getElementById('all-list');let es=entries.slice();if(q)es=es.filter(e=>(e.name+(e.colorname||'')+(e.note||'')+(e.category||'')+(e.brand||'')).toLowerCase().includes(q));l.innerHTML=es.length?es.map(e=>entryHTML(e,true)).join(''):'<div class="empty-state">Inga åtgärder'+(q?' matchar':'')+'</div>';}
 
 // ── COLORS PAGE ───────────────────────────────────────────────────────────────
@@ -617,6 +689,69 @@ window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;cons
 window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
 
 function confirm2(title,msg,onOk){document.getElementById('c-title').textContent=title;document.getElementById('c-msg').textContent=msg;document.getElementById('c-ok').onclick=onOk;openModal('confirm-modal');}
+
+// ── HOME PAGE ─────────────────────────────────────────────────────────────────────
+function renderHome(){
+  // Render logo
+  const logoContainer=document.getElementById('logo-container');
+  if(logo){
+    logoContainer.innerHTML=`<img src="${logo}" alt="Logga">`;
+  }else{
+    logoContainer.innerHTML='<div class="empty-state-home">📷 Logga inte uppladdad än</div>';
+  }
+
+  // Render recent actions (last 5 entries)
+  const recentList=document.getElementById('recent-actions-list');
+  const sortedEntries=[...entries].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+  if(sortedEntries.length){
+    recentList.innerHTML=sortedEntries.map(e=>{
+      const room=rooms.find(r=>r.id===e.roomId);
+      const dateObj=new Date(e.date);
+      const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
+      return `<div class="action-item"><div class="desc"><strong>${e.name}</strong><br>${e.category}${room?' · '+room.name:''}</div><div class="time">${timeStr}</div></div>`;
+    }).join('');
+  }else{
+    recentList.innerHTML='<div class="empty-state-home">Ingen aktivitet ännu</div>';
+  }
+
+  // Render before/after gallery (entries with photos)
+  const galleryContainer=document.getElementById('gallery-container');
+  const withPhotos=entries.filter(e=>(e.photos||[]).length>0||(e.colorphotos||[]).length>0);
+  if(withPhotos.length){
+    const pairs=withPhotos.slice(0,4).map(e=>{
+      const colorPhotos=e.colorphotos||[];
+      const regularPhotos=e.photos||[];
+      const before=colorPhotos[0]||'';
+      const after=regularPhotos[0]||'';
+      if(!before&&!after)return '';
+      return `<div class="before-after-pair">
+        <div class="ba-label">${e.name}</div>
+        <div class="ba-images">
+          ${before?`<img src="${before}" alt="Färgbild" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),0)">`:``}
+          ${after?`<img src="${after}" alt="Efter" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${before?1:0})">`:``}
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+    galleryContainer.innerHTML=pairs||'<div class="empty-state-home">Inga före/efter bilder ännu</div>';
+  }else{
+    galleryContainer.innerHTML='<div class="empty-state-home">Lägg till bilder för att se galleri</div>';
+  }
+
+  // Render high priority todos
+  const priorityContainer=document.getElementById('priority-container');
+  const highPriority=todos.filter(t=>!t.done&&t.prio==='hög').slice(0,5);
+  if(highPriority.length){
+    priorityContainer.innerHTML=highPriority.map(t=>`<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}">
+      <div class="priority-badge">${t.prio==='hög'?'🔴':t.prio==='medel'?'🟠':'🔵'}</div>
+      <div class="priority-text">
+        <div class="priority-title">${t.title}</div>
+        ${t.note?`<div class="priority-details">${t.note.substring(0,60)}${t.note.length>60?'...':''}</div>`:''}
+      </div>
+    </div>`).join('');
+  }else{
+    priorityContainer.innerHTML='<div class="empty-state-home">Inga högprioriterade uppgifter – bra jobbat! 🎉</div>';
+  }
+}
 
 document.getElementById('en-date').value=new Date().toISOString().split('T')[0];
 </script>
