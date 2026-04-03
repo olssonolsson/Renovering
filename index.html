@@ -324,8 +324,9 @@ import{getFirestore,collection,doc,setDoc,updateDoc,deleteDoc,onSnapshot,query,o
 import{getStorage,ref,uploadString,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const cfg={apiKey:"AIzaSyBcOie0KQdfTDtLkUfhPfKBI0grPGqRjfg",authDomain:"renovering-8b74f.firebaseapp.com",projectId:"renovering-8b74f",storageBucket:"renovering-8b74f.firebasestorage.app",messagingSenderId:"803734789539",appId:"1:803734789539:web:dbbf3b7c08bc41dcde4e16"};
-const db=getFirestore(initializeApp(cfg));
-const storage=getStorage();
+const app=initializeApp(cfg);
+const db=getFirestore(app);
+const storage=getStorage(app);
 
 let rooms=[],entries=[],todos=[];
 let curRoom=null,selIcon='🛋️',dragSrc=null;
