@@ -345,6 +345,8 @@ function syncing(v){const d=document.getElementById('sync-dot');d.className='syn
 // ── LIGHTBOX ──────────────────────────────────────────────────────────────────
 // Each photo item: { src, caption, sub }
 let lbItems=[],lbI=0;
+let lbBeforeItems=[];
+let lbEntryItems={};
 
 window.openLB=(items,idx)=>{
   lbItems=[...items];
@@ -352,6 +354,7 @@ window.openLB=(items,idx)=>{
   drawLB();
   document.getElementById('lightbox').classList.add('open');
 };
+window.openLBEntry=(id,idx)=>openLB(lbEntryItems[id]||[],idx);
 window.lbClose=()=>document.getElementById('lightbox').classList.remove('open');
 window.lbNav=d=>{lbI=(lbI+d+lbItems.length)%lbItems.length;drawLB();};
 
@@ -455,9 +458,11 @@ function renderBG(){
   const phs=curRoom.before||[];
   const items=beforeItems(curRoom);
   document.getElementById('before-grid').innerHTML=
-    phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${pi})"><button class="pd" onclick="confirmDelBP(${pi})">×</button></div>`).join('')+
+    phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLBBefore(${pi})"><button class="pd" onclick="confirmDelBP(${pi})">×</button></div>`).join('')+
     `<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;
+  lbBeforeItems=items;
 }
+window.openLBBefore=idx=>openLB(lbBeforeItems,idx);
 window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
 window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
 
@@ -467,12 +472,15 @@ function entryHTML(e,showRoom){
   const items=entryItems(e);
   const cpOff=0;
   const afOff=(e.colorphotos||[]).length;
-  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${cpOff+pi})"><button class="pd" onclick="confirmDelCP('${e.id}',${pi})">×</button></div>`).join('');
-  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${afOff+pi})"><button class="pd" onclick="confirmDelAP('${e.id}',${pi})">×</button></div>`).join('');
+  const eid=e.id;
+  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${cpOff+pi})"><button class="pd" onclick="confirmDelCP('${e.id}',${pi})">×</button></div>`).join('');
+  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${afOff+pi})"><button class="pd" onclick="confirmDelAP('${e.id}',${pi})">×</button></div>`).join('');
   const addH=`<label class="add-ph-btn" style="cursor:pointer;">+ Bild<input type="file" accept="image/*" style="display:none;" onchange="addAP(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addAP(this,'${e.id}')"></label>`;
   const pr=[e.colorname?`<div class="paint-row"><span class="lbl">Färg:</span>${e.colorname}</div>`:'',e.gloss?`<div class="paint-row"><span class="lbl">Glans:</span>${e.gloss}</div>`:'',e.brand?`<div class="paint-row"><span class="lbl">Produkt:</span>${e.brand}</div>`:'',e.paintextra?`<div class="paint-row"><span class="lbl">Övrigt:</span>${e.paintextra}</div>`:''].filter(Boolean).join('');
   return`<div class="entry-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><span class="entry-name">${e.name}</span><span class="entry-date">${e.date||''}</span></div><div class="tags">${showRoom&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}<span class="tag">${e.category}</span>${e.colorname?`<span class="tag">${e.colorname}</span>`:''}</div>${e.note?`<div class="entry-note">${e.note}</div>`:''}${pr?`<div class="paint-info">${pr}</div>`:''}${cpH?`<div style="margin-top:8px;"><div class="ph-mini">Färgbilder</div><div class="ph-row">${cpH}</div></div>`:''}
 <div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${afH}${addH}</div></div></div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
+  // Store items globally for lightbox
+  lbEntryItems[eid]=items;
 }
 
 function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';}
