@@ -354,12 +354,25 @@ window.openLB=(items,idx)=>{
   drawLB();
   document.getElementById('lightbox').classList.add('open');
 };
-window.openLBEntry=(id,idx)=>openLB(lbEntryItems[id]||[],idx);
+window.openLBEntry=(id,idx)=>{
+  console.log('openLBEntry called with id:', id, 'idx:', idx);
+  console.log('lbEntryItems:', lbEntryItems);
+  console.log('items for this entry:', lbEntryItems[id]);
+  openLB(lbEntryItems[id]||[],idx);
+};
 window.lbClose=()=>document.getElementById('lightbox').classList.remove('open');
 window.lbNav=d=>{lbI=(lbI+d+lbItems.length)%lbItems.length;drawLB();};
 
 function drawLB(){
+  if(!lbItems || lbItems.length === 0){
+    console.error('No items in lightbox!', lbItems);
+    return;
+  }
   const item=lbItems[lbI];
+  if(!item){
+    console.error('No item at index', lbI, 'items:', lbItems);
+    return;
+  }
   const img=document.getElementById('lb-img');
   img.src='';
   // Use setTimeout to ensure src clears before setting new — fixes "not opening" bug
@@ -392,7 +405,9 @@ function entryItems(e){
   const roomName=room?room.name:'';
   const cpItems=(e.colorphotos||[]).map((src,i)=>({src,caption:`Färgbild – ${e.colorname||e.name}`,sub:roomName}));
   const afItems=(e.photos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`}));
-  return [...cpItems,...afItems];
+  const result=[...cpItems,...afItems];
+  console.log('entryItems for', e.id, ':', result, 'colorphotos:', e.colorphotos, 'photos:', e.photos);
+  return result;
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
