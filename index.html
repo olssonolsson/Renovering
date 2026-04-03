@@ -9,7 +9,6 @@
 .dark{--bg:#111;--surface:#1c1c1e;--surface2:#2c2c2e;--border:#3a3a3c;--border2:#555;--text:#f0f0f0;--text2:#aaa;--text3:#666;--accent:#f0f0f0;--accent-txt:#111;--danger:#ff6b6b;--danger-bg:#2c1a1a;--danger-bd:#5a2a2a;--ok-bg:#1a2e1a;--ok-bd:#388e3c;--ok-txt:#81c784;--tag-bg:#2c2c2e;--topbar:#1c1c1e;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;}
-/* TOPBAR */
 .topbar{background:var(--topbar);border-bottom:.5px solid var(--border);padding:0 1rem;display:flex;align-items:center;position:sticky;top:0;z-index:10;gap:0;}
 .app-title{font-size:15px;font-weight:500;padding:0 1rem 0 0;margin-right:1rem;border-right:.5px solid var(--border);line-height:52px;white-space:nowrap;color:var(--text);}
 .tabs{display:flex;overflow-x:auto;flex:1;}
@@ -21,11 +20,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .sync-dot.syncing{background:#ffb74d;}
 .dark-btn{background:none;border:.5px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--text2);white-space:nowrap;font-family:inherit;}
 .dark-btn:hover{background:var(--surface2);}
-/* LAYOUT */
 .main{max-width:860px;margin:0 auto;padding:1.5rem 1rem;}
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:8px;}
 .sec-hdr h2{font-size:18px;font-weight:500;color:var(--text);}
-/* BUTTONS */
 .btn{padding:7px 14px;border:.5px solid var(--border2);border-radius:8px;background:var(--surface);color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s;}
 .btn:hover{background:var(--surface2);}
 .btn-p{background:var(--accent);color:var(--accent-txt);border-color:var(--accent);}
@@ -35,12 +32,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-dashed:hover{background:var(--surface2);}
 .icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px 5px;border-radius:5px;}
 .icon-btn:hover{background:var(--surface2);color:var(--text2);}
-/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
 .stat-card{background:var(--surface);border-radius:8px;padding:1rem;border:.5px solid var(--border);}
 .stat-label{font-size:12px;color:var(--text3);margin-bottom:4px;}
 .stat-value{font-size:24px;font-weight:500;color:var(--text);}
-/* ROOMS */
 .rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:1rem;}
 .room-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;position:relative;transition:border-color .15s;}
 .room-card:hover{border-color:var(--border2);}
@@ -51,7 +46,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .room-meta{font-size:12px;color:var(--text3);margin-top:2px;}
 .back-btn{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;margin-bottom:1rem;padding:0;}
 .back-btn:hover{color:var(--text);}
-/* PHOTOS */
 .photo-grid{display:flex;gap:6px;flex-wrap:wrap;}
 .pw{position:relative;flex-shrink:0;}
 .photo-thumb,.after-thumb{width:68px;height:68px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);cursor:pointer;display:block;}
@@ -63,7 +57,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .photo-add-box .plus{font-size:20px;color:var(--text3);line-height:1;}
 .photo-add-box .lbl{font-size:10px;color:var(--text3);text-align:center;line-height:1.2;}
 .divider{height:.5px;background:var(--border);margin:1rem 0;}
-/* ENTRIES */
 .entries-list{display:flex;flex-direction:column;gap:8px;}
 .entry-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;}
 .entry-name{font-size:14px;font-weight:500;color:var(--text);}
@@ -125,13 +118,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-row textarea{height:64px;resize:none;}
 .form-sec{font-size:13px;font-weight:500;color:var(--text3);margin:1rem 0 .5rem;padding-top:.75rem;border-top:.5px solid var(--border);}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;flex-wrap:wrap;}
-/* COLORS */
-.colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+/* COLORS PAGE */
+.color-filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
+.color-filter-bar input{flex:1;min-width:140px;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;font-size:14px;outline:none;background:var(--surface);color:var(--text);font-family:inherit;}
+.room-filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.pill{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:.5px solid var(--border2);background:var(--surface);color:var(--text2);}
+.pill.active{background:var(--accent);color:var(--accent-txt);border-color:var(--accent);}
+.colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
 .color-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;}
 .color-card:hover{border-color:var(--border2);}
-.color-swatch{height:54px;border-bottom:.5px solid var(--border);position:relative;background:var(--surface2);}
+.color-swatch{height:60px;border-bottom:.5px solid var(--border);position:relative;background:var(--surface2);}
 .color-swatch img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.color-info{padding:8px 10px;}
+.color-info{padding:9px 10px;}
 .search-bar{width:100%;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;font-size:14px;margin-bottom:1rem;outline:none;background:var(--surface);color:var(--text);font-family:inherit;}
 .loading{text-align:center;padding:3rem;color:var(--text3);font-size:14px;}
 .empty-state{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:14px;}
@@ -140,18 +138,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .icon-opt.sel{border-color:var(--accent);}
 .cp-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
 /* LIGHTBOX */
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;align-items:center;justify-content:center;}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;}
 .lightbox.open{display:flex;}
-.lb-img{max-width:92vw;max-height:84vh;border-radius:10px;object-fit:contain;display:block;}
-.lb-close{position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:22px;cursor:pointer;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;}
+.lb-img-wrap{display:flex;align-items:center;justify-content:center;flex:1;width:100%;padding:0 56px;}
+.lb-img{max-width:100%;max-height:76vh;border-radius:10px;object-fit:contain;display:block;}
+.lb-caption{color:rgba(255,255,255,.85);font-size:14px;text-align:center;padding:10px 20px 6px;max-width:600px;}
+.lb-caption-sub{color:rgba(255,255,255,.45);font-size:12px;text-align:center;padding:0 20px 12px;}
+.lb-close{position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:22px;cursor:pointer;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;z-index:10;}
+.lb-close:hover{background:rgba(255,255,255,.25);}
 .lb-arrow{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:none;color:#fff;font-size:26px;cursor:pointer;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;}
 .lb-arrow:hover{background:rgba(255,255,255,.25);}
 #lb-left{left:.75rem;} #lb-right{right:.75rem;}
-.lb-counter{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.55);font-size:13px;pointer-events:none;}
-.lb-dots{position:fixed;bottom:2.75rem;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.lb-dots{display:flex;gap:6px;padding:4px 0 8px;}
 .lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;}
 .lb-dot.on{background:#fff;}
-@media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}}
+.lb-counter{color:rgba(255,255,255,.45);font-size:12px;padding-bottom:10px;}
+@media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}.lb-img-wrap{padding:0 44px;}}
 </style>
 </head>
 <body>
@@ -211,6 +213,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
 
   <div id="tab-färger" style="display:none;">
+    <div class="sec-hdr"><h2>Färger</h2></div>
+    <div class="color-filter-bar">
+      <input type="text" id="color-search" placeholder="Sök färgkod, produkt, rum..." oninput="renderColors()">
+    </div>
+    <div class="room-filter-pills" id="room-pills"></div>
     <div class="colors-grid" id="colors-grid"></div>
   </div>
 
@@ -301,8 +308,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="lightbox" id="lightbox">
   <button class="lb-close" onclick="lbClose()">×</button>
   <button class="lb-arrow" id="lb-left" onclick="lbNav(-1)">‹</button>
-  <img class="lb-img" id="lb-img" src="" alt="">
+  <div class="lb-img-wrap">
+    <img class="lb-img" id="lb-img" src="" alt="">
+  </div>
   <button class="lb-arrow" id="lb-right" onclick="lbNav(1)">›</button>
+  <div class="lb-caption" id="lb-caption"></div>
+  <div class="lb-caption-sub" id="lb-caption-sub"></div>
   <div class="lb-dots" id="lb-dots"></div>
   <div class="lb-counter" id="lb-counter"></div>
 </div>
@@ -319,6 +330,7 @@ const storage=getStorage();
 let rooms=[],entries=[],todos=[];
 let curRoom=null,selIcon='🛋️',dragSrc=null;
 let editingRoomId=null,editingEntryId=null,pendingCPs=[];
+let colorRoomFilter='alla';
 
 // ── DARK MODE ─────────────────────────────────────────────────────────────────
 let dark=localStorage.getItem('dark')==='1';
@@ -330,24 +342,64 @@ applyDark();
 function syncing(v){const d=document.getElementById('sync-dot');d.className='sync-dot'+(v?' syncing':'');d.title=v?'Sparar...':'Synkad med molnet';}
 
 // ── LIGHTBOX ──────────────────────────────────────────────────────────────────
-let lbPhs=[],lbI=0;
-window.openLB=(photos,idx)=>{lbPhs=[...photos];lbI=idx;drawLB();document.getElementById('lightbox').classList.add('open');};
+// Each photo item: { src, caption, sub }
+let lbItems=[],lbI=0;
+
+window.openLB=(items,idx)=>{
+  lbItems=[...items];
+  lbI=Math.max(0,Math.min(idx,items.length-1));
+  drawLB();
+  document.getElementById('lightbox').classList.add('open');
+};
 window.lbClose=()=>document.getElementById('lightbox').classList.remove('open');
-window.lbNav=d=>{lbI=(lbI+d+lbPhs.length)%lbPhs.length;drawLB();};
+window.lbNav=d=>{lbI=(lbI+d+lbItems.length)%lbItems.length;drawLB();};
+
 function drawLB(){
-  document.getElementById('lb-img').src=lbPhs[lbI];
-  const many=lbPhs.length>1;
+  const item=lbItems[lbI];
+  const img=document.getElementById('lb-img');
+  img.src='';
+  // Use setTimeout to ensure src clears before setting new — fixes "not opening" bug
+  setTimeout(()=>{ img.src=item.src; },10);
+  document.getElementById('lb-caption').textContent=item.caption||'';
+  document.getElementById('lb-caption-sub').textContent=item.sub||'';
+  const many=lbItems.length>1;
   document.getElementById('lb-left').style.display=many?'flex':'none';
   document.getElementById('lb-right').style.display=many?'flex':'none';
-  document.getElementById('lb-counter').textContent=many?`${lbI+1} / ${lbPhs.length}`:'';
-  document.getElementById('lb-dots').innerHTML=many?lbPhs.map((_,i)=>`<div class="lb-dot${i===lbI?' on':''}" onclick="lbNav(${i-lbI})"></div>`).join(''):'';
+  document.getElementById('lb-counter').textContent=many?`${lbI+1} / ${lbItems.length}`:'';
+  document.getElementById('lb-dots').innerHTML=many?lbItems.map((_,i)=>`<div class="lb-dot${i===lbI?' on':''}" onclick="lbNav(${i-lbI})"></div>`).join(''):'';
 }
+
 document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')lbClose();});
-document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='ArrowLeft')lbNav(-1);if(e.key==='ArrowRight')lbNav(1);if(e.key==='Escape')lbClose();});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='ArrowLeft')lbNav(-1);
+  if(e.key==='ArrowRight')lbNav(1);
+  if(e.key==='Escape')lbClose();
+});
+
+// Build lightbox items for a before-gallery
+function beforeItems(room){
+  return (room.before||[]).map((src,i)=>({src,caption:`Före-bild ${i+1}`,sub:room.name}));
+}
+
+// Build lightbox items for an entry (color photos + regular photos)
+function entryItems(e){
+  const room=rooms.find(r=>r.id===e.roomId);
+  const roomName=room?room.name:'';
+  const cpItems=(e.colorphotos||[]).map((src,i)=>({src,caption:`Färgbild – ${e.colorname||e.name}`,sub:roomName}));
+  const afItems=(e.photos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`}));
+  return [...cpItems,...afItems];
+}
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 const TABS=['todo','rum','allt','färger'];
-window.switchTab=t=>{TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});if(t==='allt')renderAll();if(t==='rum')showRooms();if(t==='todo')renderTodos();if(t==='färger')renderColors();};
+window.switchTab=t=>{
+  TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});
+  if(t==='allt')renderAll();
+  if(t==='rum')showRooms();
+  if(t==='todo')renderTodos();
+  if(t==='färger')renderColors();
+};
 window.openModal=id=>document.getElementById(id).classList.add('open');
 window.closeModals=()=>document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('open'));
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals();}));
@@ -358,18 +410,39 @@ document.querySelectorAll('.icon-opt').forEach(el=>{el.onclick=()=>{selIcon=el.t
 function setIcon(ic){selIcon=ic;document.querySelectorAll('.icon-opt').forEach(el=>el.classList.toggle('sel',el.textContent===ic));}
 
 // ── FIRESTORE LISTENERS ───────────────────────────────────────────────────────
-onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{rooms=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Rum'){if(curRoom){curRoom=rooms.find(r=>r.id===curRoom.id)||null;curRoom?renderBG():showRooms();}else showRooms();}updateStats();});
-onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{entries=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Rum'&&curRoom)renderEntries();if(atab()==='Allt')renderAll();updateStats();});
-onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{todos=snap.docs.map(d=>({id:d.id,...d.data()}));if(atab()==='Att göra-lista')renderTodos();});
+onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{
+  rooms=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(atab()==='Rum'){if(curRoom){curRoom=rooms.find(r=>r.id===curRoom.id)||null;curRoom?renderBG():showRooms();}else showRooms();}
+  if(atab()==='Färger')renderColors();
+  updateStats();
+});
+onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{
+  entries=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(atab()==='Rum'&&curRoom)renderEntries();
+  if(atab()==='Allt')renderAll();
+  if(atab()==='Färger')renderColors();
+  updateStats();
+});
+onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{
+  todos=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(atab()==='Att göra-lista')renderTodos();
+});
 
-function updateStats(){document.getElementById('s-rooms').textContent=rooms.length;document.getElementById('s-entries').textContent=entries.length;document.getElementById('s-colors').textContent=new Set(entries.filter(e=>e.colorname).map(e=>e.colorname)).size;}
+function updateStats(){
+  document.getElementById('s-rooms').textContent=rooms.length;
+  document.getElementById('s-entries').textContent=entries.length;
+  document.getElementById('s-colors').textContent=new Set(entries.filter(e=>e.colorname).map(e=>e.colorname)).size;
+}
 
-// ── CHECK SVG ─────────────────────────────────────────────────────────────────
 const chk=()=>`<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="var(--ok-txt)" stroke-width="1.8" fill="none"/></svg>`;
 
 // ── ROOMS ─────────────────────────────────────────────────────────────────────
 window.showRooms=()=>{document.getElementById('rooms-view').style.display='';document.getElementById('room-detail').style.display='none';curRoom=null;renderRooms();};
-function renderRooms(){const g=document.getElementById('rooms-grid');if(!rooms.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1">Inga rum tillagda ännu</div>';return;}g.innerHTML=rooms.map(r=>{const c=entries.filter(e=>e.roomId===r.id).length,b=(r.before||[]).length;return`<div class="room-card" onclick="showRoom('${r.id}')"><div class="room-card-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="editRoom('${r.id}')">✏️</button></div><div class="room-icon">${r.icon}</div><div class="room-name">${r.name}</div><div class="room-meta">${c} åtgärd${c!==1?'er':''}${b?' · '+b+' förebild'+(b!==1?'er':''):''}</div></div>`;}).join('');}
+function renderRooms(){
+  const g=document.getElementById('rooms-grid');
+  if(!rooms.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1">Inga rum tillagda ännu</div>';return;}
+  g.innerHTML=rooms.map(r=>{const c=entries.filter(e=>e.roomId===r.id).length,b=(r.before||[]).length;return`<div class="room-card" onclick="showRoom('${r.id}')"><div class="room-card-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="editRoom('${r.id}')">✏️</button></div><div class="room-icon">${r.icon}</div><div class="room-name">${r.name}</div><div class="room-meta">${c} åtgärd${c!==1?'er':''}${b?' · '+b+' förebild'+(b!==1?'er':''):''}</div></div>`;}).join('');
+}
 window.showRoom=id=>{curRoom=rooms.find(r=>r.id===id);if(!curRoom)return;document.getElementById('rooms-view').style.display='none';document.getElementById('room-detail').style.display='';document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;renderBG();renderEntries();};
 window.editRoom=id=>{const r=rooms.find(x=>x.id===id);if(!r)return;editingRoomId=id;document.getElementById('room-modal-title').textContent='Redigera rum';document.getElementById('room-name-in').value=r.name;document.getElementById('room-del-btn').style.display='block';setIcon(r.icon);openModal('room-modal');};
 window.editCurrentRoom=()=>editRoom(curRoom.id);
@@ -377,25 +450,73 @@ window.saveRoom=async()=>{const name=document.getElementById('room-name-in').val
 window.deleteCurrentRoom=()=>{const r=rooms.find(x=>x.id===editingRoomId);if(!r)return;confirm2(`Ta bort "${r.name}"?`,'Rummet och alla åtgärder tas bort permanent.',async()=>{syncing(true);closeModals();await Promise.all(entries.filter(e=>e.roomId===r.id).map(e=>deleteDoc(doc(db,'entries',e.id))));await deleteDoc(doc(db,'rooms',r.id));syncing(false);showRooms();});};
 
 // ── BEFORE GALLERY ────────────────────────────────────────────────────────────
-function renderBG(){const phs=curRoom.before||[];document.getElementById('before-grid').innerHTML=phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLB(${JSON.stringify(phs)},${pi})"><button class="pd" onclick="delBP(${pi})">×</button></div>`).join('')+`<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;}
+function renderBG(){
+  const phs=curRoom.before||[];
+  const items=beforeItems(curRoom);
+  document.getElementById('before-grid').innerHTML=
+    phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${pi})"><button class="pd" onclick="confirmDelBP(${pi})">×</button></div>`).join('')+
+    `<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;
+}
 window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
-window.delBP=async pi=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);};
+window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
 
 // ── ENTRIES ───────────────────────────────────────────────────────────────────
 function entryHTML(e,showRoom){
   const room=rooms.find(r=>r.id===e.roomId);
-  const allPhs=[...(e.colorphotos||[]),...(e.photos||[])];
-  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(allPhs)},${pi})"><button class="pd" onclick="delCP('${e.id}',${pi})">×</button></div>`).join('');
-  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(allPhs)},${(e.colorphotos||[]).length+pi})"><button class="pd" onclick="delAP('${e.id}',${pi})">×</button></div>`).join('');
+  const items=entryItems(e);
+  const cpOff=0;
+  const afOff=(e.colorphotos||[]).length;
+  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${cpOff+pi})"><button class="pd" onclick="confirmDelCP('${e.id}',${pi})">×</button></div>`).join('');
+  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLB(${JSON.stringify(items)},${afOff+pi})"><button class="pd" onclick="confirmDelAP('${e.id}',${pi})">×</button></div>`).join('');
   const addH=`<label class="add-ph-btn" style="cursor:pointer;">+ Bild<input type="file" accept="image/*" style="display:none;" onchange="addAP(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addAP(this,'${e.id}')"></label>`;
   const pr=[e.colorname?`<div class="paint-row"><span class="lbl">Färg:</span>${e.colorname}</div>`:'',e.gloss?`<div class="paint-row"><span class="lbl">Glans:</span>${e.gloss}</div>`:'',e.brand?`<div class="paint-row"><span class="lbl">Produkt:</span>${e.brand}</div>`:'',e.paintextra?`<div class="paint-row"><span class="lbl">Övrigt:</span>${e.paintextra}</div>`:''].filter(Boolean).join('');
   return`<div class="entry-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><span class="entry-name">${e.name}</span><span class="entry-date">${e.date||''}</span></div><div class="tags">${showRoom&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}<span class="tag">${e.category}</span>${e.colorname?`<span class="tag">${e.colorname}</span>`:''}</div>${e.note?`<div class="entry-note">${e.note}</div>`:''}${pr?`<div class="paint-info">${pr}</div>`:''}${cpH?`<div style="margin-top:8px;"><div class="ph-mini">Färgbilder</div><div class="ph-row">${cpH}</div></div>`:''}
 <div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${afH}${addH}</div></div></div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
 }
+
 function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';}
-function renderAll(){const q=(document.getElementById('search-input').value||'').toLowerCase();const l=document.getElementById('all-list');let es=entries.slice();if(q)es=es.filter(e=>(e.name+e.colorname+e.note+e.category+e.brand).toLowerCase().includes(q));l.innerHTML=es.length?es.map(e=>entryHTML(e,true)).join(''):'<div class="empty-state">Inga åtgärder'+(q?' matchar':'')+'</div>';}
-function renderColors(){const g=document.getElementById('colors-grid');const ces=entries.filter(e=>e.colorname);if(!ces.length){g.innerHTML='<div class="empty-state">Inga färger sparade</div>';return;}const seen={};ces.forEach(e=>{if(!seen[e.colorname])seen[e.colorname]=e;});g.innerHTML=Object.entries(seen).map(([n,e])=>{const room=rooms.find(r=>r.id===e.roomId);const cp=e.colorphotos||[];return`<div class="color-card" onclick="editEntry('${e.id}')"><div class="color-swatch">${cp.length?`<img src="${cp[0]}">`:''}
-</div><div class="color-info"><div style="font-size:12px;font-weight:500;color:var(--text);">${n}</div>${e.gloss?`<div style="font-size:11px;color:var(--text2);">${e.gloss}</div>`:''} ${e.brand?`<div style="font-size:11px;color:var(--text2);">${e.brand}</div>`:''} ${room?`<div style="font-size:11px;color:var(--text3);">${room.icon} ${room.name}</div>`:''}</div></div>`;}).join('');}
+function renderAll(){const q=(document.getElementById('search-input').value||'').toLowerCase();const l=document.getElementById('all-list');let es=entries.slice();if(q)es=es.filter(e=>(e.name+(e.colorname||'')+(e.note||'')+(e.category||'')+(e.brand||'')).toLowerCase().includes(q));l.innerHTML=es.length?es.map(e=>entryHTML(e,true)).join(''):'<div class="empty-state">Inga åtgärder'+(q?' matchar':'')+'</div>';}
+
+// ── COLORS PAGE ───────────────────────────────────────────────────────────────
+function renderColors(){
+  const q=(document.getElementById('color-search')?.value||'').toLowerCase();
+  const g=document.getElementById('colors-grid');
+  const pills=document.getElementById('room-pills');
+
+  // Build room filter pills
+  const roomsWithColors=rooms.filter(r=>entries.some(e=>e.roomId===r.id&&e.colorname));
+  pills.innerHTML=`<div class="pill${colorRoomFilter==='alla'?' active':''}" onclick="setColorRoomFilter('alla')">Alla rum</div>`+
+    roomsWithColors.map(r=>`<div class="pill${colorRoomFilter===r.id?' active':''}" onclick="setColorRoomFilter('${r.id}')">${r.icon} ${r.name}</div>`).join('');
+
+  let ces=entries.filter(e=>e.colorname);
+  if(colorRoomFilter!=='alla')ces=ces.filter(e=>e.roomId===colorRoomFilter);
+  if(q)ces=ces.filter(e=>(e.colorname+' '+(e.brand||'')+' '+(e.gloss||'')+' '+(e.paintextra||'')+' '+(rooms.find(r=>r.id===e.roomId)?.name||'')).toLowerCase().includes(q));
+
+  if(!ces.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1">Inga färger matchar</div>';return;}
+
+  // Group by color name, keep all entries per color
+  const groups={};
+  ces.forEach(e=>{if(!groups[e.colorname])groups[e.colorname]=[];groups[e.colorname].push(e);});
+
+  g.innerHTML=Object.entries(groups).map(([name,list])=>{
+    const e=list[0];
+    const room=rooms.find(r=>r.id===e.roomId);
+    const cp=e.colorphotos||[];
+    const roomNames=[...new Set(list.map(x=>rooms.find(r=>r.id===x.roomId)).filter(Boolean).map(r=>r.icon+' '+r.name))];
+    return`<div class="color-card" onclick="editEntry('${e.id}')">
+      <div class="color-swatch">${cp.length?`<img src="${cp[0]}">`:''}
+      </div>
+      <div class="color-info">
+        <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;">${name}</div>
+        ${e.gloss?`<div style="font-size:11px;color:var(--text2);">${e.gloss}</div>`:''}
+        ${e.brand?`<div style="font-size:11px;color:var(--text2);">${e.brand}</div>`:''}
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;">${roomNames.join(', ')}</div>
+        ${list.length>1?`<div style="font-size:10px;color:var(--text3);margin-top:2px;">Används på ${list.length} ställen</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+window.setColorRoomFilter=id=>{colorRoomFilter=id;renderColors();};
 
 window.openEntryModalNew=()=>{editingEntryId=null;pendingCPs=[];document.getElementById('entry-modal-title').textContent='Ny åtgärd';['en-name','en-colorname','en-brand','en-paintextra'].forEach(id=>document.getElementById(id).value='');document.getElementById('en-cat').value='Målning';document.getElementById('en-date').value=new Date().toISOString().split('T')[0];document.getElementById('en-note').value='';document.getElementById('en-gloss').value='';document.getElementById('en-cp').innerHTML='';document.getElementById('entry-del-btn').style.display='none';openModal('entry-modal');};
 window.editEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;editingEntryId=id;pendingCPs=[...(e.colorphotos||[])];document.getElementById('entry-modal-title').textContent='Redigera åtgärd';document.getElementById('en-name').value=e.name||'';document.getElementById('en-cat').value=e.category||'Målning';document.getElementById('en-date').value=e.date||'';document.getElementById('en-note').value=e.note||'';document.getElementById('en-colorname').value=e.colorname||'';document.getElementById('en-gloss').value=e.gloss||'';document.getElementById('en-brand').value=e.brand||'';document.getElementById('en-paintextra').value=e.paintextra||'';document.getElementById('entry-del-btn').style.display='block';renderCPs();openModal('entry-modal');};
@@ -405,9 +526,11 @@ window.saveEntry=async()=>{const name=document.getElementById('en-name').value.t
 window.addCP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingCPs.push(e.target.result);renderCPs();};r.readAsDataURL(f);};
 function renderCPs(){document.getElementById('en-cp').innerHTML=pendingCPs.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removeCP(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');}
 window.removeCP=i=>{pendingCPs.splice(i,1);renderCPs();};
+
 window.addAP=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`entries/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{photos:[...(entry.photos||[]),u]});syncing(false);};r.readAsDataURL(f);};
-window.delAP=async(eid,pi)=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.photos||[])];p.splice(pi,1);syncing(true);await updateDoc(doc(db,'entries',eid),{photos:p});syncing(false);};
-window.delCP=async(eid,pi)=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorphotos||[])];p.splice(pi,1);syncing(true);await updateDoc(doc(db,'entries',eid),{colorphotos:p});syncing(false);};
+
+window.confirmDelAP=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.photos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{photos:p});syncing(false);});};
+window.confirmDelCP=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorphotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{colorphotos:p});syncing(false);});};
 
 // ── TODOS ─────────────────────────────────────────────────────────────────────
 function todoHTML(t,i){
@@ -468,7 +591,6 @@ window.togShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;cons
 window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
 window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
 
-// ── CONFIRM ───────────────────────────────────────────────────────────────────
 function confirm2(title,msg,onOk){document.getElementById('c-title').textContent=title;document.getElementById('c-msg').textContent=msg;document.getElementById('c-ok').onclick=onOk;openModal('confirm-modal');}
 
 document.getElementById('en-date').value=new Date().toISOString().split('T')[0];
