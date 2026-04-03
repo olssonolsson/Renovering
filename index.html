@@ -403,6 +403,7 @@ function syncing(v){const d=document.getElementById('sync-dot');d.className='syn
 // Each photo item: { src, caption, sub }
 let lbItems=[],lbI=0;
 let lbBeforeItems=[];
+let lbAfterItems=[];
 let lbEntryItems={};
 
 window.openLB=(items,idx)=>{
@@ -526,7 +527,7 @@ function renderRooms(){
 window.showRoom=id=>{curRoom=rooms.find(r=>r.id===id);if(!curRoom)return;document.getElementById('rooms-view').style.display='none';document.getElementById('room-detail').style.display='';document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;renderBG();renderEntries();};
 window.editRoom=id=>{const r=rooms.find(x=>x.id===id);if(!r)return;editingRoomId=id;document.getElementById('room-modal-title').textContent='Redigera rum';document.getElementById('room-name-in').value=r.name;document.getElementById('room-del-btn').style.display='block';setIcon(r.icon);openModal('room-modal');};
 window.editCurrentRoom=()=>editRoom(curRoom.id);
-window.saveRoom=async()=>{const name=document.getElementById('room-name-in').value.trim();if(!name)return;syncing(true);if(editingRoomId){await updateDoc(doc(db,'rooms',editingRoomId),{name,icon:selIcon});if(curRoom?.id===editingRoomId){curRoom={...curRoom,name,icon:selIcon};document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;}}else{await setDoc(doc(db,'rooms','room_'+Date.now()),{name,icon:selIcon,before:[],createdAt:Date.now()});}document.getElementById('room-name-in').value='';document.getElementById('room-del-btn').style.display='none';editingRoomId=null;document.getElementById('room-modal-title').textContent='Nytt rum';syncing(false);closeModals();};
+window.saveRoom=async()=>{const name=document.getElementById('room-name-in').value.trim();if(!name)return;syncing(true);if(editingRoomId){await updateDoc(doc(db,'rooms',editingRoomId),{name,icon:selIcon});if(curRoom?.id===editingRoomId){curRoom={...curRoom,name,icon:selIcon};document.getElementById('detail-title').textContent=curRoom.icon+' '+curRoom.name;}}else{await setDoc(doc(db,'rooms','room_'+Date.now()),{name,icon:selIcon,before:[],after:[],createdAt:Date.now()});}document.getElementById('room-name-in').value='';document.getElementById('room-del-btn').style.display='none';editingRoomId=null;document.getElementById('room-modal-title').textContent='Nytt rum';syncing(false);closeModals();};
 window.deleteCurrentRoom=()=>{const r=rooms.find(x=>x.id===editingRoomId);if(!r)return;confirm2(`Ta bort "${r.name}"?`,'Rummet och alla åtgärder tas bort permanent.',async()=>{syncing(true);closeModals();await Promise.all(entries.filter(e=>e.roomId===r.id).map(e=>deleteDoc(doc(db,'entries',e.id))));await deleteDoc(doc(db,'rooms',r.id));syncing(false);showRooms();});};
 
 // ── BEFORE & AFTER GALLERY ────────────────────────────────────────────────────────────
@@ -539,19 +540,22 @@ function renderBG(){
     phs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLBBefore(${pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelBP(${pi})">×</button></div>`).join('')+
     `<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Före-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addBP(this)"></label>`;
   
-  // Render after photos from entries in this room
-  const afterPhotos=entries
-    .filter(e=>e.roomId===curRoom.id)
-    .flatMap((e,ei)=>(e.photos||[]).map((p,pi)=>({photo:p,entryId:e.id,entryName:e.name,photoIdx:pi,entryIdx:ei})));
+  // Render after photos from room
+  const afterPhs=curRoom.after||[];
+  const afterItems=afterPhs.map((src,i)=>({src,caption:`Efter-bild ${i+1}`,sub:curRoom.name}));
+  lbAfterItems=afterItems;
   
   document.getElementById('after-grid').innerHTML=
-    afterPhotos.map((item,i)=>`<div class="pw"><img class="photo-thumb" src="${item.photo}" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${item.entryId}')),${(entries.find(x=>x.id===item.entryId).colorphotos||[]).length+item.photoIdx})" style="cursor:pointer;" title="${item.entryName}"><button class="pd" onclick="confirmDelAP('${item.entryId}',${item.photoIdx})">×</button></div>`).join('')+
-    (afterPhotos.length===0?`<div style="color:var(--text3);font-size:13px;text-align:center;padding:2rem;grid-column:1/-1;">Lägg till åtgärder med bilder för att se efter-bilder här</div>`:'');
+    afterPhs.map((p,pi)=>`<div class="pw"><img class="photo-thumb" src="${p}" onclick="openLBAfter(${pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelAP(${pi})">×</button></div>`).join('')+
+    `<label class="photo-add-box"><span class="plus">+</span><span class="lbl">Efter-bild</span><input type="file" accept="image/*" style="display:none;" onchange="addAP(this)"></label>`;
 }
 
 window.openLBBefore=idx=>openLB(lbBeforeItems,idx);
+window.openLBAfter=idx=>openLB(lbAfterItems,idx);
 window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
+window.addAP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`after/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{after:[...(curRoom.after||[]),u]});syncing(false);};r.readAsDataURL(f);};
 window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
+window.confirmDelAP=pi=>{confirm2('Ta bort efter-bilden?','Bilden tas bort permanent.',async()=>{const a=[...(curRoom.after||[])];a.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{after:a});syncing(false);});};
 
 // ── ENTRIES ───────────────────────────────────────────────────────────────────
 function entryHTML(e,showRoom){
