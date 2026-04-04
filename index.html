@@ -208,15 +208,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <!-- LOGO -->
       <div class="logo-section" id="logo-container"></div>
 
-      <!-- SENASTE ÅTGÄRDER -->
-      <div class="home-card">
-        <h3>📋 Senaste åtgärder</h3>
-        <div class="recent-actions" id="recent-actions-list"></div>
-      </div>
-
       <!-- INSPIRATIONSGALLERI -->
       <div class="home-card">
-        <h3>🎨 Före & Efter</h3>
+        <h3>🎨 Bilder</h3>
         <div class="gallery-section" id="gallery-container"></div>
       </div>
 
@@ -765,19 +759,6 @@ function renderHome(){
     logoContainer.innerHTML='<div class="empty-state-home">📷 Logga inte uppladdad än</div>';
   }
 
-  // Render recent actions (last 5 entries)
-  const recentList=document.getElementById('recent-actions-list');
-  const sortedEntries=[...entries].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
-  if(sortedEntries.length){
-    recentList.innerHTML=sortedEntries.map(e=>{
-      const room=rooms.find(r=>r.id===e.roomId);
-      const dateObj=new Date(e.date);
-      const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
-      return `<div class="action-item"><div class="desc"><strong>${e.name}</strong><br>${e.category}${room?' · '+room.name:''}</div><div class="time">${timeStr}</div></div>`;
-    }).join('');
-  }else{
-    recentList.innerHTML='<div class="empty-state-home">Ingen aktivitet ännu</div>';
-  }
 
   // Render before/after gallery (entries with photos)
   const galleryContainer=document.getElementById('gallery-container');
