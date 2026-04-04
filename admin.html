@@ -32,31 +32,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .section.active{display:block;}
 
 .section-title{font-size:20px;font-weight:600;margin-bottom:1.5rem;color:var(--text);}
-.search-bar{width:100%;max-width:400px;padding:8px 12px;border:.5px solid var(--border2);border-radius:8px;font-size:14px;margin-bottom:1.5rem;outline:none;background:var(--surface);color:var(--text);font-family:inherit;}
 
-.list-item{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:12px;cursor:pointer;transition:border-color .15s;}
-.list-item:hover{border-color:var(--border2);}
-.list-item.editing{background:var(--surface2);}
+/* Images Grid */
+.images-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-top:1.5rem;}
+.image-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;overflow:hidden;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;}
+.image-card:hover{transform:translateY(-2px);border-color:var(--border2);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.image-card.editing{background:var(--surface2);box-shadow:0 0 0 2px var(--accent);}
+.image-preview-container{position:relative;width:100%;aspect-ratio:1;overflow:hidden;background:var(--surface2);}
+.image-preview{width:100%;height:100%;object-fit:cover;display:block;}
+.image-card-content{padding:1rem;flex:1;display:flex;flex-direction:column;}
+.image-field-row{margin-bottom:0.8rem;}
+.image-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;display:block;}
+.image-value{font-size:12px;color:var(--text2);}
+.image-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1rem;}
+.image-info-item{font-size:11px;}
+.image-info-label{font-size:9px;color:var(--text3);font-weight:600;}
+.image-info-text{color:var(--text2);margin-top:2px;word-break:break-word;}
+.image-actions{display:flex;gap:6px;margin-top:auto;}
+.image-btn{padding:6px 10px;border:.5px solid var(--border2);border-radius:4px;background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;transition:background .15s;flex:1;text-align:center;}
+.image-btn:hover{background:var(--surface2);}
+.image-btn.edit{background:var(--accent);color:var(--accent-txt);border-color:var(--accent);}
+.image-btn.edit:hover{opacity:.85;}
+.image-btn.delete{color:var(--danger);border-color:var(--danger-bd);background:var(--danger-bg);}
+.image-btn.delete:hover{opacity:.85;}
 
-.item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
-.item-title{font-size:14px;font-weight:600;color:var(--text);}
-.item-meta{font-size:12px;color:var(--text3);}
-.item-content{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:8px;}
-.item-actions{display:flex;gap:6px;}
-.item-btn{padding:6px 12px;border:.5px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s;}
-.item-btn:hover{background:var(--surface2);}
-.item-btn.danger{color:var(--danger);border-color:var(--danger-bd);background:var(--danger-bg);}
-.item-btn.danger:hover{opacity:.85;}
-
-.form-group{margin-bottom:1rem;}
+.controls-bar{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:flex-end;}
+.controls-bar > div{flex:1;min-width:150px;}
 .form-label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:4px;}
-.form-input,.form-select,.form-textarea{width:100%;padding:8px 10px;border:.5px solid var(--border2);border-radius:6px;font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);}
-.form-textarea{resize:vertical;min-height:80px;}
+.form-select,.search-input{width:100%;padding:8px 10px;border:.5px solid var(--border2);border-radius:6px;font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);}
+.form-select:focus,.search-input:focus{border-color:var(--accent);}
 
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;}
 .modal-bg.open{display:flex;}
-.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:600px;border:.5px solid var(--border);margin:auto;}
+.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:700px;border:.5px solid var(--border);margin:auto;}
 .modal h2{font-size:18px;font-weight:600;margin-bottom:1.25rem;color:var(--text);}
+.modal-image-preview{width:100%;max-height:300px;object-fit:contain;border-radius:8px;margin-bottom:1.5rem;border:.5px solid var(--border);}
+.form-group{margin-bottom:1.25rem;}
+.form-label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px;}
+.form-input,.form-textarea{width:100%;padding:8px 10px;border:.5px solid var(--border2);border-radius:6px;font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--text);}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-textarea{resize:vertical;min-height:70px;}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap;}
 .btn{padding:8px 16px;border:.5px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s;}
 .btn:hover{background:var(--surface2);}
@@ -64,34 +79,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-primary:hover{opacity:.85;}
 .btn-danger{color:var(--danger);border-color:var(--danger-bd);background:var(--danger-bg);}
 
-.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:8px;}
-.photo-item{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;cursor:pointer;border:.5px solid var(--border);}
-.photo-item img{width:100%;height:100%;object-fit:cover;}
-.photo-item.empty{background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:24px;}
-
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem;}
-.stat-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem;text-align:center;}
-.stat-value{font-size:24px;font-weight:600;color:var(--accent);margin-bottom:4px;}
-.stat-label{font-size:12px;color:var(--text3);}
-
-.tag{display:inline-block;padding:3px 8px;border-radius:12px;background:var(--tag-bg);color:var(--text2);font-size:11px;margin-right:4px;margin-bottom:4px;}
+.tag{display:inline-block;padding:3px 8px;border-radius:12px;background:var(--tag-bg);color:var(--text2);font-size:11px;margin-right:4px;}
 
 .loading{text-align:center;padding:2rem;color:var(--text3);}
 .empty-state{text-align:center;padding:2rem;color:var(--text3);}
 
-.images-grid-item{background:var(--surface);border:.5px solid var(--border);border-radius:10px;overflow:hidden;transition:transform .15s;}
-.images-grid-item:hover{transform:scale(1.02);border-color:var(--border2);}
-.images-grid-item img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
-.images-grid-item-info{padding:10px;}
-.images-grid-item-info-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.images-grid-item-tags{font-size:11px;color:var(--text3);margin-bottom:6px;}
-.images-grid-item-actions{display:flex;gap:4px;}
+/* Activity Log Styles */
+.activity-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem;}
+.activity-item{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.25rem;transition:transform .15s,box-shadow .15s;}
+.activity-item:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.activity-item.added{border-left:3px solid #81c784;}
+.activity-item.updated{border-left:3px solid #ffb74d;}
+.activity-item.deleted{border-left:3px solid #ff6b6b;}
+.activity-item.image{border-left:3px solid #4fc3f7;}
+.activity-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;gap:1rem;}
+.activity-title{font-size:14px;font-weight:600;color:var(--text);flex:1;}
+.activity-time{font-size:12px;color:var(--text3);white-space:nowrap;}
+.activity-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.75rem;}
+.activity-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500;}
+.activity-badge.added{background:#e8f5e9;color:#2e7d32;}
+.activity-badge.updated{background:#fff8f7;color:#c0392b;}
+.activity-badge.deleted{background:#2c1a1a;color:#ff6b6b;}
+.activity-badge.image{background:#e0f2f1;color:#00695c;}
+.activity-collection{display:inline-block;padding:3px 8px;border-radius:4px;background:var(--tag-bg);color:var(--text2);font-size:11px;}
+.activity-content{font-size:13px;color:var(--text2);line-height:1.5;}
+.activity-details{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:0.75rem;margin-top:0.75rem;font-size:12px;color:var(--text2);font-family:monospace;overflow-x:auto;}
+.activity-details-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:0.5rem;}
+.activity-details-item{margin-bottom:0.5rem;}
+.activity-details-item:last-child{margin-bottom:0;}
+.activity-field{color:var(--text3);}
+.activity-value{color:var(--accent);word-break:break-word;}
 
 @media(max-width:768px){
   .main-container{flex-direction:column;}
-  .sidebar{width:100%;border-right:none;border-bottom:.5px solid var(--border);max-height:80px;overflow-x:auto;display:flex;padding:0.5rem;gap:1rem;}
+  .sidebar{width:100%;border-right:none;border-bottom:.5px solid var(--border);height:auto;overflow-x:auto;display:flex;padding:0.5rem;gap:1rem;}
   .sidebar-section{margin-bottom:0;}
   .sidebar-item{white-space:nowrap;}
+  .images-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .controls-bar{flex-direction:column;}
+  .controls-bar > div{width:100%;}
+  .activity-header{flex-direction:column;gap:0.5rem;}
 }
 </style>
 </head>
@@ -109,66 +136,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-title">Data</div>
-      <div class="sidebar-item active" onclick="switchSection('dashboard')">📊 Dashboard</div>
-      <div class="sidebar-item" onclick="switchSection('rooms')">🏠 Rum <span class="count" id="rooms-count">0</span></div>
-      <div class="sidebar-item" onclick="switchSection('entries')">✏️ Åtgärder <span class="count" id="entries-count">0</span></div>
-      <div class="sidebar-item" onclick="switchSection('colors')">🎨 Färger <span class="count" id="colors-count">0</span></div>
-      <div class="sidebar-item" onclick="switchSection('images')">🖼️ Bilder <span class="count" id="images-count">0</span></div>
-      <div class="sidebar-item" onclick="switchSection('todos')">📋 Todos <span class="count" id="todos-count">0</span></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-title">Verktyg</div>
-      <div class="sidebar-item" onclick="switchSection('bulk-edit')">🔄 Bulk-ändring</div>
-      <div class="sidebar-item" onclick="switchSection('export')">💾 Export/Import</div>
-      <div class="sidebar-item" onclick="switchSection('logs')">📝 Logs</div>
+      <div class="sidebar-item active" onclick="switchSection('images')">🖼️ Bilder <span class="count" id="images-count">0</span></div>
+      <div class="sidebar-item" onclick="switchSection('activity')">📋 Aktivitetslogg <span class="count" id="activity-count">0</span></div>
     </div>
   </div>
 
   <div class="content">
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="section active">
-      <div class="section-title">📊 Dashboard</div>
-      <div class="stats-grid" id="stats-container"></div>
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Senaste ändringar</h3>
-        <div id="recent-changes" style="font-size:13px;line-height:1.8;"></div>
-      </div>
-    </div>
-
-    <!-- ROOMS -->
-    <div id="rooms" class="section">
-      <div class="section-title">🏠 Rum</div>
-      <input type="text" class="search-bar" id="rooms-search" placeholder="Sök rum..." oninput="filterRooms()">
-      <button class="btn btn-primary" onclick="newRoom()">+ Nytt rum</button>
-      <div id="rooms-list" style="margin-top:1.5rem;"></div>
-    </div>
-
-    <!-- ENTRIES -->
-    <div id="entries" class="section">
-      <div class="section-title">✏️ Åtgärder</div>
-      <input type="text" class="search-bar" id="entries-search" placeholder="Sök åtgärder..." oninput="filterEntries()">
-      <div style="margin-bottom:1rem;">
-        <label class="form-label">Filtrera efter rum:</label>
-        <select id="entries-room-filter" class="form-select" onchange="filterEntries()">
-          <option value="">Alla rum</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" onclick="newEntry()">+ Ny åtgärd</button>
-      <div id="entries-list" style="margin-top:1.5rem;"></div>
-    </div>
-
-    <!-- COLORS -->
-    <div id="colors" class="section">
-      <div class="section-title">🎨 Färger</div>
-      <input type="text" class="search-bar" id="colors-search" placeholder="Sök färger..." oninput="filterColors()">
-      <div id="colors-list" style="margin-top:1.5rem;"></div>
-    </div>
-
     <!-- IMAGES -->
-    <div id="images" class="section">
+    <div id="images" class="section active">
       <div class="section-title">🖼️ Bilder</div>
-      <div style="margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
-        <div style="flex:1;min-width:200px;">
+      
+      <div class="controls-bar">
+        <div>
           <label class="form-label">Filtrera efter typ:</label>
           <select id="image-type-filter" class="form-select" onchange="filterImages()">
             <option value="">Alla typer</option>
@@ -177,144 +156,90 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <option value="paintCanPhotos">Färgburk</option>
           </select>
         </div>
-        <div style="flex:1;min-width:200px;">
+        <div>
           <label class="form-label">Filtrera efter åtgärd:</label>
           <select id="image-entry-filter" class="form-select" onchange="filterImages()">
             <option value="">Alla åtgärder</option>
           </select>
         </div>
+        <div>
+          <label class="form-label">Sök:</label>
+          <input type="text" id="images-search" class="search-input" placeholder="Sök efter namn..." oninput="filterImages()">
+        </div>
       </div>
-      <input type="text" class="search-bar" id="images-search" placeholder="Sök åtgärder..." oninput="filterImages()">
-      <div id="images-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:1.5rem;"></div>
+      
+      <div id="images-grid" class="images-grid"></div>
+      <div id="images-empty" class="empty-state">Laddar bilder...</div>
     </div>
 
-    <!-- TODOS -->
-    <div id="todos" class="section">
-      <div class="section-title">📋 Todos</div>
-      <input type="text" class="search-bar" id="todos-search" placeholder="Sök todos..." oninput="filterTodos()">
-      <button class="btn btn-primary" onclick="newTodo()">+ Ny todo</button>
-      <div id="todos-list" style="margin-top:1.5rem;"></div>
-    </div>
-
-    <!-- BULK EDIT -->
-    <div id="bulk-edit" class="section">
-      <div class="section-title">🔄 Bulk-ändring</div>
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Omklassificera åtgärder</h3>
-        <div class="form-group">
-          <label class="form-label">Från kategori:</label>
-          <select id="bulk-from-cat" class="form-select">
-            <option>Målning</option>
-            <option>Golv</option>
-            <option>Tapetsering</option>
-            <option>Belysning</option>
-            <option>Möbler</option>
-            <option>El & VVS</option>
-            <option>Övrigt</option>
+    <!-- ACTIVITY LOG -->
+    <div id="activity" class="section">
+      <div class="section-title">📋 Aktivitetslogg</div>
+      
+      <div class="controls-bar">
+        <div>
+          <label class="form-label">Filtrera efter typ:</label>
+          <select id="activity-type-filter" class="form-select" onchange="filterActivity()">
+            <option value="">Alla ändringar</option>
+            <option value="added">Tillagt</option>
+            <option value="updated">Ändrat</option>
+            <option value="deleted">Raderat</option>
+            <option value="image">Bildändringar</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Till kategori:</label>
-          <select id="bulk-to-cat" class="form-select">
-            <option>Målning</option>
-            <option>Golv</option>
-            <option>Tapetsering</option>
-            <option>Belysning</option>
-            <option>Möbler</option>
-            <option>El & VVS</option>
-            <option>Övrigt</option>
+        <div>
+          <label class="form-label">Filtrera efter samling:</label>
+          <select id="activity-collection-filter" class="form-select" onchange="filterActivity()">
+            <option value="">Alla samlingar</option>
+            <option value="entries">Åtgärder</option>
+            <option value="rooms">Rum</option>
+            <option value="todos">Todos</option>
+            <option value="images">Bilder</option>
           </select>
         </div>
-        <button class="btn btn-primary" onclick="bulkRecategorize()">Omklassificera</button>
+        <div>
+          <label class="form-label">Sök:</label>
+          <input type="text" id="activity-search" class="search-input" placeholder="Sök i aktiviteter..." oninput="filterActivity()">
+        </div>
+        <div style="display:flex;gap:6px;align-items:flex-end;">
+          <button class="btn" onclick="clearActivityLog()">Rensa logg</button>
+        </div>
       </div>
-
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Flytta åtgärder mellan rum</h3>
-        <div class="form-group">
-          <label class="form-label">Från rum:</label>
-          <select id="bulk-from-room" class="form-select"></select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Till rum:</label>
-          <select id="bulk-to-room" class="form-select"></select>
-        </div>
-        <button class="btn btn-primary" onclick="bulkMoveRoom()">Flytta åtgärder</button>
-      </div>
-
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Ändra bildkategori på flera bilder</h3>
-        <div class="form-group">
-          <label class="form-label">Från bildtyp:</label>
-          <select id="bulk-from-imgtype" class="form-select">
-            <option value="actionPhotos">Åtgärd</option>
-            <option value="colorPhotos">Färg</option>
-            <option value="paintCanPhotos">Färgburk</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Till bildtyp:</label>
-          <select id="bulk-to-imgtype" class="form-select">
-            <option value="actionPhotos">Åtgärd</option>
-            <option value="colorPhotos">Färg</option>
-            <option value="paintCanPhotos">Färgburk</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" onclick="bulkReCategorizeImages()">Ändra bildkategori</button>
-      </div>
+      
+      <div id="activity-list" class="activity-list"></div>
+      <div id="activity-empty" class="empty-state">Ingen aktivitet ännu</div>
     </div>
-
-    <!-- EXPORT/IMPORT -->
-    <div id="export" class="section">
-      <div class="section-title">💾 Export/Import</div>
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Exportera data</h3>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;">Exportera hela databasen som JSON-fil för säkerhetskopia.</p>
-        <button class="btn btn-primary" onclick="exportData()">📥 Exportera allt</button>
-      </div>
-      <div style="background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Importera data</h3>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;">Importera data från en tidigare exporterad JSON-fil.</p>
-        <input type="file" id="import-file" accept=".json" style="margin-bottom:1rem;">
-        <button class="btn btn-primary" onclick="importData()">📤 Importera</button>
-      </div>
-    </div>
-
-    <!-- LOGS -->
-    <div id="logs" class="section">
-      <div class="section-title">📝 Aktivitetsloggar</div>
-      <button class="btn" onclick="clearLogs()">Rensa logs</button>
-      <div id="logs-container" style="margin-top:1.5rem;background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem;font-size:12px;max-height:500px;overflow-y:auto;font-family:monospace;"></div>
-    </div>
-  </div>
-</div>
 
 <!-- EDIT MODAL -->
-<div class="modal-bg" id="edit-modal">
+<div id="edit-modal" class="modal-bg">
   <div class="modal">
-    <h2 id="modal-title">Redigera</h2>
+    <h2 id="modal-title">Redigera bild</h2>
+    <img id="modal-image-preview" class="modal-image-preview" alt="Bildförhandsvisning">
     <div id="modal-content"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Avbryt</button>
-      <button class="btn btn-danger" id="modal-delete-btn" onclick="deleteCurrentItem()" style="margin-right:auto;">Ta bort</button>
-      <button class="btn btn-primary" onclick="saveCurrentItem()">Spara</button>
+      <button class="btn btn-danger" onclick="deleteCurrentImage()">Radera</button>
+      <button class="btn btn-primary" onclick="saveCurrentImage()">Spara ändringar</button>
     </div>
   </div>
 </div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,collection,doc,setDoc,updateDoc,deleteDoc,onSnapshot,query,orderBy,getDocs}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import{getStorage,ref,getBytes}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import{getFirestore,collection,doc,updateDoc,deleteDoc,onSnapshot,query,orderBy,getDocs}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const cfg={apiKey:"AIzaSyBcOie0KQdfTDtLkUfhPfKBI0grPGqRjfg",authDomain:"renovering-8b74f.firebaseapp.com",projectId:"renovering-8b74f",storageBucket:"renovering-8b74f.firebasestorage.app",messagingSenderId:"803734789539",appId:"1:803734789539:web:dbbf3b7c08bc41dcde4e16"};
 const app=initializeApp(cfg);
 const db=getFirestore(app);
-const storage=getStorage(app);
 
-let rooms=[],entries=[],todos=[];
-let currentEditItem=null,currentEditType=null;
-let activityLog=[];
+let entries=[];
 let allImages=[];
+let filteredImages=[];
+let currentEditImage=null;
+let activityLog=[];
+let filteredActivityLog=[];
+
+const typeLabels={actionPhotos:'Åtgärd',colorPhotos:'Färg',paintCanPhotos:'Färgburk'};
 
 function syncing(v){document.getElementById('sync-dot').style.background=v?'#ffb74d':'#81c784';}
 
@@ -324,114 +249,36 @@ function applyDark(){document.body.classList.toggle('dark',dark);}
 window.toggleDark=()=>{dark=!dark;localStorage.setItem('admin-dark',dark?'1':'0');applyDark();};
 applyDark();
 
-function log(msg){activityLog.unshift({time:new Date().toLocaleTimeString(),msg});if(activityLog.length>100)activityLog.pop();renderLogs();}
+function log(msg){activityLog.unshift({time:new Date().toLocaleTimeString(),msg});if(activityLog.length>100)activityLog.pop();}
 
-// Load all data
-onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{rooms=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();log("Laddade rum");});
-onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{entries=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();buildImageList();log("Laddade åtgärder");});
-onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{todos=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();log("Laddade todos");});
-
-function updateCounts(){
-  document.getElementById('rooms-count').textContent=rooms.length;
-  document.getElementById('entries-count').textContent=entries.length;
-  const colors=new Set(entries.filter(e=>e.colorname).map(e=>e.colorname)).size;
-  document.getElementById('colors-count').textContent=colors;
-  document.getElementById('todos-count').textContent=todos.length;
-  document.getElementById('images-count').textContent=allImages.length;
+function logActivity(type, collection, title, details = {}){
+  const timestamp = new Date();
+  const timeStr = timestamp.toLocaleTimeString('sv-SE');
+  const dateStr = timestamp.toLocaleDateString('sv-SE');
+  
+  const activity = {
+    id: Date.now() + Math.random(),
+    type: type, // 'added', 'updated', 'deleted', 'image'
+    collection: collection, // 'entries', 'rooms', 'todos', 'images'
+    title: title,
+    details: details,
+    timestamp: timestamp,
+    timeStr: timeStr,
+    dateStr: dateStr
+  };
+  
+  activityLog.unshift(activity);
+  if(activityLog.length > 500) activityLog.pop();
+  
+  document.getElementById('activity-count').textContent = activityLog.length;
 }
 
-window.switchSection=section=>{
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(section).classList.add('active');
-  document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  if(section==='rooms')renderRooms();
-  if(section==='entries'){renderEntries();populateRoomFilter();}
-  if(section==='colors')renderColors();
-  if(section==='images')renderImages();
-  if(section==='todos')renderTodos();
-  if(section==='bulk-edit')populateBulkRoomFilters();
-};
-
-function renderDashboard(){
-  const photoCount=entries.reduce((s,e)=>(s+(e.actionPhotos||[]).length+(e.colorPhotos||[]).length+(e.paintCanPhotos||[]).length),0);
-  const html=`
-    <div class="stat-card"><div class="stat-value">${rooms.length}</div><div class="stat-label">Rum</div></div>
-    <div class="stat-card"><div class="stat-value">${entries.length}</div><div class="stat-label">Åtgärder</div></div>
-    <div class="stat-card"><div class="stat-value">${new Set(entries.filter(e=>e.colorname).map(e=>e.colorname)).size}</div><div class="stat-label">Unika färger</div></div>
-    <div class="stat-card"><div class="stat-value">${photoCount}</div><div class="stat-label">Foton</div></div>
-    <div class="stat-card"><div class="stat-value">${todos.length}</div><div class="stat-label">Todos</div></div>
-  `;
-  document.getElementById('stats-container').innerHTML=html;
-  
-  const recent=activityLog.slice(0,10).map(l=>'<div>'+l.time+' - '+l.msg+'</div>').join('');
-  document.getElementById('recent-changes').innerHTML=recent||'Ingen aktivitet ännu';
-}
-
-function renderRooms(){
-  const q=document.getElementById('rooms-search')?.value.toLowerCase()||'';
-  let list=rooms;
-  if(q)list=list.filter(r=>r.name.toLowerCase().includes(q));
-  
-  const html=list.map(r=>{
-    const entryCount=entries.filter(e=>e.roomId===r.id).length;
-    return '<div class="list-item" onclick="editItem(\'room\',\''+r.id+'\')"><div class="item-header"><span class="item-title">'+r.icon+' '+r.name+'</span><span class="item-meta">'+entryCount+' åtgärder</span></div><div class="item-actions"><span class="tag">Skapad: '+new Date(r.createdAt).toLocaleDateString('sv-SE')+'</span></div></div>';
-  }).join('');
-  
-  document.getElementById('rooms-list').innerHTML=html||'<div class="empty-state">Inga rum hittade</div>';
-}
-
-function renderEntries(){
-  const q=document.getElementById('entries-search')?.value.toLowerCase()||'';
-  const roomFilter=document.getElementById('entries-room-filter')?.value||'';
-  let list=entries;
-  
-  if(roomFilter)list=list.filter(e=>e.roomId===roomFilter);
-  if(q)list=list.filter(e=>(e.name+e.category+(e.colorname||'')+e.note).toLowerCase().includes(q));
-  
-  const html=list.map(e=>{
-    const room=rooms.find(r=>r.id===e.roomId);
-    const photoCount=(e.actionPhotos||[]).length+(e.colorPhotos||[]).length+(e.paintCanPhotos||[]).length;
-    let content='<strong>'+e.name+'</strong><br>';
-    if(e.note)content+='Anteckning: '+e.note.substring(0,100)+(e.note.length>100?'...':'')+'<br>';
-    content+='Kategori: <span class="tag">'+e.category+'</span> ';
-    if(e.colorname)content+='Färg: <span class="tag">'+e.colorname+'</span> ';
-    if(room)content+='Rum: <span class="tag">'+room.icon+' '+room.name+'</span> ';
-    content+='Foton: <span class="tag">'+photoCount+'</span>';
-    return '<div class="list-item" onclick="editItem(\'entry\',\''+e.id+'\')"><div class="item-header"><span class="item-title">'+e.name+'</span><span class="item-meta">'+(e.date||'Ej daterad')+'</span></div><div class="item-content">'+content+'</div></div>';
-  }).join('');
-  
-  document.getElementById('entries-list').innerHTML=html||'<div class="empty-state">Inga åtgärder hittade</div>';
-}
-
-function renderColors(){
-  const q=document.getElementById('colors-search')?.value.toLowerCase()||'';
-  const colorEntries=entries.filter(e=>e.colorname);
-  const groups={};
-  colorEntries.forEach(e=>{
-    if(!groups[e.colorname])groups[e.colorname]=[];
-    groups[e.colorname].push(e);
-  });
-  
-  let list=Object.entries(groups);
-  if(q)list=list.filter(item=>item[0].toLowerCase().includes(q));
-  
-  const html=list.map(item=>{
-    const name=item[0];
-    const items=item[1];
-    const e=items[0];
-    const room=rooms.find(r=>r.id===e.roomId);
-    const colorPhotos=e.colorPhotos||[];
-    let photoHtml='<span class="tag">Ingen färgbild</span>';
-    if(colorPhotos.length){
-      photoHtml='<div class="photo-grid">'+colorPhotos.map(p=>'<div class="photo-item"><img src="'+p+'" alt="Färgbild"></div>').join('')+'</div>';
-    }
-    return '<div class="list-item" onclick="editItem(\'entry\',\''+e.id+'\')"><div class="item-header"><span class="item-title">'+name+'</span><span class="item-meta">Används '+items.length+' gang'+( items.length!==1?'er':'')+' </span></div><div class="item-content">'+( e.brand?'Produkt: <span class="tag">'+e.brand+'</span>':'')+( e.gloss?'Glans: <span class="tag">'+e.gloss+'</span>':'')+photoHtml+'</div></div>';
-  }).join('');
-  
-  document.getElementById('colors-list').innerHTML=html||'<div class="empty-state">Inga färger hittade</div>';
-}
+// Load entries and build image list
+onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{
+  entries=snap.docs.map(d=>({id:d.id,...d.data()}));
+  buildImageList();
+  populateEntryFilter();
+});
 
 function buildImageList(){
   allImages=[];
@@ -446,13 +293,12 @@ function buildImageList(){
       allImages.push({src,type:'paintCanPhotos',entryId:e.id,entryName:e.name,categoryName:e.category,index:idx});
     });
   });
-  updateCounts();
-  populateImageEntryFilter();
+  document.getElementById('images-count').textContent=allImages.length;
+  filterImages();
 }
 
-function populateImageEntryFilter(){
+function populateEntryFilter(){
   const select=document.getElementById('image-entry-filter');
-  if(!select)return;
   const entrySet=new Set(allImages.map(img=>img.entryId));
   const entryOptions=Array.from(entrySet).map(eid=>{
     const entry=entries.find(e=>e.id===eid);
@@ -461,350 +307,307 @@ function populateImageEntryFilter(){
   select.innerHTML='<option value="">Alla åtgärder</option>'+entryOptions;
 }
 
+window.filterImages=function(){
+  const typeFilter=document.getElementById('image-type-filter').value||'';
+  const entryFilter=document.getElementById('image-entry-filter').value||'';
+  const searchQ=(document.getElementById('images-search').value||'').toLowerCase();
+  
+  filteredImages=allImages;
+  if(typeFilter)filteredImages=filteredImages.filter(img=>img.type===typeFilter);
+  if(entryFilter)filteredImages=filteredImages.filter(img=>img.entryId===entryFilter);
+  if(searchQ)filteredImages=filteredImages.filter(img=>img.entryName.toLowerCase().includes(searchQ)||img.categoryName.toLowerCase().includes(searchQ));
+  
+  renderImages();
+}
+
 function renderImages(){
-  const typeFilter=document.getElementById('image-type-filter')?.value||'';
-  const entryFilter=document.getElementById('image-entry-filter')?.value||'';
-  const searchQ=(document.getElementById('images-search')?.value||'').toLowerCase();
+  const grid=document.getElementById('images-grid');
+  const empty=document.getElementById('images-empty');
   
-  let filtered=allImages;
-  if(typeFilter)filtered=filtered.filter(img=>img.type===typeFilter);
-  if(entryFilter)filtered=filtered.filter(img=>img.entryId===entryFilter);
-  if(searchQ)filtered=filtered.filter(img=>img.entryName.toLowerCase().includes(searchQ));
+  grid.innerHTML='';
   
-  const typeLabels={actionPhotos:'Åtgärd',colorPhotos:'Färg',paintCanPhotos:'Färgburk'};
+  if(filteredImages.length===0){
+    empty.style.display='block';
+    empty.textContent=allImages.length===0?'Laddar bilder...':'Inga bilder hittade';
+    return;
+  }
   
-  const html=filtered.map(img=>'<div class="images-grid-item"><img src="'+img.src+'" alt="'+img.entryName+'"><div class="images-grid-item-info"><div class="images-grid-item-info-title">'+img.entryName+'</div><div class="images-grid-item-tags"><span class="tag">'+typeLabels[img.type]+'</span><span class="tag">'+img.categoryName+'</span></div><div class="images-grid-item-actions"><button class="item-btn" style="flex:1;font-size:11px;" onclick="moveImageCategory(\''+img.entryId+'\',\''+img.type+'\','+img.index+');event.stopPropagation();">Ändra</button><button class="item-btn danger" style="flex:1;font-size:11px;" onclick="deleteImage(\''+img.entryId+'\',\''+img.type+'\','+img.index+');event.stopPropagation();">Ta bort</button></div></div></div>').join('');
+  empty.style.display='none';
   
-  document.getElementById('images-grid').innerHTML=html||'<div class="empty-state" style="grid-column:1/-1">Inga bilder hittade</div>';
+  filteredImages.forEach((img,idx)=>{
+    const card=document.createElement('div');
+    card.className='image-card';
+    if(currentEditImage?.src===img.src)card.classList.add('editing');
+    
+    card.innerHTML=`
+      <div class="image-preview-container">
+        <img src="${img.src}" alt="${img.entryName}" class="image-preview">
+      </div>
+      <div class="image-card-content">
+        <div class="image-field-row">
+          <span class="image-label">Åtgärd</span>
+          <div class="image-value">${img.entryName}</div>
+        </div>
+        <div class="image-info-grid">
+          <div class="image-info-item">
+            <div class="image-info-label">Typ</div>
+            <div class="image-info-text">${typeLabels[img.type]}</div>
+          </div>
+          <div class="image-info-item">
+            <div class="image-info-label">Kategori</div>
+            <div class="image-info-text">${img.categoryName}</div>
+          </div>
+        </div>
+        <div class="image-actions">
+          <button class="image-btn edit" onclick="editImage(${idx})">✏️ Redigera</button>
+          <button class="image-btn delete" onclick="deleteImageDirect(${idx})">🗑️ Radera</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
-window.moveImageCategory=async(entryId,fromType,index)=>{
-  const entry=entries.find(e=>e.id===entryId);
+window.editImage=function(idx){
+  if(idx<0||idx>=filteredImages.length)return;
+  currentEditImage={...filteredImages[idx],originalIndex:idx};
+  
+  const modalContent=document.getElementById('modal-content');
+  const typeLabel=typeLabels[currentEditImage.type];
+  
+  modalContent.innerHTML=`
+    <div class="form-group">
+      <label class="form-label">Åtgärd/Projekt</label>
+      <input type="text" class="form-input" value="${currentEditImage.entryName}" disabled style="background:var(--surface2);color:var(--text3);">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Bildtyp</label>
+      <select id="edit-type" class="form-select">
+        <option value="actionPhotos" ${currentEditImage.type==='actionPhotos'?'selected':''}>Åtgärd</option>
+        <option value="colorPhotos" ${currentEditImage.type==='colorPhotos'?'selected':''}>Färg</option>
+        <option value="paintCanPhotos" ${currentEditImage.type==='paintCanPhotos'?'selected':''}>Färgburk</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Kategori</label>
+      <input type="text" class="form-input" id="edit-category" value="${currentEditImage.categoryName}" placeholder="Tex: Målning, Golv, Belysning...">
+    </div>
+  `;
+  
+  document.getElementById('modal-title').textContent='Redigera bild - '+currentEditImage.entryName;
+  document.getElementById('modal-image-preview').src=currentEditImage.src;
+  openModal();
+}
+
+window.saveCurrentImage=async function(){
+  if(!currentEditImage)return;
+  
+  const newType=document.getElementById('edit-type').value;
+  const entry=entries.find(e=>e.id===currentEditImage.entryId);
   if(!entry)return;
   
-  const typeLabels={actionPhotos:'Åtgärd',colorPhotos:'Färg',paintCanPhotos:'Färgburk'};
-  const types=['actionPhotos','colorPhotos','paintCanPhotos'];
-  const options=types.filter(t=>t!==fromType).map(t=>typeLabels[t]).join('\n');
-  const result=prompt('Flytta till kategori:\n'+options,typeLabels['colorPhotos']);
-  if(!result)return;
-  
-  let toType=null;
-  for(const [key,val] of Object.entries(typeLabels)){
-    if(val===result){toType=key;break;}
-  }
-  if(!toType)return;
-  if(toType===fromType)return alert('Samma kategori');
-  
-  syncing(true);
-  const img=entry[fromType][index];
-  
-  const oldPhotos=[...entry[fromType]];
-  oldPhotos.splice(index,1);
-  
-  const newPhotos=[...(entry[toType]||[]),img];
-  
-  const update={};
-  update[fromType]=oldPhotos;
-  update[toType]=newPhotos;
-  
-  await updateDoc(doc(db,'entries',entryId),update);
-  log('Flyttade bild från '+fromType+' till '+toType);
-  syncing(false);
-  buildImageList();
-  renderImages();
-};
-
-window.deleteImage=async(entryId,photoType,index)=>{
-  if(!confirm('Ta bort bilden?'))return;
-  
-  syncing(true);
-  const entry=entries.find(e=>e.id===entryId);
-  if(!entry)return;
-  
-  const photos=[...entry[photoType]];
-  photos.splice(index,1);
-  
-  const update={};
-  update[photoType]=photos;
-  
-  await updateDoc(doc(db,'entries',entryId),update);
-  log('Raderade bild från '+photoType);
-  syncing(false);
-  buildImageList();
-  renderImages();
-};
-
-function renderTodos(){
-  const q=document.getElementById('todos-search')?.value.toLowerCase()||'';
-  let list=todos;
-  if(q)list=list.filter(t=>(t.title+t.note).toLowerCase().includes(q));
-  
-  const html=list.map(t=>{
-    const subtaskCount=(t.subtasks||[]).length;
-    const doneCount=(t.subtasks||[]).filter(s=>s.done).length;
-    let content='';
-    if(t.note)content=t.note.substring(0,100);
-    if(subtaskCount)content+='<br>Deluppgifter: '+doneCount+'/'+subtaskCount;
-    content+='<br><span class="tag">Skapad: '+new Date(t.createdAt).toLocaleDateString('sv-SE')+'</span>';
-    return '<div class="list-item"><div class="item-header"><span class="item-title">'+(t.done?'✓':'○')+' '+t.title+'</span><span class="item-meta">'+t.prio+'</span></div><div class="item-content">'+content+'</div><div class="item-actions"><button class="item-btn" onclick="editItem(\'todo\',\''+t.id+'\');event.stopPropagation();">Redigera</button><button class="item-btn danger" onclick="deleteItem(\'todo\',\''+t.id+'\');event.stopPropagation();">Ta bort</button></div></div>';
-  }).join('');
-  
-  document.getElementById('todos-list').innerHTML=html||'<div class="empty-state">Inga todos hittade</div>';
-}
-
-function renderLogs(){
-  const html=activityLog.map(l=>'<div>'+l.time+' - '+l.msg+'</div>').join('');
-  document.getElementById('logs-container').innerHTML=html;
-}
-
-function populateRoomFilter(){
-  const select=document.getElementById('entries-room-filter');
-  select.innerHTML='<option value="">Alla rum</option>'+rooms.map(r=>'<option value="'+r.id+'">'+r.icon+' '+r.name+'</option>').join('');
-}
-
-function populateBulkRoomFilters(){
-  const f=document.getElementById('bulk-from-room');
-  const t=document.getElementById('bulk-to-room');
-  const opts=rooms.map(r=>'<option value="'+r.id+'">'+r.icon+' '+r.name+'</option>').join('');
-  f.innerHTML=opts;
-  t.innerHTML=opts;
-}
-
-function editItem(type,id){
-  currentEditType=type;
-  currentEditItem=null;
-  
-  if(type==='room'){
-    currentEditItem=rooms.find(r=>r.id===id);
-    const html='<div class="form-group"><label class="form-label">Namn</label><input type="text" class="form-input" id="edit-name" value="'+currentEditItem.name+'"></div><div class="form-group"><label class="form-label">Ikon</label><input type="text" class="form-input" id="edit-icon" value="'+currentEditItem.icon+'" maxlength="2"></div>';
-    document.getElementById('modal-title').textContent='Redigera rum: '+currentEditItem.name;
-    document.getElementById('modal-content').innerHTML=html;
-    document.getElementById('modal-delete-btn').style.display='block';
-    openModal();
-  }
-  else if(type==='entry'){
-    currentEditItem=entries.find(e=>e.id===id);
-    const room=rooms.find(r=>r.id===currentEditItem.roomId);
-    let html='<div class="form-group"><label class="form-label">Namn</label><input type="text" class="form-input" id="edit-name" value="'+currentEditItem.name+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Kategori</label><select class="form-select" id="edit-category">';
-    ['Målning','Golv','Tapetsering','Belysning','Möbler','El & VVS','Övrigt'].forEach(cat=>{
-      html+='<option '+(currentEditItem.category===cat?'selected':'')+'>'+cat+'</option>';
-    });
-    html+='</select></div>';
-    html+='<div class="form-group"><label class="form-label">Rum</label><select class="form-select" id="edit-room">'+rooms.map(r=>'<option value="'+r.id+'" '+(r.id===currentEditItem.roomId?'selected':'')+'>'+r.icon+' '+r.name+'</option>').join('')+'</select></div>';
-    html+='<div class="form-group"><label class="form-label">Datum</label><input type="date" class="form-input" id="edit-date" value="'+(currentEditItem.date||'')+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Anteckningar</label><textarea class="form-textarea" id="edit-note">'+(currentEditItem.note||'')+'</textarea></div>';
-    html+='<div class="form-group"><label class="form-label">Färgkod</label><input type="text" class="form-input" id="edit-colorname" value="'+(currentEditItem.colorname||'')+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Glans</label><input type="text" class="form-input" id="edit-gloss" value="'+(currentEditItem.gloss||'')+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Produkt</label><input type="text" class="form-input" id="edit-brand" value="'+(currentEditItem.brand||'')+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Övrigt</label><textarea class="form-textarea" id="edit-paintextra">'+(currentEditItem.paintextra||'')+'</textarea></div>';
-    const photoCount=(currentEditItem.actionPhotos||[]).length+(currentEditItem.colorPhotos||[]).length+(currentEditItem.paintCanPhotos||[]).length;
-    html+='<div class="form-group"><label class="form-label">Foton: '+photoCount+' st</label>';
-    if(currentEditItem.actionPhotos?.length)html+='<div><strong>Åtgärd ('+currentEditItem.actionPhotos.length+'):</strong><div class="photo-grid">'+currentEditItem.actionPhotos.map(p=>'<div class="photo-item"><img src="'+p+'"></div>').join('')+'</div></div>';
-    if(currentEditItem.colorPhotos?.length)html+='<div style="margin-top:8px;"><strong>Färg ('+currentEditItem.colorPhotos.length+'):</strong><div class="photo-grid">'+currentEditItem.colorPhotos.map(p=>'<div class="photo-item"><img src="'+p+'"></div>').join('')+'</div></div>';
-    if(currentEditItem.paintCanPhotos?.length)html+='<div style="margin-top:8px;"><strong>Färgburk ('+currentEditItem.paintCanPhotos.length+'):</strong><div class="photo-grid">'+currentEditItem.paintCanPhotos.map(p=>'<div class="photo-item"><img src="'+p+'"></div>').join('')+'</div></div>';
-    html+='</div>';
-    document.getElementById('modal-title').textContent='Redigera åtgärd: '+currentEditItem.name;
-    document.getElementById('modal-content').innerHTML=html;
-    document.getElementById('modal-delete-btn').style.display='block';
-    openModal();
-  }
-  else if(type==='todo'){
-    currentEditItem=todos.find(t=>t.id===id);
-    let html='<div class="form-group"><label class="form-label">Titel</label><input type="text" class="form-input" id="edit-title" value="'+currentEditItem.title+'"></div>';
-    html+='<div class="form-group"><label class="form-label">Prioritet</label><select class="form-select" id="edit-prio">';
-    ['hög','medel','låg'].forEach(p=>{
-      html+='<option '+(currentEditItem.prio===p?'selected':'')+'>'+p+'</option>';
-    });
-    html+='</select></div>';
-    html+='<div class="form-group"><label class="form-label">Anteckningar</label><textarea class="form-textarea" id="edit-todo-note">'+(currentEditItem.note||'')+'</textarea></div>';
-    document.getElementById('modal-title').textContent='Redigera todo: '+currentEditItem.title;
-    document.getElementById('modal-content').innerHTML=html;
-    document.getElementById('modal-delete-btn').style.display='block';
-    openModal();
-  }
-}
-
-function saveCurrentItem(){
-  if(!currentEditItem||!currentEditType)return;
   syncing(true);
   
-  let data={};
-  if(currentEditType==='room'){
-    data={name:document.getElementById('edit-name').value,icon:document.getElementById('edit-icon').value};
-    updateDoc(doc(db,'rooms',currentEditItem.id),data);
-    log('Uppdaterade rum: '+data.name);
-  }
-  else if(currentEditType==='entry'){
-    data={
-      name:document.getElementById('edit-name').value,
-      category:document.getElementById('edit-category').value,
-      roomId:document.getElementById('edit-room').value,
-      date:document.getElementById('edit-date').value,
-      note:document.getElementById('edit-note').value,
-      colorname:document.getElementById('edit-colorname').value,
-      gloss:document.getElementById('edit-gloss').value,
-      brand:document.getElementById('edit-brand').value,
-      paintextra:document.getElementById('edit-paintextra').value
-    };
-    updateDoc(doc(db,'entries',currentEditItem.id),data);
-    log('Uppdaterade åtgärd: '+data.name);
-  }
-  else if(currentEditType==='todo'){
-    data={
-      title:document.getElementById('edit-title').value,
-      prio:document.getElementById('edit-prio').value,
-      note:document.getElementById('edit-todo-note').value
-    };
-    updateDoc(doc(db,'todos',currentEditItem.id),data);
-    log('Uppdaterade todo: '+data.title);
-  }
-  
-  syncing(false);
-  closeModal();
-}
-
-function deleteCurrentItem(){
-  if(!currentEditItem||!currentEditType)return;
-  if(!confirm('Ar du saker?'))return;
-  
-  syncing(true);
-  const colName=currentEditType==='entry'?'entries':currentEditType==='room'?'rooms':'todos';
-  deleteDoc(doc(db,colName,currentEditItem.id));
-  log('Raderade '+currentEditType+': '+(currentEditItem.name||currentEditItem.title));
-  syncing(false);
-  closeModal();
-}
-
-function deleteItem(type,id){
-  if(!confirm('Ar du saker?'))return;
-  syncing(true);
-  const colName=type==='entry'?'entries':type==='room'?'rooms':'todos';
-  deleteDoc(doc(db,colName,id));
-  log('Raderade '+type);
-  syncing(false);
-  renderTodos();
-}
-
-window.bulkRecategorize=async()=>{
-  const from=document.getElementById('bulk-from-cat').value;
-  const to=document.getElementById('bulk-to-cat').value;
-  if(from===to)return alert('Kategorierna maste vara olika');
-  
-  const toChange=entries.filter(e=>e.category===from);
-  if(!toChange.length)return alert('Inga åtgärder hittas i denna kategori');
-  if(!confirm('Andring '+toChange.length+' åtgärder?'))return;
-  
-  syncing(true);
-  for(const e of toChange){
-    await updateDoc(doc(db,'entries',e.id),{category:to});
-  }
-  log('Omklassificerade '+toChange.length+' åtgärder fran '+from+' till '+to);
-  syncing(false);
-};
-
-window.bulkMoveRoom=async()=>{
-  const from=document.getElementById('bulk-from-room').value;
-  const to=document.getElementById('bulk-to-room').value;
-  if(from===to)return alert('Rum maste vara olika');
-  
-  const toMove=entries.filter(e=>e.roomId===from);
-  if(!toMove.length)return alert('Inga åtgärder hittas i detta rum');
-  if(!confirm('Flytta '+toMove.length+' åtgärder?'))return;
-  
-  syncing(true);
-  for(const e of toMove){
-    await updateDoc(doc(db,'entries',e.id),{roomId:to});
-  }
-  log('Flyttade '+toMove.length+' åtgärder');
-  syncing(false);
-};
-
-window.bulkReCategorizeImages=async()=>{
-  const from=document.getElementById('bulk-from-imgtype').value;
-  const to=document.getElementById('bulk-to-imgtype').value;
-  if(from===to)return alert('Bildtyperna maste vara olika');
-  
-  const toMove=allImages.filter(img=>img.type===from);
-  if(!toMove.length)return alert('Inga bilder av denna typ');
-  if(!confirm('Flytta '+toMove.length+' bilder?'))return;
-  
-  syncing(true);
-  const typeLabels={actionPhotos:'Åtgärd',colorPhotos:'Färg',paintCanPhotos:'Färgburk'};
-  
-  for(const img of toMove){
-    const entry=entries.find(e=>e.id===img.entryId);
-    if(!entry)continue;
+  try{
+    const oldPhotos=[...entry[currentEditImage.type]];
+    const img=oldPhotos.splice(currentEditImage.index,1)[0];
     
-    const oldPhotos=[...entry[from]];
-    const photo=oldPhotos.splice(img.index,1)[0];
-    
-    const newPhotos=[...(entry[to]||[]),photo];
+    const newPhotos=[...(entry[newType]||[]),img];
     
     const update={};
-    update[from]=oldPhotos;
-    update[to]=newPhotos;
+    update[currentEditImage.type]=oldPhotos;
+    update[newType]=newPhotos;
     
-    await updateDoc(doc(db,'entries',img.entryId),update);
+    await updateDoc(doc(db,'entries',currentEditImage.entryId),update);
+    
+    logActivity('image', 'images', 'Bildtyp ändrad', {
+      entry: currentEditImage.entryName,
+      from: typeLabels[currentEditImage.type],
+      to: typeLabels[newType]
+    });
+    
+    syncing(false);
+    closeModal();
+  }catch(e){
+    console.error('Error saving:',e);
+    alert('Fel vid sparande: '+e.message);
+    syncing(false);
   }
-  log('Flyttade '+toMove.length+' bilder fran '+typeLabels[from]+' till '+typeLabels[to]);
-  syncing(false);
-  buildImageList();
-  renderImages();
-};
+}
 
-window.exportData=()=>{
-  const data={rooms,entries,todos,exportDate:new Date().toISOString()};
-  const json=JSON.stringify(data,null,2);
-  const blob=new Blob([json],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='renovering-export-'+new Date().toISOString().split('T')[0]+'.json';
-  a.click();
-  log('Exporterade data');
-};
-
-window.importData=async()=>{
-  const file=document.getElementById('import-file').files[0];
-  if(!file)return alert('Valj en fil');
-  const text=await file.text();
-  const data=JSON.parse(text);
-  if(!confirm('Importera '+data.rooms.length+' rum, '+data.entries.length+' åtgärder och '+data.todos.length+' todos?'))return;
+window.deleteCurrentImage=async function(){
+  if(!currentEditImage)return;
+  if(!confirm('Är du säker på att du vill radera denna bild?'))return;
+  
+  const entry=entries.find(e=>e.id===currentEditImage.entryId);
+  if(!entry)return;
   
   syncing(true);
-  for(const r of data.rooms){
-    const id=r.id;
-    delete r.id;
-    await setDoc(doc(db,'rooms',id),r);
+  
+  try{
+    const photos=[...entry[currentEditImage.type]];
+    photos.splice(currentEditImage.index,1);
+    
+    const update={};
+    update[currentEditImage.type]=photos;
+    
+    await updateDoc(doc(db,'entries',currentEditImage.entryId),update);
+    
+    logActivity('deleted', 'images', 'Bild raderad', {
+      entry: currentEditImage.entryName,
+      type: typeLabels[currentEditImage.type]
+    });
+    
+    syncing(false);
+    closeModal();
+  }catch(e){
+    console.error('Error deleting:',e);
+    alert('Fel vid radering: '+e.message);
+    syncing(false);
   }
-  for(const e of data.entries){
-    const id=e.id;
-    delete e.id;
-    await setDoc(doc(db,'entries',id),e);
+}
+
+window.deleteImageDirect=async function(idx){
+  if(idx<0||idx>=filteredImages.length)return;
+  if(!confirm('Är du säker på att du vill radera denna bild?'))return;
+  
+  const img=filteredImages[idx];
+  const entry=entries.find(e=>e.id===img.entryId);
+  if(!entry)return;
+  
+  syncing(true);
+  
+  try{
+    const photos=[...entry[img.type]];
+    photos.splice(img.index,1);
+    
+    const update={};
+    update[img.type]=photos;
+    
+    await updateDoc(doc(db,'entries',img.entryId),update);
+    
+    logActivity('deleted', 'images', 'Bild raderad', {
+      entry: img.entryName,
+      type: typeLabels[img.type]
+    });
+    
+    syncing(false);
+  }catch(e){
+    console.error('Error deleting:',e);
+    alert('Fel vid radering: '+e.message);
+    syncing(false);
   }
-  for(const t of data.todos){
-    const id=t.id;
-    delete t.id;
-    await setDoc(doc(db,'todos',id),t);
+}
+
+window.switchSection=section=>{
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(section).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
+  event.target.closest('.sidebar-item').classList.add('active');
+  
+  if(section==='activity'){
+    filterActivity();
   }
-  log('Importerade data');
-  syncing(false);
 };
 
-function openModal(){document.getElementById('edit-modal').classList.add('open');}
-window.closeModal=()=>document.getElementById('edit-modal').classList.remove('open');
-window.newRoom=()=>{alert('Skapa nytt rum via huvudappen');};
-window.newEntry=()=>{alert('Skapa ny åtgärd via huvudappen');};
-window.newTodo=()=>{alert('Skapa ny todo via huvudappen');};
-window.filterRooms=()=>renderRooms();
-window.filterEntries=()=>renderEntries();
-window.filterColors=()=>renderColors();
-window.filterImages=()=>renderImages();
-window.filterTodos=()=>renderTodos();
-window.clearLogs=()=>{activityLog=[];renderLogs();};
+function openModal(){
+  document.getElementById('edit-modal').classList.add('open');
+}
 
-renderDashboard();
+window.closeModal=function(){
+  document.getElementById('edit-modal').classList.remove('open');
+  currentEditImage=null;
+  renderImages();
+}
+
+window.filterActivity=function(){
+  const typeFilter=document.getElementById('activity-type-filter').value||'';
+  const collectionFilter=document.getElementById('activity-collection-filter').value||'';
+  const searchQ=(document.getElementById('activity-search').value||'').toLowerCase();
+  
+  filteredActivityLog=activityLog;
+  if(typeFilter)filteredActivityLog=filteredActivityLog.filter(a=>a.type===typeFilter);
+  if(collectionFilter)filteredActivityLog=filteredActivityLog.filter(a=>a.collection===collectionFilter);
+  if(searchQ)filteredActivityLog=filteredActivityLog.filter(a=>
+    a.title.toLowerCase().includes(searchQ)||
+    a.details.entry?.toLowerCase().includes(searchQ)||
+    a.details.from?.toLowerCase().includes(searchQ)||
+    a.details.to?.toLowerCase().includes(searchQ)
+  );
+  
+  renderActivityLog();
+}
+
+function renderActivityLog(){
+  const list=document.getElementById('activity-list');
+  const empty=document.getElementById('activity-empty');
+  
+  list.innerHTML='';
+  
+  if(filteredActivityLog.length===0){
+    empty.style.display='block';
+    list.style.display='none';
+    return;
+  }
+  
+  list.style.display='flex';
+  empty.style.display='none';
+  
+  filteredActivityLog.forEach(activity=>{
+    const item=document.createElement('div');
+    item.className=`activity-item ${activity.type}`;
+    
+    const badgeLabels={
+      'added':'Tillagt',
+      'updated':'Ändrat',
+      'deleted':'Raderat',
+      'image':'Bildändring'
+    };
+    
+    const collectionLabels={
+      'entries':'Åtgärd',
+      'rooms':'Rum',
+      'todos':'Todo',
+      'images':'Bild'
+    };
+    
+    let detailsHtml='';
+    if(Object.keys(activity.details).length>0){
+      detailsHtml='<div class="activity-details"><div class="activity-details-title">Detaljer:</div>';
+      Object.entries(activity.details).forEach(([key,value])=>{
+        detailsHtml+=`<div class="activity-details-item"><span class="activity-field">${key}:</span> <span class="activity-value">${value}</span></div>`;
+      });
+      detailsHtml+='</div>';
+    }
+    
+    item.innerHTML=`
+      <div class="activity-header">
+        <div class="activity-title">${activity.title}</div>
+        <div class="activity-time">${activity.timeStr}</div>
+      </div>
+      <div class="activity-meta">
+        <span class="activity-badge ${activity.type}">${badgeLabels[activity.type]||activity.type}</span>
+        <span class="activity-collection">${collectionLabels[activity.collection]||activity.collection}</span>
+        <span class="tag">${activity.dateStr}</span>
+      </div>
+      <div class="activity-content">
+        ${detailsHtml}
+      </div>
+    `;
+    
+    list.appendChild(item);
+  });
+}
+
+window.clearActivityLog=function(){
+  if(!confirm('Är du säker på att du vill rensa all aktivitetshistorik?'))return;
+  activityLog=[];
+  filteredActivityLog=[];
+  document.getElementById('activity-count').textContent='0';
+  renderActivityLog();
+}
 </script>
 </body>
 </html>
