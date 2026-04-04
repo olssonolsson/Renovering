@@ -85,6 +85,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .photo-add-box .plus{font-size:20px;color:var(--text3);line-height:1;}
 .photo-add-box .lbl{font-size:10px;color:var(--text3);text-align:center;line-height:1.2;}
 .divider{height:.5px;background:var(--border);margin:1rem 0;}
+/* ── LIGHTBOX STYLES ─────────────────────────────────────────────────────────── */
+.lightbox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;z-index:1000;animation:fadeIn .2s;}
+.lightbox.active{display:flex;}
+.lightbox-content{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:90%;height:90%;max-width:95vw;max-height:95vh;}
+.lightbox-img{max-width:100%;max-height:85%;object-fit:contain;border-radius:4px;user-select:none;}
+.lightbox-controls{display:flex;gap:1rem;margin-top:1rem;align-items:center;color:#fff;font-size:14px;}
+.lightbox-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:14px;transition:background .2s;}
+.lightbox-btn:hover{background:rgba(255,255,255,.3);}
+.lightbox-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.lightbox-close:hover{background:rgba(255,255,255,.3);}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .entries-list{display:flex;flex-direction:column;gap:8px;}
 .entry-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;}
 .entry-name{font-size:14px;font-weight:500;color:var(--text);}
@@ -181,6 +192,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .lb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;}
 .lb-dot.on{background:#fff;}
 .lb-counter{color:rgba(255,255,255,.45);font-size:12px;padding-bottom:10px;}
+.lb-bottom-bar{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 20px;width:100%;max-width:600px;}
+.lb-delete-btn{background:rgba(192,57,43,.4);border:1px solid rgba(192,57,43,.6);color:#ff6b6b;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;}
+.lb-delete-btn:hover{background:rgba(192,57,43,.6);border-color:#ff6b6b;color:#fff;}
 @media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}.lb-img-wrap{padding:0 44px;}}
 </style>
 </head>
@@ -208,9 +222,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <!-- LOGO -->
       <div class="logo-section" id="logo-container"></div>
 
+      <!-- SENASTE ÅTGÄRDER -->
+      <div class="home-card">
+        <h3>📋 Senaste åtgärder</h3>
+        <div class="recent-actions" id="recent-actions-list"></div>
+      </div>
+
       <!-- INSPIRATIONSGALLERI -->
       <div class="home-card">
-        <h3>🎨 Bilder</h3>
+        <h3>🎨 Före & Efter</h3>
         <div class="gallery-section" id="gallery-container"></div>
       </div>
 
@@ -384,8 +404,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <button class="lb-arrow" id="lb-right" onclick="lbNav(1)">›</button>
   <div class="lb-caption" id="lb-caption"></div>
   <div class="lb-caption-sub" id="lb-caption-sub"></div>
-  <div class="lb-dots" id="lb-dots"></div>
-  <div class="lb-counter" id="lb-counter"></div>
+  <div class="lb-bottom-bar">
+    <div class="lb-dots" id="lb-dots"></div>
+    <div class="lb-counter" id="lb-counter"></div>
+    <button class="lb-delete-btn" id="lb-delete-btn" onclick="confirmDelFromLightbox()">🗑 Ta bort</button>
+  </div>
 </div>
 
 <script type="module">
@@ -415,7 +438,7 @@ function syncing(v){const d=document.getElementById('sync-dot');d.className='syn
 
 // ── LIGHTBOX ──────────────────────────────────────────────────────────────────
 // Each photo item: { src, caption, sub }
-let lbItems=[],lbI=0;
+let lbItems=[],lbI=0,lbCurrentEntryId=null;
 let lbBeforeItems=[];
 let lbAfterItems=[];
 let lbEntryItems={};
@@ -430,9 +453,58 @@ window.openLBEntry=(id,idx)=>{
   console.log('openLBEntry called with id:', id, 'idx:', idx);
   console.log('lbEntryItems:', lbEntryItems);
   console.log('items for this entry:', lbEntryItems[id]);
+  lbCurrentEntryId=id;
   openLB(lbEntryItems[id]||[],idx);
 };
 window.lbClose=()=>document.getElementById('lightbox').classList.remove('open');
+window.confirmDelFromLightbox=()=>{
+  const item=lbItems[lbI];
+  if(!item)return;
+  const {entryId,photoType,photoIndex}=item;
+  if(!entryId)return;
+  
+  let title='Ta bort bilden?';
+  if(photoType==='paint')title='Ta bort färgburkbilden?';
+  else if(photoType==='color')title='Ta bort färgbilden?';
+  
+  confirm2(title,'Bilden tas bort permanent.',async()=>{
+    const entry=entries.find(e=>e.id===entryId);
+    if(!entry){return;}
+    
+    syncing(true);
+    let updated=false;
+    
+    if(photoType==='paint'){
+      const p=[...(entry.paintCanPhotos||[])];
+      p.splice(photoIndex,1);
+      await updateDoc(doc(db,'entries',entryId),{paintCanPhotos:p});
+      updated=true;
+    }else if(photoType==='color'){
+      const p=[...(entry.colorPhotos||[])];
+      p.splice(photoIndex,1);
+      await updateDoc(doc(db,'entries',entryId),{colorPhotos:p});
+      updated=true;
+    }else if(photoType==='action'){
+      const p=[...(entry.actionPhotos||[])];
+      p.splice(photoIndex,1);
+      await updateDoc(doc(db,'entries',entryId),{actionPhotos:p});
+      updated=true;
+    }
+    
+    syncing(false);
+    closeModals();
+    
+    if(updated){
+      lbItems.splice(lbI,1);
+      if(lbItems.length===0){
+        lbClose();
+      }else{
+        if(lbI>=lbItems.length)lbI=lbItems.length-1;
+        drawLB();
+      }
+    }
+  });
+};
 window.lbNav=d=>{lbI=(lbI+d+lbItems.length)%lbItems.length;drawLB();};
 
 function drawLB(){
@@ -475,9 +547,9 @@ function beforeItems(room){
 function entryItems(e){
   const room=rooms.find(r=>r.id===e.roomId);
   const roomName=room?room.name:'';
-  const pcItems=(e.paintCanPhotos||[]).map((src,i)=>({src,caption:`Färgburk – ${e.colorname||e.name}`,sub:roomName}));
-  const cItems=(e.colorPhotos||[]).map((src,i)=>({src,caption:`Färg – ${e.colorname||e.name}`,sub:roomName}));
-  const aItems=(e.actionPhotos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`}));
+  const pcItems=(e.paintCanPhotos||[]).map((src,i)=>({src,caption:`Färgburk – ${e.colorname||e.name}`,sub:roomName,entryId:e.id,photoType:'paint',photoIndex:i}));
+  const cItems=(e.colorPhotos||[]).map((src,i)=>({src,caption:`Färg – ${e.colorname||e.name}`,sub:roomName,entryId:e.id,photoType:'color',photoIndex:i}));
+  const aItems=(e.actionPhotos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`,entryId:e.id,photoType:'action',photoIndex:i}));
   const result=[...pcItems,...cItems,...aItems];
   console.log('entryItems for', e.id, ':', result);
   return result;
@@ -583,8 +655,8 @@ window.openLBBefore=idx=>openLB(lbBeforeItems,idx);
 window.openLBAfter=idx=>openLB(lbAfterItems,idx);
 window.addBP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`before/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{before:[...(curRoom.before||[]),u]});syncing(false);};r.readAsDataURL(f);};
 window.addAP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);let u=e.target.result;try{const sr=ref(storage,`after/${curRoom.id}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'rooms',curRoom.id),{after:[...(curRoom.after||[]),u]});syncing(false);};r.readAsDataURL(f);};
-window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
-window.confirmDelAP=pi=>{confirm2('Ta bort efter-bilden?','Bilden tas bort permanent.',async()=>{const a=[...(curRoom.after||[])];a.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{after:a});syncing(false);});};
+window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
+window.confirmDelAP=pi=>{confirm2('Ta bort efter-bilden?','Bilden tas bort permanent.',async()=>{const a=[...(curRoom.after||[])];a.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'rooms',curRoom.id),{after:a});syncing(false);});};
 
 // ── ENTRIES ───────────────────────────────────────────────
 function entryHTML(e,showRoom){
@@ -684,9 +756,9 @@ window.addColorPhotoEntry=(input,eid)=>{const f=input.files[0];if(!f)return;cons
 
 window.addPaintCanPhotoEntry=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`paintcan/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{paintCanPhotos:[...(entry.paintCanPhotos||[]),u]});syncing(false);};r.readAsDataURL(f);};
 
-window.confirmDelActionPhoto=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.actionPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{actionPhotos:p});syncing(false);});};
-window.confirmDelColorPhoto=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{colorPhotos:p});syncing(false);});};
-window.confirmDelPaintCanPhoto=(eid,pi)=>{confirm2('Ta bort färgburkbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.paintCanPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{paintCanPhotos:p});syncing(false);});};
+window.confirmDelActionPhoto=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.actionPhotos||[])];p.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'entries',eid),{actionPhotos:p});syncing(false);});};
+window.confirmDelColorPhoto=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorPhotos||[])];p.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'entries',eid),{colorPhotos:p});syncing(false);});};
+window.confirmDelPaintCanPhoto=(eid,pi)=>{confirm2('Ta bort färgburkbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.paintCanPhotos||[])];p.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'entries',eid),{paintCanPhotos:p});syncing(false);});};
 
 // ── TODOS ─────────────────────────────────────────────────────────────────────
 function todoHTML(t,i){
@@ -759,6 +831,19 @@ function renderHome(){
     logoContainer.innerHTML='<div class="empty-state-home">📷 Logga inte uppladdad än</div>';
   }
 
+  // Render recent actions (last 5 entries)
+  const recentList=document.getElementById('recent-actions-list');
+  const sortedEntries=[...entries].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+  if(sortedEntries.length){
+    recentList.innerHTML=sortedEntries.map(e=>{
+      const room=rooms.find(r=>r.id===e.roomId);
+      const dateObj=new Date(e.date);
+      const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
+      return `<div class="action-item"><div class="desc"><strong>${e.name}</strong><br>${e.category}${room?' · '+room.name:''}</div><div class="time">${timeStr}</div></div>`;
+    }).join('');
+  }else{
+    recentList.innerHTML='<div class="empty-state-home">Ingen aktivitet ännu</div>';
+  }
 
   // Render before/after gallery (entries with photos)
   const galleryContainer=document.getElementById('gallery-container');
@@ -804,5 +889,6 @@ function renderHome(){
 
 document.getElementById('en-date').value=new Date().toISOString().split('T')[0];
 </script>
+
 </body>
 </html>
