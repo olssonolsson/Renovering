@@ -216,7 +216,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
       <!-- INSPIRATIONSGALLERI -->
       <div class="home-card">
-        <h3>🎨 Före & Efter – Inspirationsgalleri</h3>
+        <h3>🎨 Före & Efter</h3>
         <div class="gallery-section" id="gallery-container"></div>
       </div>
 
@@ -318,12 +318,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     </div>
     <div class="form-row"><label>Tillverkare / produktnamn</label><input type="text" id="en-brand" placeholder="t.ex. Beckers Ideale eller Jotun Lady"></div>
     <div class="form-row"><label>Övrigt (kulör-nr, spädning, lager...)</label><textarea id="en-paintextra" placeholder="Kulör 1234, 2 lager, 10% vatten" style="height:52px;"></textarea></div>
+    <div class="form-sec">Bilder på åtgärden</div>
     <div class="form-row">
-      <label>Bild på färgprov / burk</label>
-      <div class="cp-preview" id="en-cp"></div>
+      <label>Bild</label>
+      <div class="cp-preview" id="en-action-photos"></div>
       <div style="display:flex;gap:8px;margin-top:8px;">
-        <label class="btn" style="cursor:pointer;">Välj bild<input type="file" accept="image/*" style="display:none;" onchange="addCP(this)"></label>
-        <label class="btn" style="cursor:pointer;">📷 Foto<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addCP(this)"></label>
+        <label class="btn" style="cursor:pointer;">Välj bild<input type="file" accept="image/*" style="display:none;" onchange="addActionPhoto(this)"></label>
+        <label class="btn" style="cursor:pointer;">📷 Foto<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addActionPhoto(this)"></label>
+      </div>
+    </div>
+    <div class="form-sec">Bilder på färgen</div>
+    <div class="form-row">
+      <label>Färg (färgprov / målad yta)</label>
+      <div class="cp-preview" id="en-color-photos"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <label class="btn" style="cursor:pointer;">Välj bild<input type="file" accept="image/*" style="display:none;" onchange="addColorPhoto(this)"></label>
+        <label class="btn" style="cursor:pointer;">📷 Foto<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addColorPhoto(this)"></label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Färgburk</label>
+      <div class="cp-preview" id="en-paint-can-photos"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <label class="btn" style="cursor:pointer;">Välj bild<input type="file" accept="image/*" style="display:none;" onchange="addPaintCanPhoto(this)"></label>
+        <label class="btn" style="cursor:pointer;">📷 Foto<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addPaintCanPhoto(this)"></label>
       </div>
     </div>
     <div class="modal-actions">
@@ -388,7 +406,7 @@ const storage=getStorage(app);
 
 let rooms=[],entries=[],todos=[];
 let curRoom=null,selIcon='🛋️',dragSrc=null;
-let editingRoomId=null,editingEntryId=null,pendingCPs=[];
+let editingRoomId=null,editingEntryId=null,pendingActionPhotos=[],pendingColorPhotos=[],pendingPaintCanPhotos=[];
 let colorRoomFilter='alla';
 let logo=null;
 
@@ -459,14 +477,15 @@ function beforeItems(room){
   return (room.before||[]).map((src,i)=>({src,caption:`Före-bild ${i+1}`,sub:room.name}));
 }
 
-// Build lightbox items for an entry (color photos + regular photos)
+// Build lightbox items for an entry (paint can photos, color photos + action photos)
 function entryItems(e){
   const room=rooms.find(r=>r.id===e.roomId);
   const roomName=room?room.name:'';
-  const cpItems=(e.colorphotos||[]).map((src,i)=>({src,caption:`Färgbild – ${e.colorname||e.name}`,sub:roomName}));
-  const afItems=(e.photos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`}));
-  const result=[...cpItems,...afItems];
-  console.log('entryItems for', e.id, ':', result, 'colorphotos:', e.colorphotos, 'photos:', e.photos);
+  const pcItems=(e.paintCanPhotos||[]).map((src,i)=>({src,caption:`Färgburk – ${e.colorname||e.name}`,sub:roomName}));
+  const cItems=(e.colorPhotos||[]).map((src,i)=>({src,caption:`Färg – ${e.colorname||e.name}`,sub:roomName}));
+  const aItems=(e.actionPhotos||[]).map((src,i)=>({src,caption:e.name,sub:`${e.category}${roomName?' · '+roomName:''}`}));
+  const result=[...pcItems,...cItems,...aItems];
+  console.log('entryItems for', e.id, ':', result);
   return result;
 }
 
@@ -573,21 +592,30 @@ window.addAP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader(
 window.confirmDelBP=pi=>{confirm2('Ta bort före-bilden?','Bilden tas bort permanent.',async()=>{const b=[...(curRoom.before||[])];b.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{before:b});syncing(false);});};
 window.confirmDelAP=pi=>{confirm2('Ta bort efter-bilden?','Bilden tas bort permanent.',async()=>{const a=[...(curRoom.after||[])];a.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'rooms',curRoom.id),{after:a});syncing(false);});};
 
-// ── ENTRIES ───────────────────────────────────────────────────────────────────
+// ── ENTRIES ───────────────────────────────────────────────
 function entryHTML(e,showRoom){
   const room=rooms.find(r=>r.id===e.roomId);
   const items=entryItems(e);
-  const cpOff=0;
-  const afOff=(e.colorphotos||[]).length;
   const eid=e.id;
-  // Store items globally for lightbox
   lbEntryItems[eid]=items;
-  const cpH=(e.colorphotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${cpOff+pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelCP('${e.id}',${pi})">×</button></div>`).join('');
-  const afH=(e.photos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${afOff+pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelAP('${e.id}',${pi})">×</button></div>`).join('');
-  const addH=`<label class="add-ph-btn" style="cursor:pointer;">+ Bild<input type="file" accept="image/*" style="display:none;" onchange="addAP(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addAP(this,'${e.id}')"></label>`;
+  
+  // Calculate offsets for lightbox navigation
+  const paintCanOffset=0;
+  const colorOffset=paintCanOffset+(e.paintCanPhotos||[]).length;
+  const actionOffset=colorOffset+(e.colorPhotos||[]).length;
+  
+  // Build image rows for all three categories
+  const actionPhotosH=(e.actionPhotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${actionOffset+pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelActionPhoto('${e.id}',${pi})">×</button></div>`).join('');
+  const colorPhotosH=(e.colorPhotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${colorOffset+pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelColorPhoto('${e.id}',${pi})">×</button></div>`).join('');
+  const paintCanPhotosH=(e.paintCanPhotos||[]).map((p,pi)=>`<div class="cpw"><img class="after-thumb" src="${p}" onclick="openLBEntry('${eid}',${paintCanOffset+pi})" style="cursor:pointer;"><button class="pd" onclick="confirmDelPaintCanPhoto('${e.id}',${pi})">×</button></div>`).join('');
+  
+  const addActionH=`<label class="add-ph-btn" style="cursor:pointer;">+ Bild<input type="file" accept="image/*" style="display:none;" onchange="addActionPhotoEntry(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addActionPhotoEntry(this,'${e.id}')"></label>`;
+  const addColorH=`<label class="add-ph-btn" style="cursor:pointer;">+ Färg<input type="file" accept="image/*" style="display:none;" onchange="addColorPhotoEntry(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addColorPhotoEntry(this,'${e.id}')"></label>`;
+  const addPaintCanH=`<label class="add-ph-btn" style="cursor:pointer;">+ Burk<input type="file" accept="image/*" style="display:none;" onchange="addPaintCanPhotoEntry(this,'${e.id}')"></label><label class="add-ph-btn" style="cursor:pointer;">📷<input type="file" accept="image/*" capture="environment" style="display:none;" onchange="addPaintCanPhotoEntry(this,'${e.id}')"></label>`;
+  
   const pr=[e.colorname?`<div class="paint-row"><span class="lbl">Färg:</span>${e.colorname}</div>`:'',e.gloss?`<div class="paint-row"><span class="lbl">Glans:</span>${e.gloss}</div>`:'',e.brand?`<div class="paint-row"><span class="lbl">Produkt:</span>${e.brand}</div>`:'',e.paintextra?`<div class="paint-row"><span class="lbl">Övrigt:</span>${e.paintextra}</div>`:''].filter(Boolean).join('');
-  return`<div class="entry-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><span class="entry-name">${e.name}</span><span class="entry-date">${e.date||''}</span></div><div class="tags">${showRoom&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}<span class="tag">${e.category}</span>${e.colorname?`<span class="tag">${e.colorname}</span>`:''}</div>${e.note?`<div class="entry-note">${e.note}</div>`:''}${pr?`<div class="paint-info">${pr}</div>`:''}${cpH?`<div style="margin-top:8px;"><div class="ph-mini">Färgbilder</div><div class="ph-row">${cpH}</div></div>`:''}
-<div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${afH}${addH}</div></div></div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
+  
+  return`<div class="entry-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;"><span class="entry-name">${e.name}</span><span class="entry-date">${e.date||''}</span></div><div class="tags">${showRoom&&room?`<span class="tag">${room.icon} ${room.name}</span>`:''}<span class="tag">${e.category}</span>${e.colorname?`<span class="tag">${e.colorname}</span>`:''}</div>${e.note?`<div class="entry-note">${e.note}</div>`:''}${pr?`<div class="paint-info">${pr}</div>`:''}${paintCanPhotosH?`<div style="margin-top:8px;"><div class="ph-mini">Färgburk</div><div class="ph-row">${paintCanPhotosH}${addPaintCanH}</div></div>`:''}${colorPhotosH?`<div style="margin-top:8px;"><div class="ph-mini">Färg</div><div class="ph-row">${colorPhotosH}${addColorH}</div></div>`:''}${actionPhotosH||addActionH?`<div style="margin-top:8px;"><div class="ph-mini">Bild</div><div class="ph-row">${actionPhotosH}${addActionH}</div></div>`:''}${!paintCanPhotosH&&!colorPhotosH&&!actionPhotosH?`<div style="margin-top:8px;"><div class="ph-mini">Bilder</div><div class="ph-row">${addActionH}</div></div>`:''}</div><div style="display:flex;gap:2px;flex-shrink:0;"><button class="icon-btn" onclick="editEntry('${e.id}')">✏️</button><button class="icon-btn" onclick="confirmDelEntry('${e.id}')">🗑️</button></div></div></div>`;
 }
 
 function renderEntries(){const l=document.getElementById('entries-list');const es=entries.filter(e=>e.roomId===curRoom.id);l.innerHTML=es.length?es.map(e=>entryHTML(e,false)).join(''):'<div class="empty-state">Inga åtgärder ännu</div>';renderBG();}
@@ -617,10 +645,10 @@ function renderColors(){
   g.innerHTML=Object.entries(groups).map(([name,list])=>{
     const e=list[0];
     const room=rooms.find(r=>r.id===e.roomId);
-    const cp=e.colorphotos||[];
+    const colorPhotos=e.colorPhotos||[];
     const roomNames=[...new Set(list.map(x=>rooms.find(r=>r.id===x.roomId)).filter(Boolean).map(r=>r.icon+' '+r.name))];
     return`<div class="color-card" onclick="editEntry('${e.id}')">
-      <div class="color-swatch">${cp.length?`<img src="${cp[0]}">`:''}
+      <div class="color-swatch">${colorPhotos.length?`<img src="${colorPhotos[0]}">`:''}
       </div>
       <div class="color-info">
         <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;">${name}</div>
@@ -635,19 +663,36 @@ function renderColors(){
 }
 window.setColorRoomFilter=id=>{colorRoomFilter=id;renderColors();};
 
-window.openEntryModalNew=()=>{editingEntryId=null;pendingCPs=[];document.getElementById('entry-modal-title').textContent='Ny åtgärd';['en-name','en-colorname','en-brand','en-paintextra'].forEach(id=>document.getElementById(id).value='');document.getElementById('en-cat').value='Målning';document.getElementById('en-date').value=new Date().toISOString().split('T')[0];document.getElementById('en-note').value='';document.getElementById('en-gloss').value='';document.getElementById('en-cp').innerHTML='';document.getElementById('entry-del-btn').style.display='none';openModal('entry-modal');};
-window.editEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;editingEntryId=id;pendingCPs=[...(e.colorphotos||[])];document.getElementById('entry-modal-title').textContent='Redigera åtgärd';document.getElementById('en-name').value=e.name||'';document.getElementById('en-cat').value=e.category||'Målning';document.getElementById('en-date').value=e.date||'';document.getElementById('en-note').value=e.note||'';document.getElementById('en-colorname').value=e.colorname||'';document.getElementById('en-gloss').value=e.gloss||'';document.getElementById('en-brand').value=e.brand||'';document.getElementById('en-paintextra').value=e.paintextra||'';document.getElementById('entry-del-btn').style.display='block';renderCPs();openModal('entry-modal');};
+window.openEntryModalNew=()=>{editingEntryId=null;pendingActionPhotos=[];pendingColorPhotos=[];pendingPaintCanPhotos=[];document.getElementById('entry-modal-title').textContent='Ny åtgärd';['en-name','en-colorname','en-brand','en-paintextra'].forEach(id=>document.getElementById(id).value='');document.getElementById('en-cat').value='Målning';document.getElementById('en-date').value=new Date().toISOString().split('T')[0];document.getElementById('en-note').value='';document.getElementById('en-gloss').value='';document.getElementById('en-action-photos').innerHTML='';document.getElementById('en-color-photos').innerHTML='';document.getElementById('en-paint-can-photos').innerHTML='';document.getElementById('entry-del-btn').style.display='none';openModal('entry-modal');};
+window.editEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;editingEntryId=id;pendingActionPhotos=[...(e.actionPhotos||[])];pendingColorPhotos=[...(e.colorPhotos||[])];pendingPaintCanPhotos=[...(e.paintCanPhotos||[])];document.getElementById('entry-modal-title').textContent='Redigera åtgärd';document.getElementById('en-name').value=e.name||'';document.getElementById('en-cat').value=e.category||'Målning';document.getElementById('en-date').value=e.date||'';document.getElementById('en-note').value=e.note||'';document.getElementById('en-colorname').value=e.colorname||'';document.getElementById('en-gloss').value=e.gloss||'';document.getElementById('en-brand').value=e.brand||'';document.getElementById('en-paintextra').value=e.paintextra||'';document.getElementById('entry-del-btn').style.display='block';renderPhotoPreviewsInModal();openModal('entry-modal');};
 window.confirmDelEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;confirm2(`Ta bort "${e.name}"?`,'Åtgärden tas bort permanent.',async()=>{syncing(true);closeModals();await deleteDoc(doc(db,'entries',id));syncing(false);});};
 window.deleteCurrentEntry=()=>{if(editingEntryId)confirmDelEntry(editingEntryId);};
-window.saveEntry=async()=>{const name=document.getElementById('en-name').value.trim();if(!name)return;syncing(true);const fCPs=[];for(const p of pendingCPs){if(p.startsWith('data:')){try{const r=ref(storage,`cp/${Date.now()}_${Math.random().toString(36).slice(2)}`);await uploadString(r,p,'data_url');fCPs.push(await getDownloadURL(r));}catch(_){fCPs.push(p);}}else{fCPs.push(p);}}const data={name,category:document.getElementById('en-cat').value,date:document.getElementById('en-date').value,note:document.getElementById('en-note').value.trim(),colorname:document.getElementById('en-colorname').value.trim(),gloss:document.getElementById('en-gloss').value,brand:document.getElementById('en-brand').value.trim(),paintextra:document.getElementById('en-paintextra').value.trim(),colorphotos:fCPs};if(editingEntryId){await updateDoc(doc(db,'entries',editingEntryId),data);}else{const room=curRoom||rooms[0];if(!room){syncing(false);return;}await setDoc(doc(db,'entries','entry_'+Date.now()),{...data,roomId:room.id,photos:[],createdAt:Date.now()});}editingEntryId=null;pendingCPs=[];syncing(false);closeModals();};
-window.addCP=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingCPs.push(e.target.result);renderCPs();};r.readAsDataURL(f);};
-function renderCPs(){document.getElementById('en-cp').innerHTML=pendingCPs.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removeCP(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');}
-window.removeCP=i=>{pendingCPs.splice(i,1);renderCPs();};
+window.saveEntry=async()=>{const name=document.getElementById('en-name').value.trim();if(!name)return;syncing(true);const uploadPhotos=async(photos)=>{const uploaded=[];for(const p of photos){if(p.startsWith('data:')){try{const r=ref(storage,`photos/${Date.now()}_${Math.random().toString(36).slice(2)}`);await uploadString(r,p,'data_url');uploaded.push(await getDownloadURL(r));}catch(_){uploaded.push(p);}}else{uploaded.push(p);}}return uploaded;};const actionPhotos=await uploadPhotos(pendingActionPhotos);const colorPhotos=await uploadPhotos(pendingColorPhotos);const paintCanPhotos=await uploadPhotos(pendingPaintCanPhotos);const data={name,category:document.getElementById('en-cat').value,date:document.getElementById('en-date').value,note:document.getElementById('en-note').value.trim(),colorname:document.getElementById('en-colorname').value.trim(),gloss:document.getElementById('en-gloss').value,brand:document.getElementById('en-brand').value.trim(),paintextra:document.getElementById('en-paintextra').value.trim(),actionPhotos,colorPhotos,paintCanPhotos};if(editingEntryId){await updateDoc(doc(db,'entries',editingEntryId),data);}else{const room=curRoom||rooms[0];if(!room){syncing(false);return;}await setDoc(doc(db,'entries','entry_'+Date.now()),{...data,roomId:room.id,createdAt:Date.now()});}editingEntryId=null;pendingActionPhotos=[];pendingColorPhotos=[];pendingPaintCanPhotos=[];syncing(false);closeModals();};
+// Photo preview rendering for modal
+window.addActionPhoto=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingActionPhotos.push(e.target.result);renderPhotoPreviewsInModal();};r.readAsDataURL(f);};
+window.addColorPhoto=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingColorPhotos.push(e.target.result);renderPhotoPreviewsInModal();};r.readAsDataURL(f);};
+window.addPaintCanPhoto=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingPaintCanPhotos.push(e.target.result);renderPhotoPreviewsInModal();};r.readAsDataURL(f);};
 
-window.addAP=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`entries/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{photos:[...(entry.photos||[]),u]});syncing(false);};r.readAsDataURL(f);};
+function renderPhotoPreviewsInModal(){
+  document.getElementById('en-action-photos').innerHTML=pendingActionPhotos.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removeActionPhoto(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');
+  document.getElementById('en-color-photos').innerHTML=pendingColorPhotos.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removeColorPhoto(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');
+  document.getElementById('en-paint-can-photos').innerHTML=pendingPaintCanPhotos.map((p,i)=>`<div style="position:relative;flex-shrink:0;"><img src="${p}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:.5px solid var(--border);"><button onclick="removePaintCanPhoto(${i})" style="position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#e74c3c;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">×</button></div>`).join('');
+}
 
-window.confirmDelAP=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.photos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{photos:p});syncing(false);});};
-window.confirmDelCP=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorphotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{colorphotos:p});syncing(false);});};
+window.removeActionPhoto=i=>{pendingActionPhotos.splice(i,1);renderPhotoPreviewsInModal();};
+window.removeColorPhoto=i=>{pendingColorPhotos.splice(i,1);renderPhotoPreviewsInModal();};
+window.removePaintCanPhoto=i=>{pendingPaintCanPhotos.splice(i,1);renderPhotoPreviewsInModal();};
+
+// Add photos to existing entries
+window.addActionPhotoEntry=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`action/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{actionPhotos:[...(entry.actionPhotos||[]),u]});syncing(false);};r.readAsDataURL(f);};
+
+window.addColorPhotoEntry=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`color/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{colorPhotos:[...(entry.colorPhotos||[]),u]});syncing(false);};r.readAsDataURL(f);};
+
+window.addPaintCanPhotoEntry=(input,eid)=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=async e=>{syncing(true);const entry=entries.find(x=>x.id===eid);if(!entry){syncing(false);return;}let u=e.target.result;try{const sr=ref(storage,`paintcan/${eid}/${Date.now()}`);await uploadString(sr,u,'data_url');u=await getDownloadURL(sr);}catch(_){}await updateDoc(doc(db,'entries',eid),{paintCanPhotos:[...(entry.paintCanPhotos||[]),u]});syncing(false);};r.readAsDataURL(f);};
+
+window.confirmDelActionPhoto=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.actionPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{actionPhotos:p});syncing(false);});};
+window.confirmDelColorPhoto=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{colorPhotos:p});syncing(false);});};
+window.confirmDelPaintCanPhoto=(eid,pi)=>{confirm2('Ta bort färgburkbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.paintCanPhotos||[])];p.splice(pi,1);syncing(true);closeModals();await updateDoc(doc(db,'entries',eid),{paintCanPhotos:p});syncing(false);});};
 
 // ── TODOS ─────────────────────────────────────────────────────────────────────
 function todoHTML(t,i){
@@ -736,19 +781,22 @@ function renderHome(){
 
   // Render before/after gallery (entries with photos)
   const galleryContainer=document.getElementById('gallery-container');
-  const withPhotos=entries.filter(e=>(e.photos||[]).length>0||(e.colorphotos||[]).length>0);
+  const withPhotos=entries.filter(e=>(e.actionPhotos||e.colorPhotos||e.paintCanPhotos||e.photos||[]).filter(x=>x).length>0);
   if(withPhotos.length){
     const pairs=withPhotos.slice(0,4).map(e=>{
-      const colorPhotos=e.colorphotos||[];
-      const regularPhotos=e.photos||[];
+      const colorPhotos=e.colorPhotos||[];
+      const actionPhotos=e.actionPhotos||[];
       const before=colorPhotos[0]||'';
-      const after=regularPhotos[0]||'';
+      const after=actionPhotos[0]||'';
       if(!before&&!after)return '';
+      const items=entryItems(e);
+      let beforeIdx=0,afterIdx=0;
+      for(let i=0;i<items.length;i++){if(items[i].src===before)beforeIdx=i;if(items[i].src===after)afterIdx=i;}
       return `<div class="before-after-pair">
         <div class="ba-label">${e.name}</div>
         <div class="ba-images">
-          ${before?`<img src="${before}" alt="Färgbild" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),0)">`:``}
-          ${after?`<img src="${after}" alt="Efter" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${before?1:0})">`:``}
+          ${before?`<img src="${before}" alt="Färgbild" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${beforeIdx})">`:``}
+          ${after?`<img src="${after}" alt="Åtgärd" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${afterIdx})">`:``}
         </div>
       </div>`;
     }).filter(Boolean).join('');
