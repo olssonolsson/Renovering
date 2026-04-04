@@ -328,7 +328,7 @@ function log(msg){activityLog.unshift({time:new Date().toLocaleTimeString(),msg}
 
 // Load all data
 onSnapshot(query(collection(db,'rooms'),orderBy('createdAt')),snap=>{rooms=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();log("Laddade rum");});
-onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{entries=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();buildImageList();log("Laddade aatgarder");});
+onSnapshot(query(collection(db,'entries'),orderBy('date','desc')),snap=>{entries=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();buildImageList();log("Laddade åtgärder");});
 onSnapshot(query(collection(db,'todos'),orderBy('order')),snap=>{todos=snap.docs.map(d=>({id:d.id,...d.data()}));updateCounts();renderDashboard();log("Laddade todos");});
 
 function updateCounts(){
@@ -376,7 +376,7 @@ function renderRooms(){
   
   const html=list.map(r=>{
     const entryCount=entries.filter(e=>e.roomId===r.id).length;
-    return '<div class="list-item" onclick="editItem(\'room\',\''+r.id+'\')"><div class="item-header"><span class="item-title">'+r.icon+' '+r.name+'</span><span class="item-meta">'+entryCount+' aatgarder</span></div><div class="item-actions"><span class="tag">Skapad: '+new Date(r.createdAt).toLocaleDateString('sv-SE')+'</span></div></div>';
+    return '<div class="list-item" onclick="editItem(\'room\',\''+r.id+'\')"><div class="item-header"><span class="item-title">'+r.icon+' '+r.name+'</span><span class="item-meta">'+entryCount+' åtgärder</span></div><div class="item-actions"><span class="tag">Skapad: '+new Date(r.createdAt).toLocaleDateString('sv-SE')+'</span></div></div>';
   }).join('');
   
   document.getElementById('rooms-list').innerHTML=html||'<div class="empty-state">Inga rum hittade</div>';
@@ -402,7 +402,7 @@ function renderEntries(){
     return '<div class="list-item" onclick="editItem(\'entry\',\''+e.id+'\')"><div class="item-header"><span class="item-title">'+e.name+'</span><span class="item-meta">'+(e.date||'Ej daterad')+'</span></div><div class="item-content">'+content+'</div></div>';
   }).join('');
   
-  document.getElementById('entries-list').innerHTML=html||'<div class="empty-state">Inga aatgarder hittade</div>';
+  document.getElementById('entries-list').innerHTML=html||'<div class="empty-state">Inga åtgärder hittade</div>';
 }
 
 function renderColors(){
@@ -458,7 +458,7 @@ function populateImageEntryFilter(){
     const entry=entries.find(e=>e.id===eid);
     return '<option value="'+eid+'">'+entry.name+'</option>';
   }).join('');
-  select.innerHTML='<option value="">Alla aatgarder</option>'+entryOptions;
+  select.innerHTML='<option value="">Alla åtgärder</option>'+entryOptions;
 }
 
 function renderImages(){
@@ -604,7 +604,7 @@ function editItem(type,id){
     if(currentEditItem.colorPhotos?.length)html+='<div style="margin-top:8px;"><strong>Färg ('+currentEditItem.colorPhotos.length+'):</strong><div class="photo-grid">'+currentEditItem.colorPhotos.map(p=>'<div class="photo-item"><img src="'+p+'"></div>').join('')+'</div></div>';
     if(currentEditItem.paintCanPhotos?.length)html+='<div style="margin-top:8px;"><strong>Färgburk ('+currentEditItem.paintCanPhotos.length+'):</strong><div class="photo-grid">'+currentEditItem.paintCanPhotos.map(p=>'<div class="photo-item"><img src="'+p+'"></div>').join('')+'</div></div>';
     html+='</div>';
-    document.getElementById('modal-title').textContent='Redigera aatgard: '+currentEditItem.name;
+    document.getElementById('modal-title').textContent='Redigera åtgärd: '+currentEditItem.name;
     document.getElementById('modal-content').innerHTML=html;
     document.getElementById('modal-delete-btn').style.display='block';
     openModal();
@@ -648,7 +648,7 @@ function saveCurrentItem(){
       paintextra:document.getElementById('edit-paintextra').value
     };
     updateDoc(doc(db,'entries',currentEditItem.id),data);
-    log('Uppdaterade aatgard: '+data.name);
+    log('Uppdaterade åtgärd: '+data.name);
   }
   else if(currentEditType==='todo'){
     data={
@@ -692,14 +692,14 @@ window.bulkRecategorize=async()=>{
   if(from===to)return alert('Kategorierna maste vara olika');
   
   const toChange=entries.filter(e=>e.category===from);
-  if(!toChange.length)return alert('Inga aatgarder hittas i denna kategori');
-  if(!confirm('Andring '+toChange.length+' aatgarder?'))return;
+  if(!toChange.length)return alert('Inga åtgärder hittas i denna kategori');
+  if(!confirm('Andring '+toChange.length+' åtgärder?'))return;
   
   syncing(true);
   for(const e of toChange){
     await updateDoc(doc(db,'entries',e.id),{category:to});
   }
-  log('Omklassificerade '+toChange.length+' aatgarder fran '+from+' till '+to);
+  log('Omklassificerade '+toChange.length+' åtgärder fran '+from+' till '+to);
   syncing(false);
 };
 
@@ -709,14 +709,14 @@ window.bulkMoveRoom=async()=>{
   if(from===to)return alert('Rum maste vara olika');
   
   const toMove=entries.filter(e=>e.roomId===from);
-  if(!toMove.length)return alert('Inga aatgarder hittas i detta rum');
-  if(!confirm('Flytta '+toMove.length+' aatgarder?'))return;
+  if(!toMove.length)return alert('Inga åtgärder hittas i detta rum');
+  if(!confirm('Flytta '+toMove.length+' åtgärder?'))return;
   
   syncing(true);
   for(const e of toMove){
     await updateDoc(doc(db,'entries',e.id),{roomId:to});
   }
-  log('Flyttade '+toMove.length+' aatgarder');
+  log('Flyttade '+toMove.length+' åtgärder');
   syncing(false);
 };
 
@@ -770,7 +770,7 @@ window.importData=async()=>{
   if(!file)return alert('Valj en fil');
   const text=await file.text();
   const data=JSON.parse(text);
-  if(!confirm('Importera '+data.rooms.length+' rum, '+data.entries.length+' aatgarder och '+data.todos.length+' todos?'))return;
+  if(!confirm('Importera '+data.rooms.length+' rum, '+data.entries.length+' åtgärder och '+data.todos.length+' todos?'))return;
   
   syncing(true);
   for(const r of data.rooms){
@@ -795,7 +795,7 @@ window.importData=async()=>{
 function openModal(){document.getElementById('edit-modal').classList.add('open');}
 window.closeModal=()=>document.getElementById('edit-modal').classList.remove('open');
 window.newRoom=()=>{alert('Skapa nytt rum via huvudappen');};
-window.newEntry=()=>{alert('Skapa ny aatgard via huvudappen');};
+window.newEntry=()=>{alert('Skapa ny åtgärd via huvudappen');};
 window.newTodo=()=>{alert('Skapa ny todo via huvudappen');};
 window.filterRooms=()=>renderRooms();
 window.filterEntries=()=>renderEntries();
