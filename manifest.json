@@ -1,7 +1,7 @@
 {
   "name": "Oktobergatan 10",
   "short_name": "Oktobergatan",
-  "start_url": "/?standalone=true",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
