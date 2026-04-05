@@ -1,24 +1,25 @@
 {
   "name": "Oktobergatan 10",
   "short_name": "Oktobergatan",
-  "start_url": "/",
+  "start_url": "/?standalone=true",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "background_color": "#111111",
   "theme_color": "#111111",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
@@ -27,6 +28,12 @@
       "sizes": "540x720",
       "type": "image/png",
       "form_factor": "narrow"
+    },
+    {
+      "src": "https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de",
+      "sizes": "1088x1920",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ]
 }
