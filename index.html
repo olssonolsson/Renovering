@@ -3,8 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oktobergatan 10">
+<meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1.0; viewport-fit=cover"">
 <title>Oktobergatan 10</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22Oktobergatan%2010%22,%22short_name%22:%22Oktobergatan%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22,%22orientation%22:%22portrait-primary%22}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231a1a1a' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-family='system-ui'>10</text></svg>">
 <style>
 :root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#e8e6e0;--border2:#ccc;--text:#1a1a1a;--text2:#666;--text3:#aaa;--accent:#1a1a1a;--accent-txt:#fff;--danger:#c0392b;--danger-bg:#fff8f7;--danger-bd:#e8d0ce;--ok-bg:#e8f5e9;--ok-bd:#81c784;--ok-txt:#2e7d32;--tag-bg:#f0ede8;--topbar:#fff;}
 .dark{--bg:#111;--surface:#1c1c1e;--surface2:#2c2c2e;--border:#3a3a3c;--border2:#555;--text:#f0f0f0;--text2:#aaa;--text3:#666;--accent:#f0f0f0;--accent-txt:#111;--danger:#ff6b6b;--danger-bg:#2c1a1a;--danger-bd:#5a2a2a;--ok-bg:#1a2e1a;--ok-bd:#388e3c;--ok-txt:#81c784;--tag-bg:#2c2c2e;--topbar:#1c1c1e;}
@@ -23,6 +29,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .home-card{background:var(--surface);border:.5px solid var(--border);border-radius:12px;padding:1.5rem;}
 .home-card h3{font-size:16px;font-weight:600;margin-bottom:1rem;color:var(--text);}
 .recent-actions{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;}
+.recent-actions-with-images{display:flex;flex-direction:column;gap:12px;}
+.action-item-with-image{display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border);}
+.action-image-thumb{width:64px;height:64px;min-width:64px;border-radius:8px;object-fit:cover;border:.5px solid var(--border);cursor:pointer;background:var(--bg);}
+.action-info{flex:1;display:flex;flex-direction:column;gap:4px;}
+.action-title{font-size:13px;font-weight:500;color:var(--text);}
+.action-category{font-size:12px;color:var(--text2);}
+.action-meta{font-size:11px;color:var(--text3);}
 .action-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border);font-size:13px;gap:10px;}
 .action-item .time{color:var(--text3);font-size:12px;flex-shrink:0;white-space:nowrap;}
 .action-item .desc{color:var(--text2);flex:1;}
@@ -222,21 +235,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <!-- LOGO -->
       <div class="logo-section" id="logo-container"></div>
 
-      <!-- SENASTE ÅTGÄRDER -->
+      <!-- SENASTE ÅTGÄRDER MED BILDER -->
       <div class="home-card">
-        <h3>📋 Senaste åtgärder</h3>
-        <div class="recent-actions" id="recent-actions-list"></div>
-      </div>
-
-      <!-- INSPIRATIONSGALLERI -->
-      <div class="home-card">
-        <h3>🎨 Före & Efter</h3>
-        <div class="gallery-section" id="gallery-container"></div>
+        <h3>Senaste åtgärderna</h3>
+        <div id="recent-actions-list"></div>
       </div>
 
       <!-- HÖGSTA PRIORITET -->
       <div class="home-card">
-        <h3>⚡ Högsta prioritet</h3>
+        <h3>Att göra</h3>
         <div class="priority-list" id="priority-container"></div>
       </div>
     </div>
@@ -564,7 +571,33 @@ window.switchTab=t=>{
   if(t==='rum')showRooms();
   if(t==='todo')renderTodos();
   if(t==='färger')renderColors();
+  // Push state to history for back button support
+  history.pushState({tab:t},'',window.location.pathname+'?tab='+t);
 };
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate',(e)=>{
+  if(e.state&&e.state.tab){
+    const t=e.state.tab;
+    TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});
+    if(t==='hem')renderHome();
+    if(t==='allt')renderAll();
+    if(t==='rum')showRooms();
+    if(t==='todo')renderTodos();
+    if(t==='färger')renderColors();
+  }
+});
+
+// Check URL on page load to restore tab
+window.addEventListener('load',()=>{
+  const params=new URLSearchParams(window.location.search);
+  const tab=params.get('tab');
+  if(tab&&TABS.includes(tab)){
+    switchTab(tab);
+  }else{
+    history.replaceState({tab:'hem'},'',window.location.pathname+'?tab=hem');
+  }
+});
 window.openModal=id=>document.getElementById(id).classList.add('open');
 window.closeModals=()=>document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('open'));
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals();}));
@@ -603,6 +636,23 @@ async function loadLogo(){
     const url=await getDownloadURL(logoPath);
     logo=url;
     if(atab()==='Hem')renderHome();
+    
+    // Update manifest with logo as icon
+    const manifest={
+      name:"Oktobergatan 10",
+      short_name:"Oktobergatan",
+      start_url:"/",
+      display:"standalone",
+      background_color:"#ffffff",
+      theme_color:"#ffffff",
+      orientation:"portrait-primary",
+      icons:[
+        {src:url,sizes:"192x192",type:"image/png",purpose:"any"},
+        {src:url,sizes:"512x512",type:"image/png",purpose:"any"}
+      ]
+    };
+    const link=document.querySelector('link[rel="manifest"]');
+    if(link)link.href="data:application/json,"+encodeURIComponent(JSON.stringify(manifest));
   }catch(e){
     console.log('Logo not found or error loading logo');
   }
@@ -831,7 +881,7 @@ function renderHome(){
     logoContainer.innerHTML='<div class="empty-state-home">📷 Logga inte uppladdad än</div>';
   }
 
-  // Render recent actions (last 5 entries)
+  // Render recent actions with images (last 5 entries)
   const recentList=document.getElementById('recent-actions-list');
   const sortedEntries=[...entries].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
   if(sortedEntries.length){
@@ -839,43 +889,32 @@ function renderHome(){
       const room=rooms.find(r=>r.id===e.roomId);
       const dateObj=new Date(e.date);
       const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
-      return `<div class="action-item"><div class="desc"><strong>${e.name}</strong><br>${e.category}${room?' · '+room.name:''}</div><div class="time">${timeStr}</div></div>`;
+      // Get first available image
+      const colorPhotos=e.colorPhotos||[];
+      const actionPhotos=e.actionPhotos||[];
+      const allPhotos=e.photos||[];
+      const img=colorPhotos[0]||actionPhotos[0]||allPhotos[0]||'';
+      const items=entryItems(e);
+      let imgIdx=0;
+      if(img){for(let i=0;i<items.length;i++){if(items[i].src===img)imgIdx=i;}}
+      return `<div class="action-item-with-image">
+        ${img?`<img src="${img}" alt="Bild" class="action-image-thumb" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${imgIdx})">`:``}
+        <div class="action-info">
+          <div class="action-title">${e.name}</div>
+          <div class="action-category">${e.category}${room?', '+room.name:''}</div>
+          <div class="action-meta">${timeStr}</div>
+        </div>
+      </div>`;
     }).join('');
   }else{
     recentList.innerHTML='<div class="empty-state-home">Ingen aktivitet ännu</div>';
   }
 
-  // Render before/after gallery (entries with photos)
-  const galleryContainer=document.getElementById('gallery-container');
-  const withPhotos=entries.filter(e=>(e.actionPhotos||e.colorPhotos||e.paintCanPhotos||e.photos||[]).filter(x=>x).length>0);
-  if(withPhotos.length){
-    const pairs=withPhotos.slice(0,4).map(e=>{
-      const colorPhotos=e.colorPhotos||[];
-      const actionPhotos=e.actionPhotos||[];
-      const before=colorPhotos[0]||'';
-      const after=actionPhotos[0]||'';
-      if(!before&&!after)return '';
-      const items=entryItems(e);
-      let beforeIdx=0,afterIdx=0;
-      for(let i=0;i<items.length;i++){if(items[i].src===before)beforeIdx=i;if(items[i].src===after)afterIdx=i;}
-      return `<div class="before-after-pair">
-        <div class="ba-label">${e.name}</div>
-        <div class="ba-images">
-          ${before?`<img src="${before}" alt="Färgbild" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${beforeIdx})">`:``}
-          ${after?`<img src="${after}" alt="Åtgärd" class="ba-img" onclick="lbOpen(entryItems(entries.find(x=>x.id==='${e.id}')),${afterIdx})">`:``}
-        </div>
-      </div>`;
-    }).filter(Boolean).join('');
-    galleryContainer.innerHTML=pairs||'<div class="empty-state-home">Inga före/efter bilder ännu</div>';
-  }else{
-    galleryContainer.innerHTML='<div class="empty-state-home">Lägg till bilder för att se galleri</div>';
-  }
-
   // Render high priority todos
   const priorityContainer=document.getElementById('priority-container');
-  const highPriority=todos.filter(t=>!t.done&&t.prio==='hög').slice(0,5);
-  if(highPriority.length){
-    priorityContainer.innerHTML=highPriority.map(t=>`<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}">
+  const allTodos=todos.filter(t=>!t.done).sort((a,b)=>{const prio={hög:0,medel:1,låg:2};return prio[a.prio]-prio[b.prio];}).slice(0,10);
+  if(allTodos.length){
+    priorityContainer.innerHTML=allTodos.map(t=>`<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}">
       <div class="priority-badge">${t.prio==='hög'?'🔴':t.prio==='medel'?'🟠':'🔵'}</div>
       <div class="priority-text">
         <div class="priority-title">${t.title}</div>
@@ -883,7 +922,7 @@ function renderHome(){
       </div>
     </div>`).join('');
   }else{
-    priorityContainer.innerHTML='<div class="empty-state-home">Inga högprioriterade uppgifter – bra jobbat! 🎉</div>';
+    priorityContainer.innerHTML='<div class="empty-state-home">Inga uppgifter – bra jobbat! 🎉</div>';
   }
 }
 
