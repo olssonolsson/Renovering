@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="white">
 <link rel="apple-touch-startup-image" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1366'><rect fill='%23ffffff' width='1024' height='1366'/><image href='https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de' x='412' y='583' width='200' height='200'/></svg>">
 <title>Oktobergatan 10</title>
-<link rel="manifest" href="data:application/json,{%22name%22:%22Oktobergatan%2010%22,%22short_name%22:%22Oktobergatan%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22scope%22:%22/%22,%22background_color%22:%22%23111111%22,%22theme_color%22:%22%23111111%22,%22orientation%22:%22portrait%22,%22icons%22:[{%22src%22:%22https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22,%22purpose%22:%22any%22},{%22src%22:%22https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%22}],%22screenshots%22:[{%22src%22:%22data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 540 720%27%3E%3Crect fill=%27%23111111%27 width=%27540%27 height=%27720%27/%3E%3Cimage href=%27https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de%27 x=%27170%27 y=%27260%27 width=%27200%27 height=%27200%27/%3E%3C/svg%3E%22,%22sizes%22:%22540x720%22,%22type%22:%22image/svg+xml%22,%22form_factor%22:%22narrow%22}]}
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de">
 <style>
 :root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#e8e6e0;--border2:#ccc;--text:#1a1a1a;--text2:#666;--text3:#aaa;--accent:#1a1a1a;--accent-txt:#fff;--danger:#c0392b;--danger-bg:#fff8f7;--danger-bd:#e8d0ce;--ok-bg:#e8f5e9;--ok-bd:#81c784;--ok-txt:#2e7d32;--tag-bg:#f0ede8;--topbar:#fff;}
@@ -214,7 +214,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* SPLASH SCREEN */
 .splash-screen{position:fixed;inset:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .5s ease-out;}
 .splash-screen.hidden{opacity:0;pointer-events:none;}
-.splash-logo{width:120px;height:120px;border-radius:24px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,.3);margin-bottom:24px;}
+.splash-logo{width:240px;height:240px;border-radius:32px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,.3);margin-bottom:24px;}
 .splash-text{font-size:18px;font-weight:600;color:#f0f0f0;margin-bottom:8px;}
 .splash-subtext{font-size:14px;color:#666;letter-spacing:.5px;}
 .spinner{width:24px;height:24px;border:2px solid #333;border-top:2px solid #f0f0f0;border-radius:50%;animation:spin .8s linear infinite;margin-top:16px;}
