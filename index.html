@@ -8,9 +8,11 @@
 <meta name="apple-mobile-web-app-title" content="Oktobergatan 10">
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1.0; viewport-fit=cover"">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<link rel="apple-touch-startup-image" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1366'><rect fill='%23ffffff' width='1024' height='1366'/><image href='https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de' x='412' y='583' width='200' height='200'/></svg>">
 <title>Oktobergatan 10</title>
-<link rel="manifest" href="data:application/json,{%22name%22:%22Oktobergatan%2010%22,%22short_name%22:%22Oktobergatan%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22,%22orientation%22:%22portrait-primary%22}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231a1a1a' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-family='system-ui'>10</text></svg>">
+<link rel="manifest" href="data:application/json,{%22name%22:%22Oktobergatan%2010%22,%22short_name%22:%22Oktobergatan%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23ffffff%22,%22orientation%22:%22portrait-primary%22,%22icons%22:[{%22src%22:%22https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22,%22purpose%22:%22any%22},{%22src%22:%22https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22,%22purpose%22:%22any%22}]}">
+<link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de">
 <style>
 :root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#e8e6e0;--border2:#ccc;--text:#1a1a1a;--text2:#666;--text3:#aaa;--accent:#1a1a1a;--accent-txt:#fff;--danger:#c0392b;--danger-bg:#fff8f7;--danger-bd:#e8d0ce;--ok-bg:#e8f5e9;--ok-bd:#81c784;--ok-txt:#2e7d32;--tag-bg:#f0ede8;--topbar:#fff;}
 .dark{--bg:#111;--surface:#1c1c1e;--surface2:#2c2c2e;--border:#3a3a3c;--border2:#555;--text:#f0f0f0;--text2:#aaa;--text3:#666;--accent:#f0f0f0;--accent-txt:#111;--danger:#ff6b6b;--danger-bg:#2c1a1a;--danger-bd:#5a2a2a;--ok-bg:#1a2e1a;--ok-bd:#388e3c;--ok-txt:#81c784;--tag-bg:#2c2c2e;--topbar:#1c1c1e;}
@@ -209,9 +211,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .lb-delete-btn{background:rgba(192,57,43,.4);border:1px solid rgba(192,57,43,.6);color:#ff6b6b;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;}
 .lb-delete-btn:hover{background:rgba(192,57,43,.6);border-color:#ff6b6b;color:#fff;}
 @media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}.lb-img-wrap{padding:0 44px;}}
+/* SPLASH SCREEN */
+.splash-screen{position:fixed;inset:0;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .5s ease-out;}
+.splash-screen.hidden{opacity:0;pointer-events:none;}
+.splash-logo{width:120px;height:120px;border-radius:24px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,.12);margin-bottom:24px;}
+.splash-text{font-size:18px;font-weight:600;color:#1a1a1a;margin-bottom:8px;}
+.splash-subtext{font-size:14px;color:#999;letter-spacing:.5px;}
+.spinner{width:24px;height:24px;border:2px solid #e8e6e0;border-top:2px solid #1a1a1a;border-radius:50%;animation:spin .8s linear infinite;margin-top:16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen" class="splash-screen">
+  <img src="https://firebasestorage.googleapis.com/v0/b/renovering-8b74f.firebasestorage.app/o/file_0000000080547243b99619cf0a34b007.png?alt=media&token=378d6e82-2331-4da4-8d12-97fa887775de" alt="Logo" class="splash-logo">
+  <div class="splash-text">Oktobergatan 10</div>
+  <div class="splash-subtext">Laddar...</div>
+  <div class="spinner"></div>
+</div>
 
 <div class="topbar">
   <span class="app-title">Oktobergatan 10</span>
@@ -636,23 +654,6 @@ async function loadLogo(){
     const url=await getDownloadURL(logoPath);
     logo=url;
     if(atab()==='Hem')renderHome();
-    
-    // Update manifest with logo as icon
-    const manifest={
-      name:"Oktobergatan 10",
-      short_name:"Oktobergatan",
-      start_url:"/",
-      display:"standalone",
-      background_color:"#ffffff",
-      theme_color:"#ffffff",
-      orientation:"portrait-primary",
-      icons:[
-        {src:url,sizes:"192x192",type:"image/png",purpose:"any"},
-        {src:url,sizes:"512x512",type:"image/png",purpose:"any"}
-      ]
-    };
-    const link=document.querySelector('link[rel="manifest"]');
-    if(link)link.href="data:application/json,"+encodeURIComponent(JSON.stringify(manifest));
   }catch(e){
     console.log('Logo not found or error loading logo');
   }
@@ -927,6 +928,23 @@ function renderHome(){
 }
 
 document.getElementById('en-date').value=new Date().toISOString().split('T')[0];
+
+// Hide splash screen when app is loaded
+function hideSplashScreen(){
+  const splash=document.getElementById('splash-screen');
+  if(splash){
+    setTimeout(()=>{
+      splash.classList.add('hidden');
+      setTimeout(()=>splash.remove(),500);
+    },500);
+  }
+}
+
+// Fallback: hide splash after 2 seconds
+setTimeout(hideSplashScreen,2000);
+
+// Also hide when window loads
+window.addEventListener('load',()=>setTimeout(hideSplashScreen,500));
 </script>
 
 </body>
