@@ -1,9 +1,10 @@
 // Service Worker for Oktobergatan 10
 const CACHE_NAME = 'oktobergatan-v1';
+const BASE_PATH = '/Renovering';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  BASE_PATH + '/',
+  BASE_PATH + '/index.html',
+  BASE_PATH + '/manifest.json'
 ];
 
 // Install event - cache files
@@ -52,7 +53,8 @@ self.addEventListener('fetch', (event) => {
       event.request.url.endsWith('.js') || 
       event.request.url.endsWith('.css') ||
       event.request.url.endsWith('.json') ||
-      event.request.url === new URL(self.location).origin + '/') {
+      event.request.url === new URL(self.location).origin + BASE_PATH + '/' ||
+      event.request.url === new URL(self.location).origin + BASE_PATH) {
     
     event.respondWith(
       fetch(event.request).then((response) => {

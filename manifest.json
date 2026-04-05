@@ -1,8 +1,8 @@
 {
   "name": "Oktobergatan 10",
   "short_name": "Oktobergatan",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/Renovering/",
+  "scope": "/Renovering/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#111111",
