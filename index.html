@@ -945,6 +945,18 @@ setTimeout(hideSplashScreen,2000);
 
 // Also hide when window loads
 window.addEventListener('load',()=>setTimeout(hideSplashScreen,500));
+
+// ── SERVICE WORKER ─────────────────────────────────────────────────────────────
+// Register service worker for offline support and automatic updates
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      console.log('Service Worker registered');
+      // Check for updates every time app loads
+      reg.update();
+    }).catch(err=>console.log('Service Worker registration failed:',err));
+  });
+}
 </script>
 
 </body>
