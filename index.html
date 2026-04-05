@@ -582,6 +582,13 @@ function entryItems(e){
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 const TABS=['hem','todo','rum','allt','färger'];
+
+// Set dark mode as default
+if (!localStorage.getItem('darkMode')) {
+  localStorage.setItem('darkMode', 'true');
+  document.body.classList.add('dark');
+}
+  
 window.switchTab=t=>{
   TABS.forEach((id,i)=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';document.querySelectorAll('.tab')[i].className='tab'+(id===t?' active':'');});
   if(t==='hem')renderHome();
