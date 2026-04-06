@@ -1000,10 +1000,10 @@ function renderHome(){
       const dateObj=new Date(e.date);
       const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
       // Get first available image
-      const colorPhotos=e.colorPhotos||[];
       const actionPhotos=e.actionPhotos||[];
       const allPhotos=e.photos||[];
-      const img=colorPhotos[0]||actionPhotos[0]||allPhotos[0]||'';
+      const colorPhotos=e.colorPhotos||[];
+      const img=actionPhotos[0]||allPhotos[0]||colorPhotos[0]||'';
       const items=entryItems(e);
       let imgIdx=0;
       if(img){for(let i=0;i<items.length;i++){if(items[i].src===img)imgIdx=i;}}
