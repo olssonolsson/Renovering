@@ -86,6 +86,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-d{color:var(--danger);border-color:var(--danger-bd);background:var(--danger-bg);}
 .btn-dashed{width:100%;padding:10px;border:.5px dashed var(--border2);border-radius:10px;background:none;color:var(--text3);font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;}
 .btn-dashed:hover{background:var(--surface2);}
+.room-filter-btn{padding:8px 12px;border:.5px solid var(--border2);border-radius:20px;background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s;}
+.room-filter-btn:hover{background:var(--surface2);border-color:var(--border);}
+.room-filter-btn.active{background:var(--accent);color:var(--accent-txt);border-color:var(--accent);}
 .icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px 5px;border-radius:5px;}
 .icon-btn:hover{background:var(--surface2);color:var(--text2);}
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
@@ -281,11 +284,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <h3>Att göra</h3>
         <div class="priority-list" id="priority-container"></div>
       </div>
+      <div id="version-container"></div>
     </div>
   </div>
 
   <div id="tab-todo" style="display:none;">
     <div class="sec-hdr"><h2>Att göra-lista</h2><button class="btn" onclick="populateRoomSelect();openModal('todo-modal')">+ Ny uppgift</button></div>
+    <div id="todo-rooms-filter" style="display:flex;gap:8px;padding:12px;overflow-x:auto;flex-wrap:wrap;"></div>
     <div id="todo-container"><div class="loading">Laddar...</div></div>
   </div>
 
@@ -417,7 +422,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <select id="td-prio"><option value="hög">Hög</option><option value="medel" selected>Medel</option><option value="låg">Låg</option></select>
     </div>
     <div class="form-row"><label>Rum</label>
-      <select id="td-room"><option value="">Inget rum</option></select>
+      <select id="td-room"><option value="">Ingen rum</option></select>
     </div>
     <div class="form-row"><label>Notering</label><textarea id="td-note" placeholder="Detaljer, idéer..."></textarea></div>
     <div class="modal-actions">
@@ -480,7 +485,7 @@ const db=getFirestore(app);
 const storage=getStorage(app);
 
 let rooms=[],entries=[],todos=[];
-let curRoom=null,selIcon='🛋️',dragSrc=null;
+let curRoom=null,curTodoRoom=null,selIcon='🛋️',dragSrc=null;
 let editingRoomId=null,editingEntryId=null,pendingActionPhotos=[],pendingColorPhotos=[],pendingPaintCanPhotos=[];
 let colorRoomFilter='alla';
 let logo=null;
@@ -861,6 +866,7 @@ function todoHTML(t,i){
       <span class="prio prio-${t.prio}">Prio: ${prioLabels[t.prio]}</span>
       <div class="todo-actions">
         <button class="icon-btn" title="Redigera" onclick="editTodo('${t.id}'); event.stopPropagation();">✏️</button>
+        <button class="icon-btn" title="Markera färdig" onclick="completeTodo('${t.id}'); event.stopPropagation();">✓</button>
         <button class="icon-btn" onclick="confirmDelTodo('${t.id}'); event.stopPropagation();">🗑️</button>
       </div>
       <button class="exp-btn" onclick="togOpen('${t.id}')">${t.open?'▲':'▼'}</button>
@@ -877,7 +883,7 @@ function todoHTML(t,i){
       </div>
       <div class="sub-lbl" style="margin-top:12px;">Rum</div>
       <select id="room-select-list-${i}" onchange="changeTodoRoom('${t.id}',this.value)" style="width:100%; padding:8px; border:.5px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
-        <option value="">Inget rum</option>
+        <option value="">Ingen rum</option>
         ${rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('')}
       </select>
     </div>`:''}
@@ -885,8 +891,19 @@ function todoHTML(t,i){
 }
 
 function renderTodos(){
+  // Render room filter
+  const filterContainer=document.getElementById('todo-rooms-filter');
+  filterContainer.innerHTML=`<button class="room-filter-btn${!curTodoRoom?' active':''}" onclick="filterTodosByRoom(null)">Alla</button>`+rooms.map(r=>`<button class="room-filter-btn${curTodoRoom===r.id?' active':''}" onclick="filterTodosByRoom('${r.id}')">${r.icon} ${r.name}</button>`).join('');
+  
   const c=document.getElementById('todo-container');
-  const active=todos.filter(t=>!t.done),done=todos.filter(t=>t.done);
+  let active=todos.filter(t=>!t.done),done=todos.filter(t=>t.done);
+  
+  // Filter by room if selected
+  if(curTodoRoom){
+    active=active.filter(t=>t.roomId===curTodoRoom);
+    done=done.filter(t=>t.roomId===curTodoRoom);
+  }
+  
   if(!active.length&&!done.length){c.innerHTML='<div class="empty-state">Inga uppgifter ännu</div>';return;}
   let h='';
   if(active.length)h+=`<div class="todo-list">${active.map((t,i)=>todoHTML(t,i)).join('')}</div>`;
@@ -904,6 +921,8 @@ function setupDrag(){
     el.addEventListener('drop',async e=>{e.preventDefault();el.style.borderTop='';const tgt=parseInt(el.dataset.idx);if(dragSrc===null||dragSrc===tgt)return;const arr=[...todos];const[m]=arr.splice(dragSrc,1);arr.splice(tgt,0,m);syncing(true);await Promise.all(arr.map((t,i)=>updateDoc(doc(db,'todos',t.id),{order:i})));syncing(false);});
   });
 }
+
+window.filterTodosByRoom=async(roomId)=>{curTodoRoom=roomId;renderTodos();};
 
 window.togTodo=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;if(!t.done){completeTodo(id);}else{syncing(true);await updateDoc(doc(db,'todos',id),{done:false});syncing(false);}};
 window.togOpen=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;await updateDoc(doc(db,'todos',id),{open:!t.open});};
@@ -926,7 +945,7 @@ window.expandTodo=async(id,event)=>{const item=document.getElementById('pitem-'+
         <div style="display:flex; gap:8px; align-items:center;">
           <label style="font-size:12px; color:var(--text3); white-space:nowrap;">Rum:</label>
           <select id="room-select-${id}" onchange="changeTodoRoom('${id}',this.value)" style="flex:1; padding:6px; border:.5px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
-            <option value="">Inget rum</option>
+            <option value="">Ingen rum</option>
             ${rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('')}
           </select>
         </div>
@@ -934,7 +953,7 @@ window.expandTodo=async(id,event)=>{const item=document.getElementById('pitem-'+
 
 window.changeTodoRoom=async(id,roomId)=>{syncing(true);await updateDoc(doc(db,'todos',id),{roomId:roomId||''});syncing(false);};
 
-window.populateRoomSelect=()=>{const select=document.getElementById('td-room');if(!select)return;select.innerHTML='<option value="">Inget rum</option>'+rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');select.value='';};
+window.populateRoomSelect=()=>{const select=document.getElementById('td-room');if(!select)return;select.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');select.value='';};
 
 window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);const roomId=document.getElementById('td-room')?.value||'';await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),roomId,done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';document.getElementById('td-room').value='';document.getElementById('td-prio').value='medel';syncing(false);closeModals();};
 
@@ -959,10 +978,10 @@ function renderHome(){
       const dateObj=new Date(e.date);
       const timeStr=dateObj.toLocaleDateString('sv-SE',{month:'short',day:'numeric'});
       // Get first available image
+      const colorPhotos=e.colorPhotos||[];
       const actionPhotos=e.actionPhotos||[];
       const allPhotos=e.photos||[];
-      const colorPhotos=e.colorPhotos||[];
-	  const img=actionPhotos[0]||allPhotos[0]||colorPhotos[0]||'';
+      const img=colorPhotos[0]||actionPhotos[0]||allPhotos[0]||'';
       const items=entryItems(e);
       let imgIdx=0;
       if(img){for(let i=0;i<items.length;i++){if(items[i].src===img)imgIdx=i;}}
@@ -988,6 +1007,12 @@ function renderHome(){
     }).join('');
   }else{
     priorityContainer.innerHTML='<div class="empty-state-home">Inga uppgifter – bra jobbat! 🎉</div>';
+  }
+  
+  // Add version number at bottom
+  const versionContainer=document.getElementById('version-container');
+  if(versionContainer){
+    versionContainer.innerHTML='<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Version 1.2.0</div>';
   }
 }
 
