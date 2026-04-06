@@ -62,6 +62,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .priority-room{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;}
 .priority-actions{display:flex;gap:5px;align-items:center;flex-shrink:0;}
 .priority-actions .icon-btn{opacity:1;}
+.priority-item-simple{display:flex;align-items:center;padding:12px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border);cursor:pointer;transition:background .2s;}
+.priority-item-simple:hover{background:var(--surface);border-color:var(--border2);}
+.priority-title-link{font-size:13px;font-weight:500;color:var(--text);}
 .todo-expanded-section{margin-top:8px;padding-top:8px;border-top:.5px solid var(--border);display:flex;flex-direction:column;gap:8px;}
 .todo-input{padding:8px;border:.5px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:inherit;font-size:12px;width:100%;}
 .todo-input-group{display:flex;gap:6px;}
@@ -148,7 +151,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .chk-circ.on{background:var(--ok-bg);border-color:var(--ok-bd);}
 .chk-sq{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .chk-sq.on{background:var(--ok-bg);border-color:var(--ok-bd);}
+.todo-title-section{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;}
 .todo-title{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.todo-room-badge{font-size:11px;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text2);white-space:nowrap;}
+.todo-actions{display:flex;gap:4px;align-items:center;flex-shrink:0;}
+.todo-actions .icon-btn{opacity:1;}
 .todo-title.crossed{text-decoration:line-through;color:var(--text3);}
 .prio{font-size:10px;padding:2px 7px;border-radius:20px;flex-shrink:0;}
 .prio-hög{background:#fff0ee;color:#c0392b;}
@@ -844,13 +851,22 @@ window.confirmDelPaintCanPhoto=(eid,pi)=>{confirm2('Ta bort färgburkbilden?','B
 function todoHTML(t,i){
   const subs=(t.subtasks||[]).map((s,si)=>`<div class="sub-row"><div class="chk-sq${s.done?' on':''}" onclick="togSub('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}">${s.label}</span><button class="x-btn" onclick="delSub('${t.id}',${si})">×</button></div>`).join('');
   const shops=(t.shopping||[]).map((s,si)=>`<div class="shop-row"><div class="chk-circ${s.done?' on':''}" onclick="togShop('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}" style="flex:1;">${s.label}</span>${s.url?`<a class="shop-link" href="${s.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗</a>`:''}<button class="x-btn" onclick="delShop('${t.id}',${si})">×</button></div>`).join('');
+  const room=rooms.find(r=>r.id===t.roomId);
+  const prioLabels={hög:'Hög',medel:'Medel',låg:'Låg'};
   return`<div class="todo-item${t.done?' done-dim':''}" draggable="true" data-id="${t.id}" data-idx="${i}">
     <div class="todo-header">
       <span class="drag-handle">⠿</span>
       <div class="chk-box${t.done?' on':''}" onclick="togTodo('${t.id}')">${t.done?chk():''}</div>
-      <span class="todo-title${t.done?' crossed':''}">${t.title}</span>
-      <span class="prio prio-${t.prio}">${t.prio}</span>
-      <button class="icon-btn" onclick="confirmDelTodo('${t.id}')">🗑️</button>
+      <div class="todo-title-section">
+        <span class="todo-title${t.done?' crossed':''}">${t.title}</span>
+        ${room?`<span class="todo-room-badge">🏠 ${room.name}</span>`:''}
+      </div>
+      <span class="prio prio-${t.prio}">Prio: ${prioLabels[t.prio]}</span>
+      <div class="todo-actions">
+        <button class="icon-btn" title="Redigera" onclick="editTodo('${t.id}'); event.stopPropagation();">✏️</button>
+        <button class="icon-btn" title="Markera färdig" onclick="completeTodo('${t.id}'); event.stopPropagation();">✓</button>
+        <button class="icon-btn" onclick="confirmDelTodo('${t.id}'); event.stopPropagation();">🗑️</button>
+      </div>
       <button class="exp-btn" onclick="togOpen('${t.id}')">${t.open?'▲':'▼'}</button>
     </div>
     ${t.open?`<div class="todo-body">
@@ -863,6 +879,11 @@ function todoHTML(t,i){
         <input type="text" id="su-${i}" placeholder="Länk (valfritt)..." style="flex:2;">
         <button class="btn" onclick="addShop('${t.id}',${i})">+</button>
       </div>
+      <div class="sub-lbl" style="margin-top:12px;">Rum</div>
+      <select id="room-select-list-${i}" onchange="changeTodoRoom('${t.id}',this.value)" style="width:100%; padding:8px; border:.5px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
+        <option value="">Ingen rum</option>
+        ${rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('')}
+      </select>
     </div>`:''}
   </div>`;
 }
@@ -899,7 +920,7 @@ window.togShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;cons
 window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
 window.completeTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const shouldCreateAction=confirm('Vill du skapa en åtgärd från denna färdiga punkt?\n\n"'+t.title+'"');if(shouldCreateAction){openModal('action-from-todo-modal');window.pendingTodoId=id;const roomSelect=document.getElementById('aft-room');if(roomSelect){roomSelect.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('');}document.getElementById('aft-title').value=t.title;document.getElementById('aft-note').value=t.note||'';}else{syncing(true);await updateDoc(doc(db,'todos',id),{done:true});syncing(false);}};
 
-window.saveActionFromTodo=async()=>{if(!window.pendingTodoId)return;const title=document.getElementById('aft-title').value.trim();const note=document.getElementById('aft-note').value.trim();const roomId=document.getElementById('aft-room').value;if(!title)return;syncing(true);const createdAt=Date.now();const newActionId='action_'+createdAt;await setDoc(doc(db,'actions',newActionId),{title,category:'',description:note,status:'pending',assignee:'',dueDate:'',roomId:roomId||'',createdAt,order:actions.length});await updateDoc(doc(db,'todos',window.pendingTodoId),{done:true});syncing(false);closeModals();window.pendingTodoId=null;alert('Åtgärd skapad!');};
+window.saveActionFromTodo=async()=>{if(!window.pendingTodoId)return;const title=document.getElementById('aft-title').value.trim();const note=document.getElementById('aft-note').value.trim();const roomId=document.getElementById('aft-room').value;if(!title)return;syncing(true);const createdAt=Date.now();const newEntryId='entry_'+createdAt;await setDoc(doc(db,'entries',newEntryId),{name:title,category:'',description:note,date:new Date().toISOString(),status:'pending',roomId:roomId||'',photos:[],actionPhotos:[],colorPhotos:[],paintCanPhotos:[],createdAt});await updateDoc(doc(db,'todos',window.pendingTodoId),{done:true});syncing(false);closeModals();window.pendingTodoId=null;alert('Åtgärd skapad!');};
 
 window.editTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const newTitle=prompt('Redigera titel:',t.title);if(newTitle===null||!newTitle.trim())return;syncing(true);await updateDoc(doc(db,'todos',id),{title:newTitle.trim()});syncing(false);};
 
@@ -964,21 +985,8 @@ function renderHome(){
   const priorityContainer=document.getElementById('priority-container');
   const allTodos=todos.filter(t=>!t.done).sort((a,b)=>{const prio={hög:0,medel:1,låg:2};return prio[a.prio]-prio[b.prio];}).slice(0,10);
   if(allTodos.length){
-    const prioLabels={hög:'Hög',medel:'Medel',låg:'Låg'};
     priorityContainer.innerHTML=allTodos.map(t=>{
-      const room=rooms.find(r=>r.id===t.roomId);
-      return `<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}" id="pitem-${t.id}" onclick="expandTodo('${t.id}',event)">
-      <div class="priority-badge">Prio:<br>${prioLabels[t.prio]}</div>
-      <div class="priority-text" style="flex:1;">
-        <div class="priority-title">${t.title}</div>
-        ${t.note?`<div class="priority-details">${t.note}</div>`:''}
-        ${room?`<div class="priority-room">🏠 ${room.name}</div>`:''}
-      </div>
-      <div class="priority-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn" title="Redigera" onclick="editTodo('${t.id}')">✏️</button>
-        <button class="icon-btn" title="Markera färdig" onclick="completeTodo('${t.id}')">✓</button>
-      </div>
-    </div>`;
+      return `<div class="priority-item-simple" onclick="openTab('Att göra')"><div class="priority-title-link">${t.title}</div></div>`;
     }).join('');
   }else{
     priorityContainer.innerHTML='<div class="empty-state-home">Inga uppgifter – bra jobbat! 🎉</div>';
