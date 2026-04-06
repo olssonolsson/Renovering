@@ -428,21 +428,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <!-- MODAL: CREATE ACTION FROM TODO -->
-<div class="modal-bg" id="action-from-todo-modal">
-  <div class="modal">
-    <h2>Skapa åtgärd</h2>
-    <div class="form-row"><label>Titel</label><input type="text" id="aft-title" placeholder="Åtgärdstitel"></div>
-    <div class="form-row"><label>Rum</label>
-      <select id="aft-room"><option value="">Ingen rum</option></select>
-    </div>
-    <div class="form-row"><label>Beskrivning</label><textarea id="aft-note" placeholder="Detaljer..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModals()">Avbryt</button>
-      <button class="btn btn-p" onclick="saveActionFromTodo()">Skapa åtgärd</button>
-    </div>
-  </div>
-</div>
-
 <!-- CONFIRM MODAL -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal" style="max-width:340px;">
@@ -451,6 +436,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="modal-actions">
       <button class="btn" onclick="closeModals()">Avbryt</button>
       <button class="btn btn-d" id="c-ok">Ta bort</button>
+    </div>
+  </div>
+</div>
+
+<!-- TODO CONFIRM MODAL -->
+<div class="modal-bg" id="todo-confirm-modal">
+  <div class="modal" style="max-width:340px;">
+    <h2 id="todo-confirm-title">Skapa åtgärd?</h2>
+    <p id="todo-confirm-msg" style="font-size:14px;color:var(--text2);margin-bottom:1.25rem;"></p>
+    <div class="modal-actions">
+      <button class="btn" id="todo-confirm-no">Skapa INTE åtgärd</button>
+      <button class="btn btn-p" id="todo-confirm-yes">JA</button>
     </div>
   </div>
 </div>
@@ -820,7 +817,7 @@ window.openEntryModalNew=()=>{editingEntryId=null;pendingActionPhotos=[];pending
 window.editEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;editingEntryId=id;pendingActionPhotos=[...(e.actionPhotos||[])];pendingColorPhotos=[...(e.colorPhotos||[])];pendingPaintCanPhotos=[...(e.paintCanPhotos||[])];document.getElementById('entry-modal-title').textContent='Redigera åtgärd';document.getElementById('en-name').value=e.name||'';document.getElementById('en-cat').value=e.category||'Målning';document.getElementById('en-date').value=e.date||'';document.getElementById('en-note').value=e.note||'';document.getElementById('en-colorname').value=e.colorname||'';document.getElementById('en-gloss').value=e.gloss||'';document.getElementById('en-brand').value=e.brand||'';document.getElementById('en-paintextra').value=e.paintextra||'';document.getElementById('entry-del-btn').style.display='block';renderPhotoPreviewsInModal();openModal('entry-modal');};
 window.confirmDelEntry=id=>{const e=entries.find(x=>x.id===id);if(!e)return;confirm2(`Ta bort "${e.name}"?`,'Åtgärden tas bort permanent.',async()=>{syncing(true);closeModals();await deleteDoc(doc(db,'entries',id));syncing(false);});};
 window.deleteCurrentEntry=()=>{if(editingEntryId)confirmDelEntry(editingEntryId);};
-window.saveEntry=async()=>{const name=document.getElementById('en-name').value.trim();if(!name)return;syncing(true);const uploadPhotos=async(photos)=>{const uploaded=[];for(const p of photos){if(p.startsWith('data:')){try{const r=ref(storage,`photos/${Date.now()}_${Math.random().toString(36).slice(2)}`);await uploadString(r,p,'data_url');uploaded.push(await getDownloadURL(r));}catch(_){uploaded.push(p);}}else{uploaded.push(p);}}return uploaded;};const actionPhotos=await uploadPhotos(pendingActionPhotos);const colorPhotos=await uploadPhotos(pendingColorPhotos);const paintCanPhotos=await uploadPhotos(pendingPaintCanPhotos);const data={name,category:document.getElementById('en-cat').value,date:document.getElementById('en-date').value,note:document.getElementById('en-note').value.trim(),colorname:document.getElementById('en-colorname').value.trim(),gloss:document.getElementById('en-gloss').value,brand:document.getElementById('en-brand').value.trim(),paintextra:document.getElementById('en-paintextra').value.trim(),actionPhotos,colorPhotos,paintCanPhotos};if(editingEntryId){await updateDoc(doc(db,'entries',editingEntryId),data);}else{const room=curRoom||rooms[0];if(!room){syncing(false);return;}await setDoc(doc(db,'entries','entry_'+Date.now()),{...data,roomId:room.id,createdAt:Date.now()});}editingEntryId=null;pendingActionPhotos=[];pendingColorPhotos=[];pendingPaintCanPhotos=[];syncing(false);closeModals();};
+window.saveEntry=async()=>{const name=document.getElementById('en-name').value.trim();if(!name)return;syncing(true);const uploadPhotos=async(photos)=>{const uploaded=[];for(const p of photos){if(p.startsWith('data:')){try{const r=ref(storage,`photos/${Date.now()}_${Math.random().toString(36).slice(2)}`);await uploadString(r,p,'data_url');uploaded.push(await getDownloadURL(r));}catch(_){uploaded.push(p);}}else{uploaded.push(p);}}return uploaded;};const actionPhotos=await uploadPhotos(pendingActionPhotos);const colorPhotos=await uploadPhotos(pendingColorPhotos);const paintCanPhotos=await uploadPhotos(pendingPaintCanPhotos);const data={name,category:document.getElementById('en-cat').value,date:document.getElementById('en-date').value,note:document.getElementById('en-note').value.trim(),colorname:document.getElementById('en-colorname').value.trim(),gloss:document.getElementById('en-gloss').value,brand:document.getElementById('en-brand').value.trim(),paintextra:document.getElementById('en-paintextra').value.trim(),actionPhotos,colorPhotos,paintCanPhotos};if(editingEntryId){await updateDoc(doc(db,'entries',editingEntryId),data);}else{const room=curRoom||rooms[0];if(!room){syncing(false);return;}await setDoc(doc(db,'entries','entry_'+Date.now()),{...data,roomId:room.id,createdAt:Date.now()});if(window.pendingTodoForAction){await updateDoc(doc(db,'todos',window.pendingTodoForAction),{done:true});window.pendingTodoForAction=null;}}editingEntryId=null;pendingActionPhotos=[];pendingColorPhotos=[];pendingPaintCanPhotos=[];syncing(false);closeModals();};
 // Photo preview rendering for modal
 window.addActionPhoto=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingActionPhotos.push(e.target.result);renderPhotoPreviewsInModal();};r.readAsDataURL(f);};
 window.addColorPhoto=input=>{const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingColorPhotos.push(e.target.result);renderPhotoPreviewsInModal();};r.readAsDataURL(f);};
@@ -909,7 +906,7 @@ function setupDrag(){
   });
 }
 
-window.togTodo=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{done:!t.done});syncing(false);};
+window.togTodo=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;if(!t.done){completeTodo(id);}else{syncing(true);await updateDoc(doc(db,'todos',id),{done:false});syncing(false);}};
 window.togOpen=async id=>{const t=todos.find(x=>x.id===id);if(!t)return;await updateDoc(doc(db,'todos',id),{open:!t.open});};
 window.confirmDelTodo=id=>{const t=todos.find(x=>x.id===id);if(!t)return;confirm2(`Ta bort "${t.title}"?`,'Uppgiften tas bort permanent.',async()=>{syncing(true);closeModals();await deleteDoc(doc(db,'todos',id));syncing(false);});};
 window.addSub=async(id,i)=>{const inp=document.getElementById('si-'+i);const v=inp.value.trim();if(!v)return;const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{subtasks:[...(t.subtasks||[]),{label:v,done:false}]});inp.value='';syncing(false);};
@@ -918,11 +915,13 @@ window.delSub=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const
 window.addShop=async(id,i)=>{const label=document.getElementById('sh-'+i)?.value.trim();const url=document.getElementById('su-'+i)?.value.trim();if(!label)return;const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{shopping:[...(t.shopping||[]),{label,done:false,url:url||''}]});document.getElementById('sh-'+i).value='';document.getElementById('su-'+i).value='';syncing(false);};
 window.togShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s[si]={...s[si],done:!s[si].done};syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
 window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
-window.completeTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const shouldCreateAction=confirm('Vill du skapa en åtgärd från denna färdiga punkt?\n\n"'+t.title+'"');if(shouldCreateAction){openModal('action-from-todo-modal');window.pendingTodoId=id;const roomSelect=document.getElementById('aft-room');if(roomSelect){roomSelect.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('');}document.getElementById('aft-title').value=t.title;document.getElementById('aft-note').value=t.note||'';}else{syncing(true);await updateDoc(doc(db,'todos',id),{done:true});syncing(false);}};
-
-window.saveActionFromTodo=async()=>{if(!window.pendingTodoId)return;const title=document.getElementById('aft-title').value.trim();const note=document.getElementById('aft-note').value.trim();const roomId=document.getElementById('aft-room').value;if(!title)return;syncing(true);const createdAt=Date.now();const newEntryId='entry_'+createdAt;await setDoc(doc(db,'entries',newEntryId),{name:title,category:'',description:note,date:new Date().toISOString(),status:'pending',roomId:roomId||'',photos:[],actionPhotos:[],colorPhotos:[],paintCanPhotos:[],createdAt});await updateDoc(doc(db,'todos',window.pendingTodoId),{done:true});syncing(false);closeModals();window.pendingTodoId=null;alert('Åtgärd skapad!');};
+window.completeTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;window.pendingTodoForAction=id;document.getElementById('todo-confirm-title').textContent='Skapa åtgärd?';document.getElementById('todo-confirm-msg').textContent='"'+t.title+'"';document.getElementById('todo-confirm-yes').textContent='JA';document.getElementById('todo-confirm-no').textContent='Skapa INTE åtgärd';document.getElementById('todo-confirm-yes').onclick=()=>{closeModals();openEntryModalFromTodo(id);};document.getElementById('todo-confirm-no').onclick=()=>{closeModals();markTodoDone(id);};openModal('todo-confirm-modal');};
 
 window.editTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const newTitle=prompt('Redigera titel:',t.title);if(newTitle===null||!newTitle.trim())return;syncing(true);await updateDoc(doc(db,'todos',id),{title:newTitle.trim()});syncing(false);};
+
+window.openEntryModalFromTodo=async(todoId)=>{const t=todos.find(x=>x.id===todoId);if(!t)return;editingEntryId=null;window.pendingTodoForAction=todoId;pendingActionPhotos=[];pendingColorPhotos=[];pendingPaintCanPhotos=[];document.getElementById('entry-modal-title').textContent='Ny åtgärd från uppgift';document.getElementById('en-name').value=t.title;document.getElementById('en-cat').value='';document.getElementById('en-date').value=new Date().toISOString().split('T')[0];document.getElementById('en-note').value=t.note||'';['en-colorname','en-brand','en-paintextra','en-gloss'].forEach(id=>document.getElementById(id).value='');document.getElementById('en-action-photos').innerHTML='';document.getElementById('en-color-photos').innerHTML='';document.getElementById('en-paint-can-photos').innerHTML='';document.getElementById('entry-del-btn').style.display='none';openModal('entry-modal');};
+
+window.markTodoDone=async(todoId)=>{syncing(true);await updateDoc(doc(db,'todos',todoId),{done:true});syncing(false);};
 
 window.expandTodo=async(id,event)=>{const item=document.getElementById('pitem-'+id);if(!item)return;item.classList.toggle('expanded');if(item.classList.contains('expanded')){const t=todos.find(x=>x.id===id);const room=rooms.find(r=>r.id===t.roomId);const detailsDiv=item.querySelector('.todo-expanded-details');if(!detailsDiv){const newDetailsDiv=document.createElement('div');newDetailsDiv.className='todo-expanded-details';newDetailsDiv.style.marginTop='8px';newDetailsDiv.style.paddingTop='8px';newDetailsDiv.style.borderTop='.5px solid var(--border)';newDetailsDiv.style.display='flex';newDetailsDiv.style.flexDirection='column';newDetailsDiv.style.gap='8px';newDetailsDiv.innerHTML=`
         <div style="display:flex; gap:8px; align-items:center;">
