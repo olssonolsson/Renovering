@@ -48,14 +48,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .ba-img{width:100%;aspect-ratio:1;object-fit:cover;cursor:pointer;transition:transform .2s;}
 .ba-img:hover{transform:scale(1.02);}
 .priority-list{display:flex;flex-direction:column;gap:10px;}
-.priority-item{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent);border:.5px solid var(--border);}
-.priority-badge{display:flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:6px;font-weight:600;font-size:12px;flex-shrink:0;}
+.priority-item{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent);border:.5px solid var(--border);cursor:pointer;transition:background .2s;}
+.priority-item:hover{background:var(--surface);}
+.priority-item.expanded{border:.5px solid var(--accent);background:var(--surface);}
+.priority-badge{display:flex;align-items:center;justify-content:center;flex-direction:column;min-width:50px;height:auto;border-radius:6px;font-weight:600;font-size:11px;flex-shrink:0;padding:4px 4px;text-align:center;line-height:1.2;}
 .priority-1 .priority-badge{background:#ffebee;color:#c0392b;}
 .priority-2 .priority-badge{background:#fff3e0;color:#d97706;}
 .priority-3 .priority-badge{background:#f0f4ff;color:#2563eb;}
 .priority-text{flex:1;}
 .priority-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
-.priority-details{font-size:12px;color:var(--text3);line-height:1.4;}
+.priority-details{font-size:12px;color:var(--text3);line-height:1.4;max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.priority-item.expanded .priority-details{max-height:200px;}
+.priority-room{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;}
+.priority-actions{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.priority-actions .icon-btn{opacity:1;}
+.todo-expanded-section{margin-top:8px;padding-top:8px;border-top:.5px solid var(--border);display:flex;flex-direction:column;gap:8px;}
+.todo-input{padding:8px;border:.5px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:inherit;font-size:12px;width:100%;}
+.todo-input-group{display:flex;gap:6px;}
+.todo-input-group input{flex:1;}
 .empty-state-home{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1rem;color:var(--text3);text-align:center;}
 .empty-state-home svg{width:48px;height:48px;opacity:.5;margin-bottom:1rem;}
 .topbar-right{display:flex;align-items:center;gap:10px;margin-left:10px;flex-shrink:0;}
@@ -268,7 +278,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
 
   <div id="tab-todo" style="display:none;">
-    <div class="sec-hdr"><h2>Att göra-lista</h2><button class="btn" onclick="openModal('todo-modal')">+ Ny uppgift</button></div>
+    <div class="sec-hdr"><h2>Att göra-lista</h2><button class="btn" onclick="populateRoomSelect();openModal('todo-modal')">+ Ny uppgift</button></div>
     <div id="todo-container"><div class="loading">Laddar...</div></div>
   </div>
 
@@ -399,10 +409,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="form-row"><label>Prioritet</label>
       <select id="td-prio"><option value="hög">Hög</option><option value="medel" selected>Medel</option><option value="låg">Låg</option></select>
     </div>
+    <div class="form-row"><label>Rum</label>
+      <select id="td-room"><option value="">Ingen rum</option></select>
+    </div>
     <div class="form-row"><label>Notering</label><textarea id="td-note" placeholder="Detaljer, idéer..."></textarea></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModals()">Avbryt</button>
       <button class="btn btn-p" onclick="saveTodo()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CREATE ACTION FROM TODO -->
+<div class="modal-bg" id="action-from-todo-modal">
+  <div class="modal">
+    <h2>Skapa åtgärd</h2>
+    <div class="form-row"><label>Titel</label><input type="text" id="aft-title" placeholder="Åtgärdstitel"></div>
+    <div class="form-row"><label>Rum</label>
+      <select id="aft-room"><option value="">Ingen rum</option></select>
+    </div>
+    <div class="form-row"><label>Beskrivning</label><textarea id="aft-note" placeholder="Detaljer..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModals()">Avbryt</button>
+      <button class="btn btn-p" onclick="saveActionFromTodo()">Skapa åtgärd</button>
     </div>
   </div>
 </div>
@@ -868,7 +897,27 @@ window.delSub=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const
 window.addShop=async(id,i)=>{const label=document.getElementById('sh-'+i)?.value.trim();const url=document.getElementById('su-'+i)?.value.trim();if(!label)return;const t=todos.find(x=>x.id===id);if(!t)return;syncing(true);await updateDoc(doc(db,'todos',id),{shopping:[...(t.shopping||[]),{label,done:false,url:url||''}]});document.getElementById('sh-'+i).value='';document.getElementById('su-'+i).value='';syncing(false);};
 window.togShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s[si]={...s[si],done:!s[si].done};syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
 window.delShop=async(id,si)=>{const t=todos.find(x=>x.id===id);if(!t)return;const s=[...(t.shopping||[])];s.splice(si,1);syncing(true);await updateDoc(doc(db,'todos',id),{shopping:s});syncing(false);};
-window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
+window.completeTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const shouldCreateAction=confirm('Vill du skapa en åtgärd från denna färdiga punkt?\n\n"'+t.title+'"');if(shouldCreateAction){openModal('action-from-todo-modal');window.pendingTodoId=id;const roomSelect=document.getElementById('aft-room');if(roomSelect){roomSelect.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('');}document.getElementById('aft-title').value=t.title;document.getElementById('aft-note').value=t.note||'';}else{syncing(true);await updateDoc(doc(db,'todos',id),{done:true});syncing(false);}};
+
+window.saveActionFromTodo=async()=>{if(!window.pendingTodoId)return;const title=document.getElementById('aft-title').value.trim();const note=document.getElementById('aft-note').value.trim();const roomId=document.getElementById('aft-room').value;if(!title)return;syncing(true);const createdAt=Date.now();const newActionId='action_'+createdAt;await setDoc(doc(db,'actions',newActionId),{title,category:'',description:note,status:'pending',assignee:'',dueDate:'',roomId:roomId||'',createdAt,order:actions.length});await updateDoc(doc(db,'todos',window.pendingTodoId),{done:true});syncing(false);closeModals();window.pendingTodoId=null;alert('Åtgärd skapad!');};
+
+window.editTodo=async(id)=>{const t=todos.find(x=>x.id===id);if(!t)return;const newTitle=prompt('Redigera titel:',t.title);if(newTitle===null||!newTitle.trim())return;syncing(true);await updateDoc(doc(db,'todos',id),{title:newTitle.trim()});syncing(false);};
+
+window.expandTodo=async(id,event)=>{const item=document.getElementById('pitem-'+id);if(!item)return;item.classList.toggle('expanded');if(item.classList.contains('expanded')){const t=todos.find(x=>x.id===id);const room=rooms.find(r=>r.id===t.roomId);const detailsDiv=item.querySelector('.todo-expanded-details');if(!detailsDiv){const newDetailsDiv=document.createElement('div');newDetailsDiv.className='todo-expanded-details';newDetailsDiv.style.marginTop='8px';newDetailsDiv.style.paddingTop='8px';newDetailsDiv.style.borderTop='.5px solid var(--border)';newDetailsDiv.style.display='flex';newDetailsDiv.style.flexDirection='column';newDetailsDiv.style.gap='8px';newDetailsDiv.innerHTML=`
+        <div style="display:flex; gap:8px; align-items:center;">
+          <label style="font-size:12px; color:var(--text3); white-space:nowrap;">Rum:</label>
+          <select id="room-select-${id}" onchange="changeTodoRoom('${id}',this.value)" style="flex:1; padding:6px; border:.5px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-family:inherit; font-size:12px;">
+            <option value="">Ingen rum</option>
+            ${rooms.map(r=>`<option value="${r.id}" ${t.roomId===r.id?'selected':''}>${r.name}</option>`).join('')}
+          </select>
+        </div>
+      `;const priorityText=item.querySelector('.priority-text');priorityText.appendChild(newDetailsDiv);}}};
+
+window.changeTodoRoom=async(id,roomId)=>{syncing(true);await updateDoc(doc(db,'todos',id),{roomId:roomId||''});syncing(false);};
+
+window.populateRoomSelect=()=>{const select=document.getElementById('td-room');if(!select)return;select.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');};
+
+window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);const roomId=document.getElementById('td-room')?.value||'';await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),roomId,done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
 
 function confirm2(title,msg,onOk){document.getElementById('c-title').textContent=title;document.getElementById('c-msg').textContent=msg;document.getElementById('c-ok').onclick=onOk;openModal('confirm-modal');}
 
@@ -915,13 +964,22 @@ function renderHome(){
   const priorityContainer=document.getElementById('priority-container');
   const allTodos=todos.filter(t=>!t.done).sort((a,b)=>{const prio={hög:0,medel:1,låg:2};return prio[a.prio]-prio[b.prio];}).slice(0,10);
   if(allTodos.length){
-    priorityContainer.innerHTML=allTodos.map(t=>`<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}">
-      <div class="priority-badge">${t.prio==='hög'?'🔴':t.prio==='medel'?'🟠':'🔵'}</div>
-      <div class="priority-text">
+    const prioLabels={hög:'Hög',medel:'Medel',låg:'Låg'};
+    priorityContainer.innerHTML=allTodos.map(t=>{
+      const room=rooms.find(r=>r.id===t.roomId);
+      return `<div class="priority-item priority-${t.prio==='hög'?1:t.prio==='medel'?2:3}" id="pitem-${t.id}" onclick="expandTodo('${t.id}',event)">
+      <div class="priority-badge">Prio:<br>${prioLabels[t.prio]}</div>
+      <div class="priority-text" style="flex:1;">
         <div class="priority-title">${t.title}</div>
-        ${t.note?`<div class="priority-details">${t.note.substring(0,60)}${t.note.length>60?'...':''}</div>`:''}
+        ${t.note?`<div class="priority-details">${t.note}</div>`:''}
+        ${room?`<div class="priority-room">🏠 ${room.name}</div>`:''}
       </div>
-    </div>`).join('');
+      <div class="priority-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn" title="Redigera" onclick="editTodo('${t.id}')">✏️</button>
+        <button class="icon-btn" title="Markera färdig" onclick="completeTodo('${t.id}')">✓</button>
+      </div>
+    </div>`;
+    }).join('');
   }else{
     priorityContainer.innerHTML='<div class="empty-state-home">Inga uppgifter – bra jobbat! 🎉</div>';
   }
