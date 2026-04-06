@@ -151,9 +151,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .chk-circ.on{background:var(--ok-bg);border-color:var(--ok-bd);}
 .chk-sq{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .chk-sq.on{background:var(--ok-bg);border-color:var(--ok-bd);}
-.todo-title-section{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap;min-width:0;}
-.todo-title{flex:1;font-size:14px;font-weight:500;color:var(--text);min-width:0;word-break:break-word;}
-.todo-room-badge{font-size:10px;padding:2px 4px;border-radius:3px;background:var(--surface2);color:var(--text2);white-space:nowrap;flex-shrink:0;}
+.todo-title-and-room{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+.todo-title{font-size:14px;font-weight:500;color:var(--text);word-break:break-word;}
+.todo-room-badge{display:inline-block;width:fit-content;font-size:11px;padding:3px 6px;border-radius:4px;background:var(--surface2);color:var(--text2);white-space:nowrap;}
 .todo-actions{display:flex;gap:4px;align-items:center;flex-shrink:0;}
 .todo-actions .icon-btn{opacity:1;}
 .todo-title.crossed{text-decoration:line-through;color:var(--text3);}
@@ -227,7 +227,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .lb-bottom-bar{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 20px;width:100%;max-width:600px;}
 .lb-delete-btn{background:rgba(192,57,43,.4);border:1px solid rgba(192,57,43,.6);color:#ff6b6b;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;}
 .lb-delete-btn:hover{background:rgba(192,57,43,.6);border-color:#ff6b6b;color:#fff;}
-@media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}.lb-img-wrap{padding:0 44px;}.todo-header{gap:6px;}.drag-handle{display:none;}.prio{font-size:9px;padding:2px 4px;}.todo-room-badge{font-size:9px;padding:1px 3px;}.exp-btn{padding:2px 4px;}}
+@media(max-width:600px){.app-title{display:none;}.paint-info{grid-template-columns:1fr;}.dark-btn .lbl{display:none;}.lb-img-wrap{padding:0 44px;}.todo-header{gap:6px;flex-wrap:wrap;}.drag-handle{display:none;}.todo-title-and-room{flex-direction:row;gap:6px;align-items:center;flex-wrap:wrap;}.todo-title{font-size:13px;flex-shrink:1;}.prio{font-size:9px;padding:2px 4px;}.todo-room-badge{font-size:10px;padding:2px 4px;}.todo-actions{gap:2px;}.exp-btn{padding:2px 4px;}}
 /* SPLASH SCREEN */
 .splash-screen{position:fixed;inset:0;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .5s ease-out;}
 .splash-screen.hidden{opacity:0;pointer-events:none;}
@@ -854,7 +854,7 @@ function todoHTML(t,i){
     <div class="todo-header">
       <span class="drag-handle">⠿</span>
       <div class="chk-box${t.done?' on':''}" onclick="togTodo('${t.id}')">${t.done?chk():''}</div>
-      <div class="todo-title-section">
+      <div class="todo-title-and-room">
         <span class="todo-title${t.done?' crossed':''}">${t.title}</span>
         ${room?`<span class="todo-room-badge">🏠 ${room.name}</span>`:''}
       </div>
@@ -935,9 +935,9 @@ window.expandTodo=async(id,event)=>{const item=document.getElementById('pitem-'+
 
 window.changeTodoRoom=async(id,roomId)=>{syncing(true);await updateDoc(doc(db,'todos',id),{roomId:roomId||''});syncing(false);};
 
-window.populateRoomSelect=()=>{const select=document.getElementById('td-room');if(!select)return;select.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');};
+window.populateRoomSelect=()=>{const select=document.getElementById('td-room');if(!select)return;select.innerHTML='<option value="">Ingen rum</option>'+rooms.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');select.value='';};
 
-window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);const roomId=document.getElementById('td-room')?.value||'';await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),roomId,done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';syncing(false);closeModals();};
+window.saveTodo=async()=>{const title=document.getElementById('td-title').value.trim();if(!title)return;syncing(true);const roomId=document.getElementById('td-room')?.value||'';await setDoc(doc(db,'todos','todo_'+Date.now()),{title,prio:document.getElementById('td-prio').value,note:document.getElementById('td-note').value.trim(),roomId,done:false,open:false,subtasks:[],shopping:[],order:todos.length,createdAt:Date.now()});document.getElementById('td-title').value='';document.getElementById('td-note').value='';document.getElementById('td-room').value='';document.getElementById('td-prio').value='medel';syncing(false);closeModals();};
 
 function confirm2(title,msg,onOk){document.getElementById('c-title').textContent=title;document.getElementById('c-msg').textContent=msg;document.getElementById('c-ok').onclick=onOk;openModal('confirm-modal');}
 
