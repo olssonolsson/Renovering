@@ -1032,10 +1032,18 @@ function renderHome(){
     priorityContainer.innerHTML='<div class="empty-state-home">Inga uppgifter – bra jobbat! 🎉</div>';
   }
   
-  // Add version number at bottom
+  // Fetch and display GitHub commit hash
   const versionContainer=document.getElementById('version-container');
   if(versionContainer){
-    versionContainer.innerHTML='<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Version 1.2.0</div>';
+    fetch('https://api.github.com/repos/olssonolsson/Renovering/commits?per_page=1')
+      .then(res=>res.json())
+      .then(data=>{
+        const commitHash=data[0]?.sha||'unknown';
+        versionContainer.innerHTML=`<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Commit: ${commitHash}</div>`;
+      })
+      .catch(()=>{
+        versionContainer.innerHTML='<div style="font-size:11px;color:var(--text3);text-align:center;padding:8px;">Commit: offline</div>';
+      });
   }
 }
 
