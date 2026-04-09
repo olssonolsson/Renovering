@@ -872,7 +872,7 @@ window.confirmDelActionPhoto=(eid,pi)=>{confirm2('Ta bort bilden?','Bilden tas b
 window.confirmDelColorPhoto=(eid,pi)=>{confirm2('Ta bort färgbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.colorPhotos||[])];p.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'entries',eid),{colorPhotos:p});syncing(false);});};
 window.confirmDelPaintCanPhoto=(eid,pi)=>{confirm2('Ta bort färgburkbilden?','Bilden tas bort permanent.',async()=>{const e=entries.find(x=>x.id===eid);if(!e)return;const p=[...(e.paintCanPhotos||[])];p.splice(pi,1);syncing(true);closeModals();lbClose();await updateDoc(doc(db,'entries',eid),{paintCanPhotos:p});syncing(false);});};
 
-// ── TODOS ─────────────────────────────────────────────────────────────────────
+// ── TODOS ATT GÖRA-lista─────────────────────────────────────────────────────────────────────
 function todoHTML(t,i){
   const subs=(t.subtasks||[]).map((s,si)=>`<div class="sub-row"><div class="chk-sq${s.done?' on':''}" onclick="togSub('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}">${s.label}</span><button class="x-btn" onclick="delSub('${t.id}',${si})">×</button></div>`).join('');
   const shops=(t.shopping||[]).map((s,si)=>`<div class="shop-row"><div class="chk-circ${s.done?' on':''}" onclick="togShop('${t.id}',${si})">${s.done?chk():''}</div><span class="sub-txt${s.done?' crossed':''}" style="flex:1;">${s.label}</span>${s.url?`<a class="shop-link" href="${s.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗</a>`:''}<button class="x-btn" onclick="delShop('${t.id}',${si})">×</button></div>`).join('');
@@ -884,7 +884,7 @@ function todoHTML(t,i){
       <div class="chk-box${t.done?' on':''}" onclick="togTodo('${t.id}')">${t.done?chk():''}</div>
       <div class="todo-title-and-room">
         <span class="todo-title${t.done?' crossed':''}">${t.title}</span>
-        ${room?`<span class="todo-room-badge">🏠 ${room.name}</span>`:''}
+        ${room?`<span class="todo-room-badge">${room.icon} ${room.name}</span>`:''}
       </div>
       <span class="prio prio-${t.prio}">Prio: ${prioLabels[t.prio]}</span>
       <div class="todo-actions">
