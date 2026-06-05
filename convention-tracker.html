@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1612">
+<title>Convention of the Elements — Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #1a1612;
+    --surface: #221e18;
+    --surface2: #2a2520;
+    --border: rgba(255,255,255,0.1);
+    --border2: rgba(255,255,255,0.18);
+    --text: #f0e8d8;
+    --muted: #9a8e7a;
+    --fire: #E24B4A;
+    --fire-glow: #F09595;
+    --arcane: #7F77DD;
+    --arcane-glow: #AFA9EC;
+    --cold: #378ADD;
+    --cold-glow: #85B7EB;
+    --lightning: #EF9F27;
+    --lightning-glow: #FAC775;
+    --physical: #888780;
+    --physical-glow: #B4B2A9;
+    --poison: #639922;
+    --poison-glow: #97C459;
+    --holy: #BAA227;
+    --holy-glow: #FAEEDA;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
+    transition: background 0.5s ease;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 0%, rgba(226,75,74,0.0) 0%, rgba(226,75,74,0.0) 100%);
+    transition: background 0.5s ease;
+    z-index: 0;
+  }
+
+  body.fire-active {
+    background: #2a0a08;
+  }
+
+  body.fire-active::before {
+    background: radial-gradient(ellipse at 50% -20%, rgba(226,75,74,0.38) 0%, rgba(180,30,20,0.18) 50%, rgba(226,75,74,0.0) 80%);
+  }
+
+  #app {
+    width: 100%;
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-align: center;
+    color: var(--fire-glow);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 16px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--fire); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .element-ring {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin: 1rem 0;
+    position: relative;
+    height: 80px;
+    flex-wrap: wrap;
+  }
+
+  .elem-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+    opacity: 0.4;
+    min-width: 70px;
+  }
+  .elem-slot.active-elem {
+    opacity: 1;
+    transform: scale(1.18);
+    border: 1.5px solid currentColor;
+    background: rgba(255,255,255,0.05);
+  }
+  .elem-slot.next-elem { opacity: 0.7; transform: scale(1.05); }
+
+  .elem-icon { font-size: 26px; line-height: 1; }
+  .elem-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .big-timer { text-align: center; margin: 0.5rem 0 1rem; }
+  .timer-element-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .timer-display {
+    font-family: 'Cinzel', serif;
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -2px;
+    transition: color 0.3s;
+  }
+  .timer-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  .fire-countdown {
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+  }
+  .fire-countdown-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .fire-countdown-num {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--fire);
+    line-height: 1;
+  }
+  .fire-countdown-label2 { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .progress-bar-wrap {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.25s linear;
+    background: var(--fire);
+  }
+
+  .controls-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+
+  .ctrl-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 8px 20px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border2);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .ctrl-btn:hover { background: var(--surface2); }
+  .ctrl-btn:active { transform: scale(0.97); }
+  .ctrl-btn.primary { background: var(--fire); color: white; border-color: var(--fire); }
+  .ctrl-btn.primary:hover { opacity: 0.88; }
+
+  .next-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0.25rem 0;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.25rem 0 0.5rem;
+  }
+
+  .rotation-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    min-height: 52px;
+  }
+
+  .rot-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: grab;
+    border: 1px solid transparent;
+    user-select: none;
+  }
+  .rot-chip.dragging { opacity: 0.4; cursor: grabbing; }
+  .rot-chip.drag-over { border-style: dashed !important; }
+  .rot-chip-del { font-size: 14px; cursor: pointer; opacity: 0.5; font-family: sans-serif; line-height: 1; }
+  .rot-chip-del:hover { opacity: 1; }
+
+  .elem-picker { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .pick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    transition: background 0.15s;
+  }
+  .pick-btn:hover { background: var(--surface2); }
+  .pick-btn .pick-icon { font-size: 18px; }
+
+  .duration-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .duration-row input[type=range] { flex: 1; accent-color: var(--fire); }
+  .duration-val {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .notif-card {
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .notif-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .toggle {
+    width: 36px; height: 20px;
+    background: var(--border2);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none; outline: none;
+    flex-shrink: 0;
+  }
+  .toggle.on { background: var(--fire); }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    background: white;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: left 0.2s;
+  }
+  .toggle.on::after { left: 19px; }
+
+  .voice-input {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Crimson Text', serif;
+    margin-bottom: 4px;
+  }
+
+  select {
+    font-size: 12px;
+    padding: 3px 6px;
+    background: var(--surface);
+    color: var(--text);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  input[type=range] { accent-color: var(--fire); }
+  input[type=number] { accent-color: var(--fire); }
+
+  .metro-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .metro-row input[type=range] { flex: 1; }
+
+  .fire-active-banner {
+    background: var(--fire);
+    color: white;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    animation: fire-flash 0.6s ease-in-out;
+  }
+  @keyframes fire-flash {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    60% { transform: scale(1.03); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .cue-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .cue-row input[type=number] {
+    width: 60px;
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 5px 6px;
+    background: var(--surface);
+    color: var(--text);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Crimson Text', serif;
+  }
+  .cue-row input[type=text] {
+    flex: 1;
+    font-size: 12px;
+    padding: 5px 8px;
+    background: var(--surface);
+    color: var(--text);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Crimson Text', serif;
+  }
+  .cue-del {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    font-family: sans-serif;
+  }
+  .cue-del:hover { color: var(--fire); }
+
+  .test-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .test-row input {
+    flex: 1;
+    font-size: 13px;
+    padding: 6px 10px;
+    background: var(--surface);
+    color: var(--text);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Crimson Text', serif;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>⚗ Convention of the Elements</h1>
+
+  <div id="fire-banner" style="display:none" class="fire-active-banner">🔥 FIRE ÄR AKTIVT — UNLEASH HELL! 🔥</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tracker')">Tracker</button>
+    <button class="tab-btn" onclick="switchTab('rotation')">Rotation</button>
+    <button class="tab-btn" onclick="switchTab('notifs')">Meddelanden</button>
+  </div>
+
+  <div id="panel-tracker" class="panel active">
+    <div class="element-ring" id="elem-ring"></div>
+
+    <div class="big-timer">
+      <div class="timer-element-name" id="active-elem-name">—</div>
+      <div class="timer-display" id="timer-num" style="color: var(--fire)">0.0</div>
+      <div class="timer-sub">sekunder kvar</div>
+    </div>
+
+    <div class="next-row">
+      Nästa: <span id="next-elem-label" style="font-weight:600; color: var(--text)">—</span>
+    </div>
+
+    <div class="fire-countdown">
+      <div class="fire-countdown-label">FIRE OM</div>
+      <div class="fire-countdown-num" id="fire-cd-num">—</div>
+      <div class="fire-countdown-label2" id="fire-cd-sub">sekunder</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="fire-progress" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()">Start</button>
+      <button class="ctrl-btn" onclick="resetTimer()">Återställ</button>
+      <button class="ctrl-btn" onclick="jumpToFire()">Hoppa till Fire</button>
+    </div>
+  </div>
+
+  <div id="panel-rotation" class="panel">
+    <div class="section-title">Aktiv rotation (dra för att ändra ordning)</div>
+    <div class="rotation-list" id="rot-list"></div>
+
+    <div class="duration-row">
+      <span>Tid per element:</span>
+      <input type="range" min="1" max="10" step="0.5" value="4" id="dur-slider" oninput="updateDur()">
+      <span class="duration-val" id="dur-val">4s</span>
+    </div>
+
+    <div class="section-title">Lägg till element</div>
+    <div class="elem-picker" id="elem-picker"></div>
+
+    <div style="margin-top: 12px; display: flex; gap: 8px;">
+      <button class="ctrl-btn" onclick="resetRotation()">Standardrotation</button>
+    </div>
+  </div>
+
+  <div id="panel-notifs" class="panel">
+    <div class="section-title">Metronom</div>
+    <div class="notif-card">
+      <div class="toggle-row">
+        <span>Aktivera metronom</span>
+        <button class="toggle" id="metro-toggle" onclick="toggleMetro()"></button>
+      </div>
+      <div class="metro-row">
+        <span>BPM:</span>
+        <input type="range" min="40" max="240" value="120" id="bpm-slider" oninput="updateBpm()">
+        <span id="bpm-val" style="font-family:Cinzel,serif;font-weight:600;font-size:14px;color:var(--text);min-width:36px;text-align:right">120</span>
+      </div>
+      <div class="metro-row" style="margin-top:8px">
+        <span>Accentuera Fire:</span>
+        <button class="toggle on" id="metro-accent" onclick="toggleMetroAccent()"></button>
+      </div>
+    </div>
+
+    <div class="section-title">Röstmeddelanden</div>
+    <div class="notif-card">
+      <div class="toggle-row">
+        <span>Aktivera röst</span>
+        <button class="toggle on" id="voice-toggle" onclick="toggleVoice()"></button>
+      </div>
+      <div class="toggle-row" style="margin-top:6px">
+        <span>Röst</span>
+        <select id="voice-select"></select>
+      </div>
+      <div class="toggle-row">
+        <span>Hastighet</span>
+        <input type="range" min="0.5" max="2" step="0.1" value="1" id="rate-slider" oninput="document.getElementById('rate-val').textContent=parseFloat(this.value).toFixed(1)+'x'" style="width:100px">
+        <span id="rate-val" style="font-size:12px;min-width:28px;text-align:right;color:var(--text)">1.0x</span>
+      </div>
+    </div>
+
+    <div class="section-title">Röstcues (sekunder kvar till Fire → text)</div>
+    <div id="cue-list"></div>
+    <button class="ctrl-btn" onclick="addCue()" style="margin-top:8px">+ Lägg till cue</button>
+
+    <div class="section-title">Testa röst</div>
+    <div class="test-row">
+      <input type="text" id="test-voice-input" placeholder="Skriv text att testa...">
+      <button class="ctrl-btn" onclick="testVoice()">Tala</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ELEMENTS = {
+  fire:      { label: 'Fire',      icon: '🔥', color: '#E24B4A', glow: '#F09595' },
+  arcane:    { label: 'Arcane',    icon: '✨', color: '#7F77DD', glow: '#AFA9EC' },
+  cold:      { label: 'Cold',      icon: '❄️', color: '#378ADD', glow: '#85B7EB' },
+  lightning: { label: 'Lightning', icon: '⚡', color: '#EF9F27', glow: '#FAC775' },
+  physical:  { label: 'Physical',  icon: '⚔️', color: '#888780', glow: '#B4B2A9' },
+  poison:    { label: 'Poison',    icon: '🧪', color: '#639922', glow: '#97C459' },
+  holy:      { label: 'Holy',      icon: '✝️', color: '#BAA227', glow: '#FAEEDA' },
+};
+
+const DEFAULT_ROTATION = ['fire','holy','lightning','physical','cold'];
+
+let rotation = [...DEFAULT_ROTATION];
+let duration = 4;
+let running = false;
+let currentIdx = 0;
+let timeLeft = duration;
+let ticker = null;
+let lastTick = null;
+
+let metroOn = false;
+let metroAccent = true;
+let bpm = 120;
+let metroCtx = null;
+let metroInterval = null;
+
+let voiceOn = true;
+let voices = [];
+let selectedVoice = null;
+
+let cues = [
+  { secsLeft: 8, text: 'eight', enabled: true },
+  { secsLeft: 4, text: 'four', enabled: true },
+  { secsLeft: 0, text: 'fire', enabled: true, onStart: true },
+];
+let cycleCount = 0;
+let spokenCues = new Set();
+
+function switchTab(t) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.getAttribute('onclick').includes("'"+t+"'")));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+}
+
+function renderRing() {
+  const ring = document.getElementById('elem-ring');
+  ring.innerHTML = '';
+  rotation.forEach((key, i) => {
+    const el = ELEMENTS[key];
+    const div = document.createElement('div');
+    div.className = 'elem-slot' + (i === currentIdx ? ' active-elem' : '') + (i === (currentIdx+1)%rotation.length ? ' next-elem' : '');
+    div.style.color = el.color;
+    div.innerHTML = `<span class="elem-icon">${el.icon}</span><span class="elem-label">${el.label}</span>`;
+    ring.appendChild(div);
+  });
+}
+
+function fireCountdown() {
+  if (!rotation.includes('fire')) return { secs: Infinity };
+  if (rotation[currentIdx] === 'fire') return { secs: timeLeft };
+  let total = timeLeft;
+  let idx = (currentIdx + 1) % rotation.length;
+  let steps = 0;
+  while (rotation[idx] !== 'fire' && steps < rotation.length * 3) {
+    total += duration;
+    idx = (idx + 1) % rotation.length;
+    steps++;
+  }
+  return rotation[idx] === 'fire' ? { secs: total } : { secs: Infinity };
+}
+
+function updateUI() {
+  const el = ELEMENTS[rotation[currentIdx]];
+  document.getElementById('active-elem-name').textContent = el.label;
+  document.getElementById('active-elem-name').style.color = el.color;
+  const timerNum = document.getElementById('timer-num');
+  timerNum.textContent = timeLeft.toFixed(1);
+  timerNum.style.color = el.color;
+  const next = ELEMENTS[rotation[(currentIdx+1)%rotation.length]];
+  document.getElementById('next-elem-label').textContent = next.icon + ' ' + next.label;
+  document.getElementById('next-elem-label').style.color = next.color;
+  const fc = fireCountdown();
+  const fireEl = rotation[currentIdx] === 'fire';
+  document.getElementById('fire-banner').style.display = fireEl ? 'block' : 'none';
+  document.body.classList.toggle('fire-active', fireEl);
+  if (fireEl) {
+    document.getElementById('fire-cd-num').textContent = timeLeft.toFixed(1);
+    document.getElementById('fire-cd-sub').textContent = 'sekunder kvar av Fire';
+    document.getElementById('fire-progress').style.width = ((timeLeft/duration)*100)+'%';
+  } else if (fc.secs < Infinity) {
+    document.getElementById('fire-cd-num').textContent = fc.secs.toFixed(1);
+    document.getElementById('fire-cd-sub').textContent = 'sekunder tills Fire';
+    const pct = Math.max(0, Math.min(100, (1 - fc.secs / (rotation.length * duration)) * 100));
+    document.getElementById('fire-progress').style.width = pct+'%';
+  } else {
+    document.getElementById('fire-cd-num').textContent = '—';
+    document.getElementById('fire-cd-sub').textContent = 'Fire ej i rotation';
+    document.getElementById('fire-progress').style.width = '0%';
+  }
+  renderRing();
+}
+
+function checkCues() {
+  if (!voiceOn) return;
+  const fc = fireCountdown();
+  const fireNow = rotation[currentIdx] === 'fire';
+  cues.forEach((c, i) => {
+    if (!c.enabled) return;
+    if (c.onStart) {
+      if (fireNow && timeLeft > duration - 0.3) {
+        const ck = 'firestart_'+cycleCount;
+        if (!spokenCues.has(ck)) { spokenCues.add(ck); speak(c.text); }
+      }
+      return;
+    }
+    if (fireNow) return;
+    if (fc.secs !== Infinity) {
+      const ck = 'cue_'+i+'_'+cycleCount;
+      if (!spokenCues.has(ck) && fc.secs <= c.secsLeft + 0.05 && fc.secs > c.secsLeft - (duration / 2)) {
+        spokenCues.add(ck); speak(c.text);
+      }
+    }
+  });
+}
+
+function tick() {
+  if (!running) return;
+  const now = performance.now();
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+  timeLeft -= dt;
+  if (timeLeft <= 0) {
+    currentIdx = (currentIdx + 1) % rotation.length;
+    timeLeft = duration + timeLeft;
+    cycleCount++;
+  }
+  checkCues();
+  updateUI();
+  ticker = requestAnimationFrame(tick);
+}
+
+function toggleTimer() {
+  running = !running;
+  document.getElementById('start-btn').textContent = running ? 'Pausa' : 'Fortsätt';
+  if (running) {
+    lastTick = performance.now();
+    ticker = requestAnimationFrame(tick);
+    if (metroOn) startMetro();
+  } else {
+    cancelAnimationFrame(ticker);
+    stopMetro();
+  }
+}
+
+function resetTimer() {
+  running = false;
+  cancelAnimationFrame(ticker);
+  stopMetro();
+  currentIdx = 0;
+  timeLeft = duration;
+  cycleCount = 0;
+  spokenCues.clear();
+  document.getElementById('start-btn').textContent = 'Start';
+  updateUI();
+}
+
+function jumpToFire() {
+  const fi = rotation.indexOf('fire');
+  if (fi < 0) return;
+  currentIdx = fi;
+  timeLeft = duration;
+  cycleCount = 0;
+  spokenCues.clear();
+  updateUI();
+}
+
+function renderRotationEditor() {
+  const list = document.getElementById('rot-list');
+  list.innerHTML = '';
+  rotation.forEach((key, i) => {
+    const el = ELEMENTS[key];
+    const chip = document.createElement('div');
+    chip.className = 'rot-chip';
+    chip.style.background = el.glow + '22';
+    chip.style.color = el.color;
+    chip.style.borderColor = el.glow + '88';
+    chip.draggable = true;
+    chip.dataset.idx = i;
+    chip.innerHTML = `<span>${el.icon}</span><span>${el.label}</span><span class="rot-chip-del" data-i="${i}">×</span>`;
+    chip.querySelector('.rot-chip-del').onclick = () => removeFromRotation(i);
+    chip.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', i); chip.classList.add('dragging'); });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    chip.addEventListener('dragover', e => { e.preventDefault(); chip.classList.add('drag-over'); });
+    chip.addEventListener('dragleave', () => chip.classList.remove('drag-over'));
+    chip.addEventListener('drop', e => {
+      e.preventDefault(); chip.classList.remove('drag-over');
+      const from = parseInt(e.dataTransfer.getData('text/plain'));
+      if (from !== i) {
+        const tmp = rotation.splice(from, 1)[0];
+        rotation.splice(i, 0, tmp);
+        currentIdx = Math.min(currentIdx, rotation.length-1);
+        renderRotationEditor(); updateUI();
+      }
+    });
+    list.appendChild(chip);
+  });
+}
+
+function removeFromRotation(i) {
+  rotation.splice(i, 1);
+  currentIdx = Math.min(currentIdx, Math.max(0, rotation.length-1));
+  renderRotationEditor(); updateUI();
+}
+
+function renderPicker() {
+  const picker = document.getElementById('elem-picker');
+  picker.innerHTML = '';
+  Object.entries(ELEMENTS).forEach(([key, el]) => {
+    const btn = document.createElement('button');
+    btn.className = 'pick-btn';
+    btn.innerHTML = `<span class="pick-icon">${el.icon}</span><span>${el.label}</span>`;
+    btn.onclick = () => { rotation.push(key); renderRotationEditor(); updateUI(); };
+    picker.appendChild(btn);
+  });
+}
+
+function updateDur() {
+  duration = parseFloat(document.getElementById('dur-slider').value);
+  document.getElementById('dur-val').textContent = duration + 's';
+  if (!running) timeLeft = duration;
+  updateUI();
+}
+
+function resetRotation() {
+  rotation = [...DEFAULT_ROTATION];
+  currentIdx = 0; timeLeft = duration;
+  renderRotationEditor(); updateUI();
+}
+
+function startMetro() {
+  if (!metroCtx) metroCtx = new (window.AudioContext || window.webkitAudioContext)();
+  stopMetro();
+  const interval = 60 / bpm * 1000;
+  let beat = 0;
+  function scheduleBeat() {
+    const osc = metroCtx.createOscillator();
+    const gain = metroCtx.createGain();
+    osc.connect(gain); gain.connect(metroCtx.destination);
+    const isFire = metroAccent && rotation[currentIdx] === 'fire';
+    osc.frequency.value = isFire ? 1200 : (beat % 4 === 0 ? 880 : 660);
+    gain.gain.setValueAtTime(isFire ? 0.35 : 0.18, metroCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, metroCtx.currentTime + 0.08);
+    osc.start(metroCtx.currentTime); osc.stop(metroCtx.currentTime + 0.08);
+    beat++;
+  }
+  scheduleBeat();
+  metroInterval = setInterval(scheduleBeat, interval);
+}
+
+function stopMetro() {
+  if (metroInterval) { clearInterval(metroInterval); metroInterval = null; }
+}
+
+function toggleMetro() {
+  metroOn = !metroOn;
+  document.getElementById('metro-toggle').classList.toggle('on', metroOn);
+  if (metroOn && running) startMetro(); else stopMetro();
+}
+
+function toggleMetroAccent() {
+  metroAccent = !metroAccent;
+  document.getElementById('metro-accent').classList.toggle('on', metroAccent);
+}
+
+function updateBpm() {
+  bpm = parseInt(document.getElementById('bpm-slider').value);
+  document.getElementById('bpm-val').textContent = bpm;
+  if (metroOn && running) { stopMetro(); startMetro(); }
+}
+
+function loadVoices() {
+  let all = window.speechSynthesis.getVoices();
+  voices = all.filter(v => v.lang.startsWith('sv') || v.lang.startsWith('en'));
+  if (!voices.length) voices = all;
+  const sel = document.getElementById('voice-select');
+  sel.innerHTML = '';
+  voices.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = v.name + ' (' + v.lang + ')';
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => { selectedVoice = voices[parseInt(sel.value)]; };
+  const preferred = voices.findIndex(v => v.name.toLowerCase().includes('google') && v.lang === 'en-US');
+  const fallback = voices.findIndex(v => v.lang === 'en-US');
+  const idx = preferred >= 0 ? preferred : fallback >= 0 ? fallback : 0;
+  sel.value = idx;
+  selectedVoice = voices[idx];
+}
+
+let speechQueue = [];
+let speechBusy = false;
+
+function speak(text) {
+  if (!voiceOn || !text) return;
+  speechQueue = [text];
+  if (!speechBusy) drainSpeechQueue();
+}
+
+function drainSpeechQueue() {
+  if (!speechQueue.length) { speechBusy = false; return; }
+  const text = speechQueue.shift();
+  try {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    if (selectedVoice) utt.voice = selectedVoice;
+    utt.rate = parseFloat(document.getElementById('rate-slider').value);
+    utt.volume = 1;
+    utt.onend = () => { speechBusy = false; };
+    utt.onerror = () => { speechBusy = false; };
+    speechBusy = true;
+    window.speechSynthesis.speak(utt);
+  } catch(e) { speechBusy = false; }
+}
+
+function testVoice() {
+  const t = document.getElementById('test-voice-input').value || 'fire';
+  speechQueue = [];
+  speechBusy = false;
+  speak(t);
+}
+
+function toggleVoice() {
+  voiceOn = !voiceOn;
+  document.getElementById('voice-toggle').classList.toggle('on', voiceOn);
+}
+
+function renderCues() {
+  const c = document.getElementById('cue-list');
+  c.innerHTML = '';
+  cues.forEach((cue, i) => {
+    const row = document.createElement('div');
+    row.className = 'cue-row';
+    row.innerHTML = `
+      <button class="toggle ${cue.enabled?'on':''}" data-i="${i}" onclick="toggleCue(${i})"></button>
+      <input type="number" value="${cue.onStart?0:cue.secsLeft}" min="0" max="60" step="1" onchange="setCueSecs(${i},this.value)" ${cue.onStart?'disabled':''}>
+      <span style="font-size:11px;color:var(--muted);flex-shrink:0;min-width:72px">${cue.onStart?'(vid start)':'sek kvar'}</span>
+      <input type="text" value="${cue.text}" onchange="setCueText(${i},this.value)">
+      <span class="cue-del" onclick="removeCue(${i})">×</span>
+    `;
+    c.appendChild(row);
+  });
+}
+
+function toggleCue(i) { cues[i].enabled = !cues[i].enabled; renderCues(); }
+function setCueSecs(i, v) { cues[i].secsLeft = parseFloat(v)||0; }
+function setCueText(i, v) { cues[i].text = v; }
+function removeCue(i) { cues.splice(i,1); renderCues(); }
+function addCue() { cues.push({ secsLeft: 5, text: 'Ny cue', enabled: true }); renderCues(); }
+
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+renderRing();
+renderRotationEditor();
+renderPicker();
+renderCues();
+updateUI();
+
+// Wake Lock — håller skärmen vaken
+let wakeLock = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+  } catch(e) {}
+}
+async function releaseWakeLock() {
+  if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') requestWakeLock();
+});
+requestWakeLock();
+</script>
+</body>
+</html>
