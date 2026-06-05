@@ -37,6 +37,11 @@
     --holy-glow: #FAEEDA;
     --radius: 8px;
     --radius-lg: 12px;
+    
+    /* Dynamiska färger som styrs av JS */
+    --warn-color: #E24B4A;
+    --pre-warn-color: rgba(226,75,74,0.15);
+    --warn-bg-active: #2a0a08;
   }
 
   body {
@@ -47,7 +52,7 @@
     display: flex;
     justify-content: center;
     padding: 2rem 1rem 4rem;
-    transition: background 0.5s ease;
+    transition: background 0.2s ease;
     position: relative;
   }
 
@@ -57,16 +62,37 @@
     inset: 0;
     pointer-events: none;
     background: radial-gradient(ellipse at 50% 0%, rgba(226,75,74,0.0) 0%, rgba(226,75,74,0.0) 100%);
-    transition: background 0.5s ease;
+    transition: background 0.3s ease;
     z-index: 0;
   }
 
-  body.fire-active {
-    background: #2a0a08;
+  /* Animationer för Förvarning (Innan elementet startar) */
+  @keyframes pre-warn-blink-anim {
+    0%, 49% { background: var(--bg); }
+    50%, 100% { background: var(--pre-warn-color); }
+  }
+  body.pre-warn-blink {
+    animation: pre-warn-blink-anim 1s step-end infinite;
+  }
+  body.pre-warn-solid {
+    background: var(--pre-warn-color);
   }
 
-  body.fire-active::before {
-    background: radial-gradient(ellipse at 50% -20%, rgba(226,75,74,0.38) 0%, rgba(180,30,20,0.18) 50%, rgba(226,75,74,0.0) 80%);
+  /* Animationer för Aktivt Element */
+  @keyframes active-blink-anim {
+    0%, 49% { background: var(--bg); }
+    50%, 100% { background: var(--warn-bg-active); }
+  }
+  body.warn-bg-solid {
+    background: var(--warn-bg-active);
+  }
+  body.warn-bg-blink {
+    animation: active-blink-anim 0.5s step-end infinite;
+  }
+
+  body.warn-bg-solid::before {
+    background: radial-gradient(ellipse at 50% -20%, var(--warn-color) 0%, rgba(0,0,0,0.5) 70%);
+    opacity: 0.4;
   }
 
   #app {
@@ -82,7 +108,7 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-align: center;
-    color: var(--fire-glow);
+    color: var(--text);
     margin-bottom: 1.5rem;
     text-transform: uppercase;
   }
@@ -119,7 +145,7 @@
     justify-content: center;
     align-items: center;
     gap: 0;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
     position: relative;
     height: 80px;
     flex-wrap: wrap;
@@ -153,7 +179,7 @@
     text-transform: uppercase;
   }
 
-  .big-timer { text-align: center; margin: 0.5rem 0 1rem; }
+  .big-timer { text-align: center; margin: 1rem 0; }
   .timer-element-name {
     font-family: 'Cinzel', serif;
     font-size: 13px;
@@ -173,46 +199,53 @@
   .timer-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
 
   .fire-countdown {
-    background: var(--surface2);
-    border: 0.5px solid var(--border);
+    text-align: center;
+    margin: 0.5rem 0 1.5rem;
+    background: var(--surface);
+    padding: 1.5rem;
     border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-    margin: 1rem 0;
+    border: 1px solid var(--border);
   }
   .fire-countdown-label {
     font-family: 'Cinzel', serif;
     font-size: 11px;
     letter-spacing: 0.12em;
     color: var(--muted);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
   }
   .fire-countdown-num {
     font-family: 'Cinzel', serif;
-    font-size: 36px;
+    font-size: 72px;
     font-weight: 700;
-    color: var(--fire);
+    color: var(--warn-color);
     line-height: 1;
+    letter-spacing: -2px;
+    transition: color 0.3s;
   }
-  .fire-countdown-label2 { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .fire-countdown-label2 { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  
   .progress-bar-wrap {
-    height: 6px;
-    background: var(--surface);
-    border-radius: 3px;
-    margin-top: 10px;
+    height: 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    margin-top: 14px;
     overflow: hidden;
+    border: 0.5px solid var(--border);
   }
   .progress-bar-fill {
     height: 100%;
-    border-radius: 3px;
-    transition: width 0.25s linear;
-    background: var(--fire);
+    border-radius: 4px;
+    width: 0%;
+    background: var(--warn-color);
+    box-shadow: 0 0 8px var(--warn-color);
   }
 
   .controls-row {
     display: flex;
     gap: 8px;
     justify-content: center;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
   }
 
   .ctrl-btn {
@@ -330,14 +363,6 @@
     padding: 12px;
     margin-bottom: 10px;
   }
-  .notif-card-title {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    color: var(--text);
-  }
 
   .toggle-row {
     display: flex;
@@ -370,25 +395,33 @@
   }
   .toggle.on::after { left: 19px; }
 
-  .voice-input {
-    width: 100%;
-    font-size: 12px;
-    padding: 5px 8px;
-    border-radius: var(--radius);
+  .flex-select-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .flex-select-row span { min-width: 140px; }
+  .flex-select-row select, .flex-select-row input[type=color] { flex: 1; }
+
+  input[type=color] {
+    background: none;
     border: 0.5px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-family: 'Crimson Text', serif;
-    margin-bottom: 4px;
+    border-radius: var(--radius);
+    height: 28px;
+    cursor: pointer;
   }
 
   select {
     font-size: 12px;
-    padding: 3px 6px;
+    padding: 4px 8px;
     background: var(--surface);
     color: var(--text);
     border: 0.5px solid var(--border);
     border-radius: var(--radius);
+    font-family: 'Cinzel', serif;
   }
 
   input[type=range] { accent-color: var(--fire); }
@@ -405,8 +438,6 @@
   .metro-row input[type=range] { flex: 1; }
 
   .fire-active-banner {
-    background: var(--fire);
-    color: white;
     text-align: center;
     padding: 8px 12px;
     border-radius: var(--radius);
@@ -415,6 +446,8 @@
     font-weight: 600;
     letter-spacing: 0.1em;
     margin-bottom: 10px;
+    background: var(--warn-color);
+    color: #fff;
     animation: fire-flash 0.6s ease-in-out;
   }
   @keyframes fire-flash {
@@ -430,7 +463,7 @@
     margin-bottom: 6px;
   }
   .cue-row input[type=number] {
-    width: 60px;
+    width: 65px;
     flex-shrink: 0;
     font-size: 12px;
     padding: 5px 6px;
@@ -438,7 +471,6 @@
     color: var(--text);
     border: 0.5px solid var(--border);
     border-radius: var(--radius);
-    font-family: 'Crimson Text', serif;
   }
   .cue-row input[type=text] {
     flex: 1;
@@ -484,40 +516,40 @@
 <div id="app">
   <h1>⚗ Convention of the Elements</h1>
 
-  <div id="fire-banner" style="display:none" class="fire-active-banner">🔥 FIRE ÄR AKTIVT — UNLEASH HELL! 🔥</div>
-
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('tracker')">Tracker</button>
     <button class="tab-btn" onclick="switchTab('rotation')">Rotation</button>
-    <button class="tab-btn" onclick="switchTab('notifs')">Meddelanden</button>
+    <button class="tab-btn" onclick="switchTab('notifs')">Meddelanden & Visuellt</button>
   </div>
 
   <div id="panel-tracker" class="panel active">
+    <div class="fire-countdown">
+      <div class="fire-countdown-label" id="fire-cd-label">Mål om</div>
+      <div class="fire-countdown-num" id="fire-cd-num">—</div>
+      <div class="fire-countdown-label2" id="fire-cd-sub">sekunder</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="warn-progress-fill"></div>
+      </div>
+    </div>
+
     <div class="element-ring" id="elem-ring"></div>
 
     <div class="big-timer">
       <div class="timer-element-name" id="active-elem-name">—</div>
-      <div class="timer-display" id="timer-num" style="color: var(--fire)">0.0</div>
+      <div class="timer-display" id="timer-num">—</div>
       <div class="timer-sub">sekunder kvar</div>
     </div>
 
+	<div id="fire-banner" style="display:none" class="fire-active-banner">🔥 TARGET AKTIVT 🔥</div>
+	  
     <div class="next-row">
       Nästa: <span id="next-elem-label" style="font-weight:600; color: var(--text)">—</span>
-    </div>
-
-    <div class="fire-countdown">
-      <div class="fire-countdown-label">FIRE OM</div>
-      <div class="fire-countdown-num" id="fire-cd-num">—</div>
-      <div class="fire-countdown-label2" id="fire-cd-sub">sekunder</div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="fire-progress" style="width:0%"></div>
-      </div>
     </div>
 
     <div class="controls-row">
       <button class="ctrl-btn primary" id="start-btn" onclick="toggleTimer()">Start</button>
       <button class="ctrl-btn" onclick="resetTimer()">Återställ</button>
-      <button class="ctrl-btn" onclick="jumpToFire()">Hoppa till Fire</button>
+      <button class="ctrl-btn" onclick="jumpToTarget()">Hoppa till mål</button>
     </div>
   </div>
 
@@ -540,6 +572,55 @@
   </div>
 
   <div id="panel-notifs" class="panel">
+    <div class="section-title">Målelement & Visuella Effekter</div>
+    <div class="notif-card">
+      <div class="flex-select-row">
+        <span>Varna för element:</span>
+        <select id="target-element-select" onchange="updateTargetElement()">
+          <option value="fire" selected>Fire</option>
+          <option value="holy">Holy</option>
+          <option value="lightning">Lightning</option>
+          <option value="physical">Physical</option>
+          <option value="cold">Cold</option>
+          <option value="arcane">Arcane</option>
+          <option value="poison">Poison</option>
+        </select>
+      </div>
+      
+      <div class="flex-select-row">
+        <span>Förvarning (elementet innan):</span>
+        <select id="pre-warn-display-mode" onchange="updateUI()">
+          <option value="blink" selected>Blinkande ljus</option>
+          <option value="solid">Konstant bakgrundsljus</option>
+          <option value="none">Avstängd</option>
+        </select>
+        </select>
+      </div>
+      <div class="flex-select-row">
+        <span>Färg på förvarning:</span>
+        <input type="color" id="pre-warn-color-picker" value="#db361f" oninput="updateCustomColors()">
+      </div>
+      
+      <hr style="border:none; border-top:1px solid var(--border); margin:10px 0;">
+
+      <div class="flex-select-row">
+        <span>Effekt vid Aktivt Mål:</span>
+        <select id="warn-display-mode" onchange="updateUI()">
+          <option value="solid" selected>Konstant ytfärg</option>
+          <option value="blink">Blinkande ytfärg</option>
+          <option value="none">Ingen effekt</option>
+        </select>
+      </div>
+      <div class="flex-select-row">
+        <span>Text & Accentfärg:</span>
+        <input type="color" id="warn-color-picker" value="#db361f" oninput="updateCustomColors()">
+      </div>
+      <div class="flex-select-row">
+        <span>Aktiv ytfärg (bakgrund):</span>
+        <input type="color" id="warn-bg-picker" value="#db361f" oninput="updateCustomColors()">
+      </div>
+    </div>
+
     <div class="section-title">Metronom</div>
     <div class="notif-card">
       <div class="toggle-row">
@@ -552,7 +633,7 @@
         <span id="bpm-val" style="font-family:Cinzel,serif;font-weight:600;font-size:14px;color:var(--text);min-width:36px;text-align:right">120</span>
       </div>
       <div class="metro-row" style="margin-top:8px">
-        <span>Accentuera Fire:</span>
+        <span>Accentuera Målelement:</span>
         <button class="toggle on" id="metro-accent" onclick="toggleMetroAccent()"></button>
       </div>
     </div>
@@ -569,20 +650,14 @@
       </div>
       <div class="toggle-row">
         <span>Hastighet</span>
-        <input type="range" min="0.5" max="2" step="0.1" value="1" id="rate-slider" oninput="document.getElementById('rate-val').textContent=parseFloat(this.value).toFixed(1)+'x'" style="width:100px">
-        <span id="rate-val" style="font-size:12px;min-width:28px;text-align:right;color:var(--text)">1.0x</span>
+        <input type="range" min="0.5" max="2" step="0.1" value="1.1" id="rate-slider" oninput="document.getElementById('rate-val').textContent=parseFloat(this.value).toFixed(1)+'x'" style="width:100px">
+        <span id="rate-val" style="font-size:12px;min-width:28px;text-align:right;color:var(--text)">1.1x</span>
       </div>
     </div>
 
-    <div class="section-title">Röstcues (sekunder kvar till Fire → text)</div>
+    <div class="section-title">Röstcues (Sekunder kvar till målet startar)</div>
     <div id="cue-list"></div>
     <button class="ctrl-btn" onclick="addCue()" style="margin-top:8px">+ Lägg till cue</button>
-
-    <div class="section-title">Testa röst</div>
-    <div class="test-row">
-      <input type="text" id="test-voice-input" placeholder="Skriv text att testa...">
-      <button class="ctrl-btn" onclick="testVoice()">Tala</button>
-    </div>
   </div>
 </div>
 
@@ -607,6 +682,8 @@ let timeLeft = duration;
 let ticker = null;
 let lastTick = null;
 
+let targetElement = 'fire';
+
 let metroOn = false;
 let metroAccent = true;
 let bpm = 120;
@@ -617,10 +694,14 @@ let voiceOn = true;
 let voices = [];
 let selectedVoice = null;
 
+// Exakta tidspunkter och fraser som efterfrågades
 let cues = [
-  { secsLeft: 8, text: 'eight', enabled: true },
-  { secsLeft: 4, text: 'four', enabled: true },
-  { secsLeft: 0, text: 'fire', enabled: true, onStart: true },
+  { secsLeft: 8.4, text: '8', enabled: true },
+  { secsLeft: 4.4, text: '4', enabled: true },
+  { secsLeft: 3.4, text: '3', enabled: true },
+  { secsLeft: 2.4, text: '2', enabled: true },
+  { secsLeft: 1.4, text: '1', enabled: true },
+  { secsLeft: 0.4, text: 'FIRE!', enabled: true, onStart: true }
 ];
 let cycleCount = 0;
 let spokenCues = new Set();
@@ -644,69 +725,130 @@ function renderRing() {
   });
 }
 
-function fireCountdown() {
-  if (!rotation.includes('fire')) return { secs: Infinity };
-  if (rotation[currentIdx] === 'fire') return { secs: timeLeft };
+function targetCountdown() {
+  if (!rotation.includes(targetElement)) return { secs: Infinity, maxSecs: 1 };
+  let totalMaxSecs = (rotation.length - 1) * duration;
+  
+  if (rotation[currentIdx] === targetElement) {
+    return { secs: timeLeft, maxSecs: totalMaxSecs, isActive: true };
+  }
+  
   let total = timeLeft;
   let idx = (currentIdx + 1) % rotation.length;
   let steps = 0;
-  while (rotation[idx] !== 'fire' && steps < rotation.length * 3) {
+  while (rotation[idx] !== targetElement && steps < rotation.length * 3) {
     total += duration;
     idx = (idx + 1) % rotation.length;
     steps++;
   }
-  return rotation[idx] === 'fire' ? { secs: total } : { secs: Infinity };
+  return rotation[idx] === targetElement ? { secs: total, maxSecs: totalMaxSecs, isActive: false } : { secs: Infinity, maxSecs: 1 };
+}
+
+function updateTargetElement() {
+  targetElement = document.getElementById('target-element-select').value;
+  const elementColor = ELEMENTS[targetElement]?.color || '#E24B4A';
+  document.getElementById('warn-color-picker').value = elementColor;
+  updateCustomColors();
+  updateUI();
+}
+
+function updateCustomColors() {
+  const color = document.getElementById('warn-color-picker').value;
+  const bg = document.getElementById('warn-bg-picker').value;
+  const preWarn = document.getElementById('pre-warn-color-picker').value;
+  
+  document.documentElement.style.setProperty('--warn-color', color);
+  document.documentElement.style.setProperty('--warn-bg-active', bg);
+  document.documentElement.style.setProperty('--pre-warn-color', preWarn);
 }
 
 function updateUI() {
   const el = ELEMENTS[rotation[currentIdx]];
+  if(!el) return;
+  
   document.getElementById('active-elem-name').textContent = el.label;
   document.getElementById('active-elem-name').style.color = el.color;
+  
   const timerNum = document.getElementById('timer-num');
   timerNum.textContent = timeLeft.toFixed(1);
   timerNum.style.color = el.color;
+  
   const next = ELEMENTS[rotation[(currentIdx+1)%rotation.length]];
   document.getElementById('next-elem-label').textContent = next.icon + ' ' + next.label;
   document.getElementById('next-elem-label').style.color = next.color;
-  const fc = fireCountdown();
-  const fireEl = rotation[currentIdx] === 'fire';
-  document.getElementById('fire-banner').style.display = fireEl ? 'block' : 'none';
-  document.body.classList.toggle('fire-active', fireEl);
-  if (fireEl) {
+  
+  const tc = targetCountdown();
+  const targetActive = rotation[currentIdx] === targetElement;
+  const nextIsTarget = rotation[(currentIdx+1)%rotation.length] === targetElement;
+  
+  const currentTargetLabel = ELEMENTS[targetElement]?.label.toUpperCase() || 'ELEMENT';
+  const banner = document.getElementById('fire-banner');
+  banner.textContent = `🔥 ${currentTargetLabel} AKTIVT 🔥`;
+  banner.style.display = targetActive ? 'block' : 'none';
+  
+  // Återställ bakgrundsklasser
+  document.body.classList.remove('warn-bg-solid', 'warn-bg-blink', 'pre-warn-blink', 'pre-warn-solid');
+  
+  const activeDisplayMode = document.getElementById('warn-display-mode').value;
+  const preDisplayMode = document.getElementById('pre-warn-display-mode').value;
+  
+  if (targetActive) {
+    if (activeDisplayMode === 'solid') document.body.classList.add('warn-bg-solid');
+    if (activeDisplayMode === 'blink') document.body.classList.add('warn-bg-blink');
+  } else if (nextIsTarget) {
+    if (preDisplayMode === 'blink') document.body.classList.add('pre-warn-blink');
+    if (preDisplayMode === 'solid') document.body.classList.add('pre-warn-solid');
+  }
+  
+  const progressFill = document.getElementById('warn-progress-fill');
+  
+  if (targetActive) {
+    document.getElementById('fire-cd-label').textContent = `${currentTargetLabel} AKTIVT`;
     document.getElementById('fire-cd-num').textContent = timeLeft.toFixed(1);
-    document.getElementById('fire-cd-sub').textContent = 'sekunder kvar av Fire';
-    document.getElementById('fire-progress').style.width = ((timeLeft/duration)*100)+'%';
-  } else if (fc.secs < Infinity) {
-    document.getElementById('fire-cd-num').textContent = fc.secs.toFixed(1);
-    document.getElementById('fire-cd-sub').textContent = 'sekunder tills Fire';
-    const pct = Math.max(0, Math.min(100, (1 - fc.secs / (rotation.length * duration)) * 100));
-    document.getElementById('fire-progress').style.width = pct+'%';
+    document.getElementById('fire-cd-sub').textContent = 'sekunder kvar';
+    
+    let percent = (timeLeft / duration) * 100;
+    progressFill.style.width = percent + '%';
+  } else if (tc.secs < Infinity) {
+    document.getElementById('fire-cd-label').textContent = `${currentTargetLabel} OM`;
+    document.getElementById('fire-cd-num').textContent = tc.secs.toFixed(1);
+    document.getElementById('fire-cd-sub').textContent = 'sekunder';
+    
+    let percent = ((tc.maxSecs - tc.secs) / tc.maxSecs) * 100;
+    progressFill.style.width = Math.max(0, Math.min(100, percent)) + '%';
   } else {
+    document.getElementById('fire-cd-label').textContent = `${currentTargetLabel} OM`;
     document.getElementById('fire-cd-num').textContent = '—';
-    document.getElementById('fire-cd-sub').textContent = 'Fire ej i rotation';
-    document.getElementById('fire-progress').style.width = '0%';
+    document.getElementById('fire-cd-sub').textContent = 'Ej i rotation';
+    progressFill.style.width = '0%';
   }
   renderRing();
 }
 
 function checkCues() {
   if (!voiceOn) return;
-  const fc = fireCountdown();
-  const fireNow = rotation[currentIdx] === 'fire';
+  const tc = targetCountdown();
+  const targetNow = rotation[currentIdx] === targetElement;
+  
   cues.forEach((c, i) => {
     if (!c.enabled) return;
+    
     if (c.onStart) {
-      if (fireNow && timeLeft > duration - 0.3) {
-        const ck = 'firestart_'+cycleCount;
+      if (targetNow && timeLeft > duration - 0.2) {
+        const ck = 'targetstart_' + cycleCount;
         if (!spokenCues.has(ck)) { spokenCues.add(ck); speak(c.text); }
       }
       return;
     }
-    if (fireNow) return;
-    if (fc.secs !== Infinity) {
-      const ck = 'cue_'+i+'_'+cycleCount;
-      if (!spokenCues.has(ck) && fc.secs <= c.secsLeft + 0.05 && fc.secs > c.secsLeft - (duration / 2)) {
-        spokenCues.add(ck); speak(c.text);
+    
+    if (targetNow) return;
+    
+    // Snävare marginalkontroll (0.08s) för precision vid 8.4, 4.4, 3.4 osv.
+    if (tc.secs !== Infinity) {
+      const ck = 'cue_' + i + '_' + cycleCount;
+      if (!spokenCues.has(ck) && tc.secs <= c.secsLeft && tc.secs > (c.secsLeft - 0.4)) {
+        spokenCues.add(ck); 
+        speak(c.text);
       }
     }
   });
@@ -753,8 +895,8 @@ function resetTimer() {
   updateUI();
 }
 
-function jumpToFire() {
-  const fi = rotation.indexOf('fire');
+function jumpToTarget() {
+  const fi = rotation.indexOf(targetElement);
   if (fi < 0) return;
   currentIdx = fi;
   timeLeft = duration;
@@ -835,9 +977,9 @@ function startMetro() {
     const osc = metroCtx.createOscillator();
     const gain = metroCtx.createGain();
     osc.connect(gain); gain.connect(metroCtx.destination);
-    const isFire = metroAccent && rotation[currentIdx] === 'fire';
-    osc.frequency.value = isFire ? 1200 : (beat % 4 === 0 ? 880 : 660);
-    gain.gain.setValueAtTime(isFire ? 0.35 : 0.18, metroCtx.currentTime);
+    const isTarget = metroAccent && rotation[currentIdx] === targetElement;
+    osc.frequency.value = isTarget ? 1200 : (beat % 4 === 0 ? 880 : 660);
+    gain.gain.setValueAtTime(isTarget ? 0.35 : 0.18, metroCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, metroCtx.currentTime + 0.08);
     osc.start(metroCtx.currentTime); osc.stop(metroCtx.currentTime + 0.08);
     beat++;
@@ -913,7 +1055,7 @@ function drainSpeechQueue() {
 }
 
 function testVoice() {
-  const t = document.getElementById('test-voice-input').value || 'fire';
+  const t = document.getElementById('test-voice-input').value || 'active';
   speechQueue = [];
   speechBusy = false;
   speak(t);
@@ -927,12 +1069,12 @@ function toggleVoice() {
 function renderCues() {
   const c = document.getElementById('cue-list');
   c.innerHTML = '';
-  cues.forEach((cue, i) => {
+  cues.sort((a,b) => b.secsLeft - a.secsLeft).forEach((cue, i) => {
     const row = document.createElement('div');
     row.className = 'cue-row';
     row.innerHTML = `
       <button class="toggle ${cue.enabled?'on':''}" data-i="${i}" onclick="toggleCue(${i})"></button>
-      <input type="number" value="${cue.onStart?0:cue.secsLeft}" min="0" max="60" step="1" onchange="setCueSecs(${i},this.value)" ${cue.onStart?'disabled':''}>
+      <input type="number" value="${cue.onStart?0:cue.secsLeft}" step="0.1" min="0" max="60" onchange="setCueSecs(${i},this.value)" ${cue.onStart?'disabled':''}>
       <span style="font-size:11px;color:var(--muted);flex-shrink:0;min-width:72px">${cue.onStart?'(vid start)':'sek kvar'}</span>
       <input type="text" value="${cue.text}" onchange="setCueText(${i},this.value)">
       <span class="cue-del" onclick="removeCue(${i})">×</span>
@@ -945,7 +1087,7 @@ function toggleCue(i) { cues[i].enabled = !cues[i].enabled; renderCues(); }
 function setCueSecs(i, v) { cues[i].secsLeft = parseFloat(v)||0; }
 function setCueText(i, v) { cues[i].text = v; }
 function removeCue(i) { cues.splice(i,1); renderCues(); }
-function addCue() { cues.push({ secsLeft: 5, text: 'Ny cue', enabled: true }); renderCues(); }
+function addCue() { cues.push({ secsLeft: 5, text: 'Ny', enabled: true }); renderCues(); }
 
 if (window.speechSynthesis) {
   window.speechSynthesis.onvoiceschanged = loadVoices;
@@ -956,23 +1098,41 @@ renderRing();
 renderRotationEditor();
 renderPicker();
 renderCues();
+updateCustomColors();
 updateUI();
 
-// Wake Lock — håller skärmen vaken
-let wakeLock = null;
-async function requestWakeLock() {
-  if (!('wakeLock' in navigator)) return;
+let silentAudio = null;
+function startSilentAudio() {
+  if (silentAudio) return;
   try {
-    wakeLock = await navigator.wakeLock.request('screen');
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    src.connect(ctx.destination);
+    src.start(0);
+    silentAudio = { ctx, src };
   } catch(e) {}
 }
-async function releaseWakeLock() {
-  if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try { await navigator.wakeLock.request('screen'); } catch(e) {}
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') requestWakeLock();
 });
 requestWakeLock();
+
+document.addEventListener('touchstart', function initAudio() {
+  startSilentAudio();
+  document.removeEventListener('touchstart', initAudio);
+}, { once: true });
+document.addEventListener('click', function initAudioClick() {
+  startSilentAudio();
+  document.removeEventListener('click', initAudioClick);
+}, { once: true });
 </script>
 </body>
 </html>
